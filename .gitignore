@@ -29,6 +29,9 @@ yarn-error.log*
 .pnpm-debug.log*
 .dev-out.log
 .dev-err.log
+.prod-out.log
+.prod-err.log
+/artifacts/
 
 # env files (can opt-in for committing if needed)
 .env*
