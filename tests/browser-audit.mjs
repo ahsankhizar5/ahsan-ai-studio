@@ -24,6 +24,11 @@ function contrast(first, second) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+async function expectVisible(locator) {
+  await locator.waitFor({ state: "visible" });
+  assert.equal(await locator.isVisible(), true);
+}
+
 const stage = oklchLuminance(0.06, 0, 0);
 assert.ok(contrast(stage, oklchLuminance(0.64, 0.22, 25)) >= 4.5, "carmine panel contrast");
 assert.ok(contrast(stage, oklchLuminance(0.88, 0.18, 105)) >= 4.5, "citrus panel contrast");
@@ -46,6 +51,9 @@ async function audit(name, viewport) {
   assert.equal(await page.title(), "Ahsan Khizar — AI Engineer & AI Video Producer");
   assert.equal(await page.locator("main").count(), 1);
   assert.equal(await page.locator("h1").count(), 1);
+  assert.equal(await page.getByRole("navigation", { name: "Main navigation" }).count(), 1);
+  assert.ok((await page.locator(".site-header").boundingBox()).height >= 52);
+  assert.equal(await page.locator(".site-footer").count(), 1);
   assert.equal(await page.locator("[id]").evaluateAll((nodes) => {
     const ids = nodes.map((node) => node.id).filter(Boolean);
     return ids.length - new Set(ids).size;
@@ -73,8 +81,12 @@ async function audit(name, viewport) {
   assert.equal(await page.locator(":focus").textContent(), "Skip to main content");
 
   if (name === "mobile") {
-    await page.locator(".mobile-nav summary").click();
-    await page.locator(".mobile-nav nav").waitFor({ state: "visible" });
+    const menu = page.getByRole("button", { name: /open menu/i });
+    await menu.click();
+    await expectVisible(page.getByRole("navigation", { name: "Mobile navigation" }));
+    assert.equal(await menu.getAttribute("aria-expanded"), "true");
+    await page.keyboard.press("Escape");
+    assert.equal(await menu.getAttribute("aria-expanded"), "false");
   }
 
   await page.screenshot({ path: `artifacts/${name}.png`, fullPage: true });

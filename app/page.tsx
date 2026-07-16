@@ -1,5 +1,6 @@
-import { CopyEmail } from "./CopyEmail";
-import { SiteHeader } from "./SiteHeader";
+import { CopyEmail } from "./components/CopyEmail";
+import { SiteFooter } from "./components/SiteFooter";
+import { SiteHeader } from "./components/SiteHeader";
 
 const engineeringProjects = [
   {
@@ -92,7 +93,7 @@ export default function Home() {
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
-      <SiteHeader />
+      <SiteHeader activePage="home" />
 
       <main id="main-content">
         <section className="hero" aria-labelledby="hero-title">
@@ -258,19 +259,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer>
-        <strong>Ahsan Khizar</strong>
-        <nav aria-label="Social links">
-          <a href="https://www.linkedin.com/in/ahsankhizar/" target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
-          <a href="https://github.com/ahsankhizar5" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          <a href="mailto:ahsankhizar1075@gmail.com">Email</a>
-        </nav>
-        <span>© {new Date().getFullYear()}</span>
-      </footer>
+      <SiteFooter />
 
       <script
         type="application/ld+json"
