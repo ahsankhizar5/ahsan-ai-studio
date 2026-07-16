@@ -35,7 +35,7 @@ assert.ok(contrast(stage, oklchLuminance(0.88, 0.18, 105)) >= 4.5, "citrus panel
 assert.ok(contrast(stage, oklchLuminance(0.82, 0.16, 190)) >= 4.5, "cyan panel contrast");
 assert.ok(contrast(stage, oklchLuminance(0.98, 0, 0)) >= 7, "white text contrast");
 
-async function audit(name, viewport) {
+async function audit(name, viewport, { mobile = false } = {}) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
   const errors = [];
   page.on("console", (message) => {
@@ -74,13 +74,11 @@ async function audit(name, viewport) {
   assert.ok(geometry.bodyWidth <= geometry.viewport + 1, `${name} body has horizontal overflow`);
   assert.ok(geometry.text > 1_000, `${name} content did not render`);
   assert.equal(geometry.unlabeled, 0, `${name} has unlabeled controls`);
-  assert.deepEqual(errors, []);
-
   await page.keyboard.press("Home");
   await page.keyboard.press("Tab");
   assert.equal(await page.locator(":focus").textContent(), "Skip to main content");
 
-  if (name === "mobile") {
+  if (mobile) {
     const menu = page.getByRole("button", { name: /open menu/i });
     await menu.click();
     await expectVisible(page.getByRole("navigation", { name: "Mobile navigation" }));
@@ -89,11 +87,30 @@ async function audit(name, viewport) {
     assert.equal(await menu.getAttribute("aria-expanded"), "false");
   }
 
+  assert.deepEqual(errors, []);
+
   await page.screenshot({ path: `artifacts/${name}.png`, fullPage: true });
   console.log(JSON.stringify({ name, ...geometry }));
   await page.close();
 }
 
-await audit("desktop", { width: 1440, height: 1000 });
-await audit("mobile", { width: 390, height: 844 });
+async function auditNoJavaScriptMobile() {
+  const page = await browser.newPage({
+    viewport: { width: 375, height: 812 },
+    deviceScaleFactor: 1,
+    javaScriptEnabled: false,
+  });
+
+  await page.goto("http://localhost:3000", { waitUntil: "networkidle" });
+  await expectVisible(page.getByRole("navigation", { name: "Mobile navigation" }));
+  assert.equal(await page.locator(".menu-button").getAttribute("aria-expanded"), "true");
+  await page.close();
+}
+
+await audit("desktop-1440", { width: 1440, height: 1000 });
+await audit("laptop-1024", { width: 1024, height: 768 });
+await audit("tablet-768", { width: 768, height: 1024 });
+await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });
+await audit("mobile-375", { width: 375, height: 812 }, { mobile: true });
+await auditNoJavaScriptMobile();
 await browser.close();

@@ -31,10 +31,13 @@ function NavigationLinks({ activePage, onNavigate }: { activePage: ActivePage; o
 }
 
 export function SiteHeader({ activePage }: { activePage: ActivePage }) {
+  const [enhanced, setEnhanced] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    const enhancementFrame = window.requestAnimationFrame(() => setEnhanced(true));
+
     function handleScroll() {
       setScrolled(window.scrollY > 12);
     }
@@ -48,6 +51,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(enhancementFrame);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -57,8 +61,10 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
     setMenuOpen(false);
   }
 
+  const menuExpanded = !enhanced || menuOpen;
+
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
+    <header className={`site-header${scrolled ? " is-scrolled" : ""}`} data-enhanced={enhanced}>
       {/* vinext's next/link shim currently loads a second React runtime in client components. */}
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a
@@ -80,14 +86,19 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
         <button
           className="menu-button"
           type="button"
-          aria-expanded={menuOpen}
+          aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
           onClick={() => setMenuOpen((isOpen) => !isOpen)}
         >
           Open menu
         </button>
       </nav>
-      <nav id="mobile-menu" className="mobile-menu" aria-label="Mobile navigation" hidden={!menuOpen}>
+      <nav
+        id="mobile-menu"
+        className="mobile-menu"
+        aria-label="Mobile navigation"
+        data-open={menuOpen}
+      >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
           Start a project

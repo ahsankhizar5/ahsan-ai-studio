@@ -246,10 +246,6 @@ button {
   background: oklch(0.98 0 0 / 0.96);
 }
 
-.mobile-menu[hidden] {
-  display: none;
-}
-
 .mobile-menu a {
   display: flex;
   align-items: center;
@@ -845,9 +841,16 @@ button {
     display: none;
   }
 
-  .menu-button,
   .mobile-menu {
     display: flex;
+  }
+
+  .site-header[data-enhanced="true"] .menu-button {
+    display: inline-flex;
+  }
+
+  .site-header[data-enhanced="true"] .mobile-menu[data-open="false"] {
+    display: none;
   }
 
   .hero {
