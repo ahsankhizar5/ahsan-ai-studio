@@ -30,26 +30,21 @@
 - Modify: `tests/rendered-html.test.mjs`
 
 **Interfaces:**
-- Produces: `profile`, `engineeringProjects`, `videoServices`, `experience`, `recognition`, `certifications`, `technicalCapabilities`, and their exported TypeScript types.
+- Produces: `profile`, `engineeringProjects`, `videoServices`, `experience`, `recognition`, `certifications`, `technicalCapabilities`, `process`, and their exported TypeScript types.
 - Consumes: factual content from the approved specification and `Resume/Ahsan_Khizar_Resume.tex`.
 
 - [ ] **Step 1: Add failing content contracts**
 
-Add assertions to `tests/rendered-html.test.mjs` that require the finished Home and About routes to render all factual anchors:
+Add a source contract to `tests/rendered-html.test.mjs` that requires the typed data module and its factual anchors:
 
 ```js
-test("renders the expanded factual portfolio", async () => {
-  const [homeResponse, aboutResponse] = await Promise.all([render("/"), render("/about")]);
-  assert.equal(homeResponse.status, 200);
-  assert.equal(aboutResponse.status, 200);
-  const home = await homeResponse.text();
-  const about = await aboutResponse.text();
-  assert.match(home, /Audio Deepfake Detection System/i);
-  assert.match(home, /Qadri Group/i);
-  assert.match(about, /University of Engineering and Technology, Taxila/i);
-  assert.match(about, /Bachelor of Engineering in Software Engineering/i);
-  assert.match(about, /Generative AI Application Developer/i);
-  assert.match(about, /PEEF Scholar/i);
+test("defines the factual portfolio data source", async () => {
+  const source = await readFile(new URL("../app/data/profile.ts", import.meta.url), "utf8");
+  assert.match(source, /Audio Deepfake Detection System/i);
+  assert.match(source, /Qadri Group/i);
+  assert.match(source, /University of Engineering and Technology, Taxila/i);
+  assert.match(source, /Generative AI Application Developer/i);
+  assert.match(source, /PEEF Scholar/i);
 });
 ```
 
@@ -57,7 +52,7 @@ test("renders the expanded factual portfolio", async () => {
 
 Run: `npm run build && node --test tests/rendered-html.test.mjs`
 
-Expected: FAIL because `/about` does not exist and the Home page does not include the expanded factual proof.
+Expected: FAIL with `ENOENT` because `app/data/profile.ts` does not exist.
 
 - [ ] **Step 3: Create the typed data module**
 
@@ -166,13 +161,20 @@ export const technicalCapabilities = {
   backendProduct: ["FastAPI", "REST APIs", "React", "Next.js", "Vite", "Streamlit", "PostgreSQL", "Supabase", "Postman"],
   tools: ["Git", "GitHub", "GitHub Actions", "Docker basics", "Power BI", "Codex", "Claude Code", "LLM workflows"],
 } as const;
+
+export const process = [
+  { name: "Discover", description: "Clarify the audience, the problem, and what success must look like." },
+  { name: "Design", description: "Choose the system architecture or creative treatment before production." },
+  { name: "Build", description: "Engineer the working product or produce the complete video asset." },
+  { name: "Refine", description: "Test, review, revise, and deliver a result ready for real use." },
+] as const;
 ```
 
 - [ ] **Step 4: Type-check through the production build**
 
 Run: `npm run build`
 
-Expected: PASS with the existing `/`, `/robots.txt`, and `/sitemap.xml` routes.
+Expected: PASS with the existing routes and the factual data-source contract.
 
 - [ ] **Step 5: Commit the data foundation**
 
@@ -292,6 +294,7 @@ git commit -m "feat: add shared glass navigation shell"
 - Modify: `app/page.tsx`
 - Modify: `app/globals.css`
 - Modify: `tests/rendered-html.test.mjs`
+- Create: `public/ahsan-khizar.png`
 
 **Interfaces:**
 - Consumes: `SiteHeader`, `SiteFooter`, `CopyEmail`, and all public exports from `app/data/profile.ts`.
@@ -347,20 +350,30 @@ Build the approved section order with server-rendered maps over the typed data. 
 
 Render all four projects and all five experience/recognition proof items. Add Person and ProfessionalService JSON-LD using only data from `profile`.
 
-- [ ] **Step 4: Replace the Home CSS with the Controlled Studio Glass layout**
+- [ ] **Step 4: Optimize the approved portrait for the Home preview and About page**
+
+Run:
+
+```powershell
+python -c "from PIL import Image; p=r'C:\Users\ahsan\Downloads\Profile\Media\22-SE-51.png'; im=Image.open(p).convert('RGB'); im.thumbnail((960, 1200), Image.Resampling.LANCZOS); im.save(r'public\ahsan-khizar.png', optimize=True); print(im.size)"
+```
+
+Use the printed dimensions in the Home portrait attributes and retain the file for Task 4.
+
+- [ ] **Step 5: Replace the Home CSS with the Controlled Studio Glass layout**
 
 Preserve the approved color tokens and self-hosted fonts. Create a mobile-first composition, then enhance at 768px, 1024px, and 1440px. Use hard-edged poster fields, responsive indexed rows, one sticky desktop project stage, and no repeated card grid.
 
-- [ ] **Step 5: Build and run rendered tests**
+- [ ] **Step 6: Build and run rendered tests**
 
 Run: `npm run build && node --test tests/rendered-html.test.mjs`
 
-Expected: Home assertions pass; About assertions remain the only expected failure until Task 4.
+Expected: all current Home and crawl-endpoint assertions pass.
 
-- [ ] **Step 6: Commit the landing page**
+- [ ] **Step 7: Commit the landing page**
 
 ```bash
-git add app/page.tsx app/globals.css tests/rendered-html.test.mjs
+git add app/page.tsx app/globals.css public/ahsan-khizar.png tests/rendered-html.test.mjs
 git commit -m "feat: rebuild full portfolio landing page"
 ```
 
@@ -368,7 +381,7 @@ git commit -m "feat: rebuild full portfolio landing page"
 
 **Files:**
 - Create: `app/about/page.tsx`
-- Create: `public/ahsan-khizar.png`
+- Reuse: `public/ahsan-khizar.png`
 - Modify: `app/globals.css`
 - Modify: `app/sitemap.xml/route.ts`
 - Modify: `tests/rendered-html.test.mjs`
@@ -377,15 +390,15 @@ git commit -m "feat: rebuild full portfolio landing page"
 - Consumes: profile data, `SiteHeader`, `SiteFooter`, `CopyEmail`, and `MotionController`.
 - Produces: `/about`, AboutPage JSON-LD, and an absolute sitemap entry for `/about`.
 
-- [ ] **Step 1: Optimize the approved portrait**
+- [ ] **Step 1: Verify the approved portrait asset**
 
-Use the bundled Python/Pillow runtime to resize the approved source without changing its appearance:
+Read the image dimensions and confirm the Task 3 asset is no larger than 960×1200:
 
 ```powershell
-python -c "from PIL import Image; p=r'C:\Users\ahsan\Downloads\Profile\Media\22-SE-51.png'; im=Image.open(p).convert('RGB'); im.thumbnail((960, 1200), Image.Resampling.LANCZOS); im.save(r'public\ahsan-khizar.png', optimize=True); print(im.size)"
+python -c "from PIL import Image; im=Image.open(r'public\ahsan-khizar.png'); print(im.size); assert im.width <= 960 and im.height <= 1200"
 ```
 
-Expected: a portrait no larger than 960×1200 with the original aspect ratio preserved.
+Expected: the saved dimensions print and the assertion passes.
 
 - [ ] **Step 2: Add the About route**
 
@@ -415,9 +428,9 @@ const pages = ["/", "/about"];
 const urls = pages.map((path) => `  <url><loc>${origin}${path}</loc><changefreq>monthly</changefreq><priority>${path === "/" ? "1.0" : "0.8"}</priority></url>`).join("\n");
 ```
 
-- [ ] **Step 4: Add route and metadata tests**
+- [ ] **Step 4: Add route, factual content, and metadata tests**
 
-Assert `/about` status, title, canonical link, AboutPage JSON-LD, portrait dimensions, and both sitemap URLs.
+Add and satisfy the About assertions only now: `/about` status, University of Engineering and Technology, Taxila, Bachelor of Engineering in Software Engineering, Generative AI Application Developer, PEEF Scholar, title, canonical link, AboutPage JSON-LD, portrait dimensions, and both sitemap URLs.
 
 - [ ] **Step 5: Build and run rendered tests**
 
