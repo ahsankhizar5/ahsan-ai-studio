@@ -60,3 +60,12 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
   assert.doesNotMatch(css, /background-clip:\s*text|repeating-linear-gradient|border-radius:\s*(3[2-9]|[4-9]\d)px/i);
 });
+
+test("defines the factual portfolio data source", async () => {
+  const source = await readFile(new URL("../app/data/profile.ts", import.meta.url), "utf8");
+  assert.match(source, /Audio Deepfake Detection System/i);
+  assert.match(source, /Qadri Group/i);
+  assert.match(source, /University of Engineering and Technology, Taxila/i);
+  assert.match(source, /Generative AI Application Developer/i);
+  assert.match(source, /PEEF Scholar/i);
+});
