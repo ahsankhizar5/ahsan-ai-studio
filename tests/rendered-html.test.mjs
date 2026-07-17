@@ -51,12 +51,50 @@ test("server-renders the complete portfolio", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
 
+test("server-renders the factual portrait-led About page", async () => {
+  const response = await render("/about");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+
+  const html = await response.text();
+  assert.match(html, /<title>About Ahsan Khizar \u2014 AI Engineer &amp; AI Video Producer<\/title>/i);
+  assert.match(html, /<link rel="canonical" href="http:\/\/localhost(?::3000)?\/about"/i);
+  assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
+  assert.match(html, /University of Engineering and Technology, Taxila/i);
+  assert.match(html, /Bachelor of Engineering in Software Engineering/i);
+  assert.match(html, /Generative AI Application Developer/i);
+  assert.match(html, /PEEF Scholar/i);
+  assert.match(html, /Qadri Group/i);
+  assert.match(html, /DevelopersHub Corporation/i);
+  assert.match(html, /Prodigy InfoTech/i);
+  const jsonLdSource = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i)?.[1];
+  assert.ok(jsonLdSource, "AboutPage JSON-LD is present");
+  const jsonLd = JSON.parse(jsonLdSource);
+  assert.equal(jsonLd["@context"], "https://schema.org");
+  assert.equal(jsonLd["@type"], "AboutPage");
+  assert.match(jsonLd.url, /^http:\/\/localhost(?::3000)?\/about$/);
+  assert.equal(jsonLd.mainEntity["@type"], "Person");
+  assert.equal(jsonLd.mainEntity.name, "Ahsan Khizar");
+  assert.equal(jsonLd.primaryImageOfPage["@type"], "ImageObject");
+  assert.equal(jsonLd.primaryImageOfPage.width, 960);
+  assert.equal(jsonLd.primaryImageOfPage.height, 1131);
+  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/ahsan-khizar\.png$/);
+  assert.match(
+    html,
+    /<img[^>]*src="\/ahsan-khizar\.png"[^>]*width="960"[^>]*height="1131"[^>]*alt="Portrait of Ahsan Khizar"/i,
+  );
+  assert.match(html, /data-motion-page="about"/i);
+  assert.doesNotMatch(html, /MotionController/i);
+});
+
 test("publishes absolute crawl endpoints", async () => {
   const [robotsResponse, sitemapResponse] = await Promise.all([render("/robots.txt"), render("/sitemap.xml")]);
   assert.equal(robotsResponse.status, 200);
   assert.equal(sitemapResponse.status, 200);
   assert.match(await robotsResponse.text(), /Sitemap: http:\/\/localhost\/sitemap\.xml/i);
-  assert.match(await sitemapResponse.text(), /<loc>http:\/\/localhost\/<\/loc>/i);
+  const sitemap = await sitemapResponse.text();
+  assert.match(sitemap, /<loc>http:\/\/localhost\/<\/loc>/i);
+  assert.match(sitemap, /<loc>http:\/\/localhost\/about<\/loc>/i);
 });
 
 test("source preserves accessible and responsive contracts", async () => {
@@ -87,4 +125,21 @@ test("defines the factual portfolio data source", async () => {
   assert.match(source, /University of Engineering and Technology, Taxila/i);
   assert.match(source, /Generative AI Application Developer/i);
   assert.match(source, /PEEF Scholar/i);
+});
+
+test("About source preserves semantic, responsive, and metadata contracts", async () => {
+  const [about, css] = await Promise.all([
+    readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(about, /export const metadata/);
+  assert.match(about, /alternates:\s*\{ canonical:\s*"\/about" \}/);
+  assert.match(about, /<main id="main-content" data-motion-page="about">/);
+  assert.match(about, /fetchPriority="high"/);
+  assert.match(about, /sizes="\(max-width: 760px\) 100vw, 42vw"/);
+  assert.match(about, /<SiteHeader activePage="about"/);
+  assert.match(about, /<SiteFooter \/>/);
+  assert.match(css, /\.about-hero\s*\{/);
+  assert.match(css, /\.about-capability-index\s*\{/);
 });

@@ -818,6 +818,426 @@ button {
   min-height: 2.75rem;
 }
 
+.about-hero {
+  display: grid;
+  padding-top: 4.75rem;
+  background: var(--stage);
+}
+
+.about-portrait {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--cyan);
+}
+
+.about-portrait img {
+  width: 100%;
+  height: auto;
+}
+
+.about-portrait-caption {
+  grid-template-columns: 1fr;
+}
+
+.about-portrait-caption strong {
+  grid-row: auto;
+}
+
+.about-hero-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(3.5rem, 9vw, 7rem) var(--page-gutter);
+  background: var(--carmine);
+}
+
+.about-hero-copy > .eyebrow {
+  align-self: flex-start;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--stage);
+}
+
+.about-hero h1 {
+  max-width: 10ch;
+  margin: clamp(2rem, 5vw, 4rem) 0 2rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(3.7rem, 16vw, 7.5rem);
+  font-stretch: 84%;
+  font-weight: 880;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.about-hero-copy > p:not(.eyebrow) {
+  max-width: 55ch;
+  margin: 0;
+}
+
+.about-hero-copy > p + p {
+  padding-top: 1rem;
+}
+
+.about-hero-copy .about-introduction {
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--stage);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.about-hero-copy .button {
+  align-self: flex-start;
+  margin-top: 2rem;
+}
+
+.about-section-head h2 {
+  max-width: 13ch;
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2.8rem, 10vw, 6.5rem);
+  font-stretch: 86%;
+  font-weight: 850;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.about-section-head .eyebrow {
+  margin-bottom: 1.25rem;
+}
+
+.about-philosophy {
+  background: var(--stage);
+  color: var(--white);
+}
+
+.about-philosophy .eyebrow {
+  color: var(--cyan);
+}
+
+.about-philosophy-copy {
+  max-width: 62ch;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-rule);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+}
+
+.about-philosophy-copy p {
+  margin: 0;
+}
+
+.about-philosophy-copy p + p {
+  margin-top: 1.5rem;
+}
+
+.about-profile {
+  background: var(--silver);
+}
+
+.about-fact-index {
+  margin: 3.5rem 0 0;
+  border-top: 2px solid var(--stage);
+}
+
+.about-fact-index div {
+  display: grid;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--stage);
+  gap: 0.5rem 1.5rem;
+}
+
+.about-fact-index dt {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.about-fact-index dd {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-stretch: 88%;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+
+.about-experience {
+  background: var(--white);
+}
+
+.about-timeline,
+.about-recognition-list,
+.about-principle-list {
+  margin: 3.5rem 0 0;
+  padding: 0;
+  border-top: 2px solid currentColor;
+  list-style: none;
+}
+
+.about-timeline li {
+  display: grid;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid currentColor;
+  gap: 1rem 1.25rem;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+}
+
+.timeline-index,
+.about-recognition-list li > span,
+.about-principle-list li > span {
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.timeline-role h3,
+.about-principle-list h3 {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.45rem, 4vw, 2.4rem);
+  font-stretch: 86%;
+  font-weight: 780;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.timeline-role p,
+.timeline-meta,
+.timeline-summary {
+  margin: 0;
+}
+
+.timeline-role p,
+.timeline-meta {
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.timeline-meta,
+.timeline-summary {
+  grid-column: 2;
+}
+
+.timeline-summary {
+  max-width: 62ch;
+}
+
+.about-capabilities {
+  background: var(--cyan);
+}
+
+.about-capability-index {
+  margin-top: 3.5rem;
+}
+
+.about-capability-index p {
+  overflow-wrap: anywhere;
+}
+
+.about-recognition {
+  background: var(--citrus);
+}
+
+.about-recognition-list li {
+  display: grid;
+  min-height: 5rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid currentColor;
+  gap: 1rem 1.25rem;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+}
+
+.about-recognition-list p {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.15rem, 3vw, 1.75rem);
+  font-stretch: 90%;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.about-principles {
+  background: var(--stage);
+  color: var(--white);
+}
+
+.about-principles .eyebrow {
+  color: var(--citrus);
+}
+
+.about-principle-list li {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--glass-rule);
+}
+
+.about-principle-list h3 {
+  margin-top: 1.5rem;
+}
+
+.about-principle-list p {
+  max-width: 34ch;
+  margin: 0.75rem 0 0;
+}
+
+.about-contact h2 {
+  max-width: 12ch;
+}
+
+@media (min-width: 768px) {
+  .about-portrait-caption {
+    grid-template-columns: 1fr auto;
+  }
+
+  .about-portrait-caption strong {
+    grid-row: 1 / 3;
+  }
+
+  .about-fact-index div {
+    align-items: start;
+    grid-template-columns: minmax(9rem, 0.45fr) minmax(0, 1.55fr);
+  }
+
+  .about-timeline li {
+    grid-template-columns: 3rem minmax(0, 1.1fr) minmax(9rem, 0.7fr);
+  }
+
+  .timeline-meta {
+    grid-column: 3;
+    margin-top: 0;
+  }
+
+  .timeline-summary {
+    grid-column: 2 / -1;
+  }
+
+  .about-recognition-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .about-recognition-list li:nth-child(odd) {
+    padding-right: 1.5rem;
+    border-right: 1px solid currentColor;
+  }
+
+  .about-recognition-list li:nth-child(even) {
+    padding-left: 1.5rem;
+  }
+
+  .about-principle-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .about-principle-list li {
+    min-height: 17rem;
+    padding: 2rem;
+    border-right: 1px solid var(--glass-rule);
+  }
+
+  .about-principle-list li:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-hero {
+    min-height: 100svh;
+    padding-top: 0;
+    grid-template-columns: minmax(25rem, 42vw) minmax(0, 1fr);
+  }
+
+  .about-portrait img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+  }
+
+  .about-hero-copy {
+    padding-top: 8rem;
+  }
+
+  .about-hero h1 {
+    font-size: clamp(5.2rem, 7.4vw, 8.3rem);
+  }
+
+  .about-philosophy,
+  .about-profile,
+  .about-experience,
+  .about-capabilities,
+  .about-recognition,
+  .about-principles {
+    display: grid;
+    align-items: start;
+    gap: clamp(3rem, 7vw, 7rem);
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  }
+
+  .about-philosophy-copy,
+  .about-fact-index,
+  .about-timeline,
+  .about-capability-index,
+  .about-recognition-list,
+  .about-principle-list {
+    margin-top: 0;
+  }
+
+  .about-section-head h2 {
+    font-size: clamp(2.8rem, 4.8vw, 5.2rem);
+  }
+
+  .about-capability-index li {
+    grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .about-capability-index p {
+    grid-column: 3;
+  }
+
+  .about-recognition-list {
+    grid-template-columns: 1fr;
+  }
+
+  .about-recognition-list li:nth-child(odd),
+  .about-recognition-list li:nth-child(even) {
+    padding-right: 0;
+    padding-left: 0;
+    border-right: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .about-hero {
+    grid-template-columns: minmax(34rem, 42vw) minmax(0, 1fr);
+  }
+
+  .about-hero-copy {
+    padding-right: clamp(5rem, 8vw, 9rem);
+  }
+
+  .about-principle-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (min-width: 768px) {
   .site-header {
     inset-inline: clamp(1rem, 3vw, 2.5rem);
