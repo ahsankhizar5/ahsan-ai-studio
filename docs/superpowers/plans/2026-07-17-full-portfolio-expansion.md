@@ -387,7 +387,7 @@ git commit -m "feat: rebuild full portfolio landing page"
 - Modify: `tests/rendered-html.test.mjs`
 
 **Interfaces:**
-- Consumes: profile data, `SiteHeader`, `SiteFooter`, `CopyEmail`, and `MotionController`.
+- Consumes: profile data, `SiteHeader`, `SiteFooter`, and `CopyEmail`.
 - Produces: `/about`, AboutPage JSON-LD, and an absolute sitemap entry for `/about`.
 
 - [ ] **Step 1: Verify the approved portrait asset**
