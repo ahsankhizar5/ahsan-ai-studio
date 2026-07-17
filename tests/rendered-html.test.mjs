@@ -81,10 +81,10 @@ test("server-renders the factual portrait-led About page", async () => {
   assert.equal(jsonLd.primaryImageOfPage["@type"], "ImageObject");
   assert.equal(jsonLd.primaryImageOfPage.width, 960);
   assert.equal(jsonLd.primaryImageOfPage.height, 1131);
-  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/ahsan-khizar\.png$/);
+  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/ahsan-khizar\.webp$/);
   assert.match(
     html,
-    /<img[^>]*src="\/ahsan-khizar\.png"[^>]*width="960"[^>]*height="1131"[^>]*alt="Portrait of Ahsan Khizar"/i,
+    /<img[^>]*src="\/ahsan-khizar\.webp"[^>]*width="960"[^>]*height="1131"[^>]*alt="Portrait of Ahsan Khizar"/i,
   );
   assert.match(html, /data-motion-page="about"/i);
   assert.match(html, /MotionController/i);

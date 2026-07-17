@@ -72,7 +72,7 @@ export default async function AboutPage() {
     url: `${origin}/about`,
     primaryImageOfPage: {
       "@type": "ImageObject",
-      url: `${origin}/ahsan-khizar.png`,
+      url: `${origin}/ahsan-khizar.webp`,
       width: 960,
       height: 1131,
     },
@@ -80,7 +80,7 @@ export default async function AboutPage() {
       "@type": "Person",
       name: profile.name,
       email: `mailto:${profile.email}`,
-      image: `${origin}/ahsan-khizar.png`,
+      image: `${origin}/ahsan-khizar.webp`,
       address: { "@type": "PostalAddress", addressCountry: profile.location },
       sameAs: [profile.links.linkedin, profile.links.github],
     },
@@ -99,7 +99,7 @@ export default async function AboutPage() {
             {/* The approved, optimized portrait is intentionally rendered with its intrinsic dimensions. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/ahsan-khizar.png"
+              src="/ahsan-khizar.webp"
               width={960}
               height={1131}
               alt="Portrait of Ahsan Khizar"

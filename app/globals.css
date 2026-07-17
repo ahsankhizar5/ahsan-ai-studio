@@ -1691,6 +1691,28 @@ button {
   color: var(--ink);
 }
 
+@keyframes hero-system-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@keyframes operator-system-enter {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+html[data-motion="full"] [data-hero-reveal] {
+  animation: hero-system-enter 480ms var(--ease-out) both;
+}
+
+html[data-motion="full"] .operator-frame {
+  animation: operator-system-enter 580ms var(--ease-out) 80ms both;
+}
+
 .conversion-home h1,
 .conversion-home h2,
 .conversion-home h3,
@@ -2341,7 +2363,7 @@ button {
 }
 
 .video-capability-list article > span {
-  color: rgb(7 7 7 / 45%);
+  color: rgb(7 7 7 / 68%);
   font-family: var(--font-display), sans-serif;
   font-size: 1rem;
   font-weight: 900;
@@ -2394,7 +2416,7 @@ button {
 
 .proof-timeline time,
 .proof-recognition > span {
-  color: rgb(7 7 7 / 56%);
+  color: rgb(7 7 7 / 72%);
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -2950,7 +2972,7 @@ button {
 }
 
 .about-recognition-list li > span {
-  color: rgb(7 7 7 / 45%);
+  color: rgb(7 7 7 / 68%);
 }
 
 .about-principles {

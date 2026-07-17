@@ -81,7 +81,7 @@ export default function Home() {
             <div className="operator-portrait">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/ahsan-khizar.png"
+                src="/ahsan-khizar.webp"
                 width={960}
                 height={1131}
                 sizes="(max-width: 760px) 92vw, 42vw"
@@ -289,7 +289,7 @@ export default function Home() {
           <div className="about-conversion-portrait">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/ahsan-khizar.png"
+              src="/ahsan-khizar.webp"
               width={960}
               height={1131}
               sizes="(max-width: 760px) 36vw, 18vw"
