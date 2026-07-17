@@ -25,12 +25,28 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /I build AI/i);
   assert.match(html, /AI engineering/i);
   assert.match(html, /AI video production/i);
+  assert.match(html, /Audio Deepfake Detection System/i);
   assert.match(html, /DocuSync/i);
+  assert.match(html, /PIGEON Reproduction/i);
+  assert.match(html, /Customer Behavior Profiling/i);
+  assert.match(html, /Qadri Group/i);
+  assert.match(html, /DevelopersHub Corporation/i);
+  assert.match(html, /Prodigy InfoTech/i);
+  assert.match(html, /All Pakistan Prompt Engineering Competition/i);
+  assert.match(html, /Global AI Hackathon/i);
   assert.match(html, /ahsankhizar1075@gmail\.com/i);
   assert.match(html, /application\/ld\+json/i);
+  assert.match(html, /"@type":"Person"/i);
+  assert.match(html, /"@type":"ProfessionalService"/i);
   assert.match(html, /og:image/i);
   assert.match(html, /\/og\.png/i);
   assert.match(html, /Skip to main content/i);
+  assert.match(html, /id="work"/i);
+  assert.match(html, /id="services"/i);
+  assert.match(html, /id="experience"/i);
+  assert.match(html, /href="\/about"/i);
+  assert.match(html, /data-project-stage/i);
+  assert.match(html, /data-motion-page="home"/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
 
@@ -49,9 +65,9 @@ test("source preserves accessible and responsive contracts", async () => {
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /<main id="main-content">/);
-  assert.match(page, /aria-labelledby="engineering-title"/);
-  assert.match(page, /aria-labelledby="video-title"/);
+  assert.match(page, /<main id="main-content" data-motion-page="home">/);
+  assert.match(page, /aria-labelledby="work-title"/);
+  assert.match(page, /aria-labelledby="services-title"/);
   assert.match(page, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);

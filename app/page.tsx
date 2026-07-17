@@ -1,88 +1,40 @@
 import { CopyEmail } from "./components/CopyEmail";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import {
+  engineeringProjects,
+  experience,
+  process,
+  profile,
+  recognition,
+  technicalCapabilities,
+  videoServices,
+} from "./data/profile";
 
-const engineeringProjects = [
-  {
-    name: "DocuSync",
-    type: "AI documentation automation",
-    description:
-      "A working system that connects GitHub pull requests to LLM drafting, human review, Notion sync, backend APIs, and persistent product state.",
-    stack: "FastAPI · Next.js · PostgreSQL · Gemini · Notion API",
-    href: "https://github.com/ahsankhizar5/docusync",
-  },
-  {
-    name: "PIGEON Reproduction",
-    type: "Visual geolocation pipeline",
-    description:
-      "An image-geolocation system using frozen CLIP embeddings, S2 Geometry, hierarchical geographic classification, and confidence filtering.",
-    stack: "Python · CLIP ViT-B/32 · S2 Geometry",
-    href: "https://github.com/ahsankhizar5/PIGEON_Reproduction",
-  },
-  {
-    name: "Customer Behavior Profiling",
-    type: "Fraud and anomaly detection",
-    description:
-      "A testable customer-behavior workflow covering preprocessing, feature preparation, clustering, and model experimentation.",
-    stack: "Python · Pandas · Scikit-learn · Streamlit · Pytest",
-    href: "https://github.com/ahsankhizar5/customer-behavior-profiling",
-  },
-];
-
-const videoServices = [
-  [
-    "Avatar-led explainers",
-    "Turn a script into a credible on-screen presenter without scheduling a studio day.",
-  ],
-  [
-    "UGC & performance ads",
-    "Produce native-looking concepts and fast creative variations built for testing.",
-  ],
-  [
-    "Product demos",
-    "Show the product, the problem, and the payoff before attention moves elsewhere.",
-  ],
-  [
-    "Localized content",
-    "Adapt voice, captions, pacing, and edits for new audiences without rebuilding from zero.",
-  ],
-];
-
-const process = [
-  ["Discover", "Clarify the audience, the problem, and what success must look like."],
-  ["Design", "Choose the system architecture or the creative treatment before production."],
-  ["Build", "Engineer the working product or produce the complete video asset."],
-  ["Refine", "Test, review, revise, and deliver a result ready for real use."],
-];
+const capabilityGroups = [
+  { name: "Languages", items: technicalCapabilities.languages },
+  { name: "AI and machine learning", items: technicalCapabilities.aiMl },
+  { name: "Backend and product", items: technicalCapabilities.backendProduct },
+  { name: "Delivery tools", items: technicalCapabilities.tools },
+] as const;
 
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Person",
-      name: "Ahsan Khizar",
-      jobTitle: "AI Engineer",
-      email: "mailto:ahsankhizar1075@gmail.com",
-      sameAs: [
-        "https://www.linkedin.com/in/ahsankhizar/",
-        "https://github.com/ahsankhizar5",
-      ],
-      knowsAbout: [
-        "Applied artificial intelligence",
-        "AI agents",
-        "Workflow automation",
-        "Machine learning",
-        "AI video production",
-      ],
+      name: profile.name,
+      email: `mailto:${profile.email}`,
+      address: { "@type": "PostalAddress", addressCountry: profile.location },
+      sameAs: [profile.links.linkedin, profile.links.github],
     },
     {
       "@type": "ProfessionalService",
-      name: "Ahsan Khizar — AI Engineering and AI Video Production",
-      description:
-        "AI product engineering, agents, automation, avatar videos, UGC-style ads, product demos, and explainers.",
-      provider: { "@type": "Person", name: "Ahsan Khizar" },
-      areaServed: "Worldwide",
-      serviceType: ["AI engineering", "AI video production"],
+      name: `${profile.name} professional services`,
+      email: `mailto:${profile.email}`,
+      provider: { "@type": "Person", name: profile.name },
+      areaServed: profile.location,
+      sameAs: [profile.links.linkedin, profile.links.github],
     },
   ],
 };
@@ -95,166 +47,240 @@ export default function Home() {
       </a>
       <SiteHeader activePage="home" />
 
-      <main id="main-content">
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-name-field">
-            <p className="hero-role">AI engineer &amp; video maker</p>
-            <h1 id="hero-title" className="display-name" aria-label="Ahsan Khizar">
-              <span>Ahsan</span>
-              <span className="display-name-light">Khizar</span>
+      <main id="main-content" data-motion-page="home">
+        <section className="hero-v2" aria-labelledby="hero-title">
+          <div className="hero-v2-copy">
+            <p className="eyebrow" data-hero-reveal>
+              AI engineer / AI video producer
+            </p>
+            <h1 id="hero-title" data-hero-reveal>
+              Ahsan <span>Khizar</span>
             </h1>
-
-            <div className="hero-pitch">
-              <p>
-                <strong>I build AI</strong>
-                <span>that works.</span>
-              </p>
-              <p>
-                <strong>And video</strong>
-                <span>that gets watched.</span>
-              </p>
-            </div>
-
-            <a className="text-cta hero-cta" href="#contact">
-              <span aria-hidden="true">→</span> Start a project
-            </a>
-          </div>
-
-          <div className="hero-capabilities" aria-label="Core capabilities">
-            <a className="capability-panel engineering-panel" href="#engineering">
-              <span className="panel-index">Primary practice</span>
-              <span className="panel-title">AI engineering</span>
-              <span className="panel-detail">Products / Agents / Automation</span>
-              <span className="panel-mark" data-mark="AI" aria-hidden="true" />
-            </a>
-            <a className="capability-panel video-panel" href="#video">
-              <span className="panel-index">Secondary practice</span>
-              <span className="panel-title">AI video production</span>
-              <span className="panel-detail">Avatars / UGC / Ads / Explainers</span>
-              <span className="panel-mark" data-mark="24" aria-hidden="true" />
-            </a>
-            <div className="one-standard">
-              One person. Two capabilities. <strong>One standard.</strong>
-            </div>
-          </div>
-        </section>
-
-        <section id="engineering" className="engineering section-shell" aria-labelledby="engineering-title">
-          <div className="section-heading">
-            <p className="section-context">The main practice</p>
-            <h2 id="engineering-title">
-              Make the model useful.
-              <br />
-              Make the system real.
-            </h2>
-            <p className="section-intro">
-              I design and build applied AI products that connect models to real workflows—clear inputs,
-              reliable APIs, useful interfaces, and behavior a team can actually test.
+            <p className="hero-thesis" data-hero-reveal>
+              I build AI that works. <span>And video that gets watched.</span>
             </p>
+            <div className="hero-actions" data-hero-reveal>
+              <a className="button button-primary" href="#contact">
+                Start a project <span aria-hidden="true">↗</span>
+              </a>
+              <a className="button button-secondary" href="#work">
+                Explore engineering work <span aria-hidden="true">↓</span>
+              </a>
+            </div>
           </div>
 
-          <div className="capability-rail" aria-label="AI engineering capabilities">
-            <span>AI products</span>
-            <span>Agents</span>
-            <span>Automation</span>
-            <span>Integrations</span>
-            <span>Evaluation</span>
-          </div>
-
-          <div className="project-list" aria-label="Selected engineering projects">
-            {engineeringProjects.map((project) => (
-              <article className="project-row" key={project.name}>
-                <div>
-                  <p className="project-type">{project.type}</p>
-                  <h3>{project.name}</h3>
-                </div>
-                <p>{project.description}</p>
-                <div className="project-meta">
-                  <span>{project.stack}</span>
-                  <a href={project.href} target="_blank" rel="noreferrer">
-                    View source <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </article>
-            ))}
+          <div className="hero-practices" aria-label="Professional practices" data-hero-reveal>
+            <div className="practice-field practice-engineering">
+              <span className="field-label">Primary practice</span>
+              <strong>AI engineering</strong>
+              <span>Products / Agents / Automation</span>
+            </div>
+            <div className="practice-field practice-video">
+              <span className="field-label">Supporting practice</span>
+              <strong>AI video</strong>
+              <span>Explainers / Ads / Product stories</span>
+            </div>
+            <div className="hero-proof glass-proof" aria-label="Professional context">
+              <span>Software engineering</span>
+              <span>Applied AI</span>
+              <span>Product systems</span>
+              <span>{profile.location} / Remote</span>
+            </div>
           </div>
         </section>
 
-        <section id="video" className="video section-shell" aria-labelledby="video-title">
-          <div className="video-lead">
-            <p className="section-context">The supporting capability</p>
-            <h2 id="video-title">Turn the idea into something people will watch.</h2>
+        <section className="capabilities section-shell" aria-labelledby="capabilities-title">
+          <div className="section-lead">
+            <p className="eyebrow">Engineering capability index</p>
+            <h2 id="capabilities-title">From model behavior to product behavior.</h2>
             <p>
-              AI video production for teams that need more than a generated clip: a clear message,
-              deliberate pacing, and an asset shaped for where it will actually run.
+              Applied AI is only useful when the surrounding system is clear, testable, and ready for
+              real workflows.
             </p>
           </div>
-
-          <div className="service-list">
-            {videoServices.map(([name, description]) => (
-              <article className="service-row" key={name}>
-                <h3>{name}</h3>
-                <p>{description}</p>
-                <span aria-hidden="true">→</span>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="process" className="process section-shell" aria-labelledby="process-title">
-          <div className="process-heading">
-            <p className="section-context">One working method</p>
-            <h2 id="process-title">Different output. Same standard.</h2>
-          </div>
-          <ol className="process-list">
-            {process.map(([name, description], index) => (
-              <li key={name}>
-                <span className="process-number">{String(index + 1).padStart(2, "0")}</span>
-                <h3>{name}</h3>
-                <p>{description}</p>
+          <ol className="indexed-list capability-index">
+            {capabilityGroups.map((group, index) => (
+              <li key={group.name}>
+                <span className="row-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3>{group.name}</h3>
+                <p>{group.items.join(" · ")}</p>
               </li>
             ))}
           </ol>
         </section>
 
-        <section id="about" className="about section-shell" aria-labelledby="about-title">
-          <div className="about-statement">
-            <p className="section-context">Ahsan Khizar</p>
-            <h2 id="about-title">Technical enough to build it. Creative enough to make it land.</h2>
+        <section id="work" className="work" data-project-stage aria-labelledby="work-title">
+          <div className="work-intro section-shell">
+            <p className="eyebrow">Selected engineering work</p>
+            <h2 id="work-title">Engineering that survives contact with reality.</h2>
+            <p>Four systems. Each grounded in a real technical problem and a concrete contribution.</p>
           </div>
-          <div className="about-copy">
-            <p>
-              I am an AI engineer focused on deployable systems: the model invocation, backend flow,
-              data path, product interface, and review loop that turn an AI idea into useful behavior.
-            </p>
-            <p>
-              AI video is the complementary practice. It gives the same ideas a second form—something a
-              customer, user, or stakeholder can understand quickly and remember.
-            </p>
-          </div>
-          <div className="recognition" aria-label="Selected recognition">
-            <div>
-              <strong>4th position</strong>
-              <span>All Pakistan Prompt Engineering Competition · 2026</span>
-            </div>
-            <div>
-              <strong>Top 20 finalist</strong>
-              <span>Global AI Hackathon · 2026</span>
-            </div>
+          <div className="project-stage" aria-label="Selected engineering projects">
+            {engineeringProjects.map((project, index) => (
+              <article
+                className={`project-panel project-panel-${(index % 3) + 1}`}
+                data-project-panel
+                key={project.name}
+              >
+                <span className="project-number" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="project-content">
+                  <p className="project-category">{project.category}</p>
+                  <h3>{project.name}</h3>
+                  <div className="project-detail">
+                    <div>
+                      <span className="detail-label">System</span>
+                      <p>{project.description}</p>
+                    </div>
+                    <div>
+                      <span className="detail-label">Contribution</span>
+                      <p>{project.contribution}</p>
+                    </div>
+                  </div>
+                  <div className="project-footer">
+                    <p aria-label="Technology stack">{project.stack.join(" · ")}</p>
+                    {project.href ? (
+                      <a href={project.href} target="_blank" rel="noreferrer">
+                        View {project.name} source on GitHub <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section id="contact" className="contact section-shell" aria-labelledby="contact-title">
-          <p className="section-context">Start with the problem</p>
+        <section id="services" className="services section-shell" aria-labelledby="services-title">
+          <div className="section-lead services-lead">
+            <p className="eyebrow">Supporting practice / AI video production</p>
+            <h2 id="services-title">Turn the idea into something people will watch.</h2>
+            <p>
+              Message clarity, platform fit, pacing, and repeatable production—not just a generated clip.
+            </p>
+          </div>
+          <div className="service-rows" data-reveal-group>
+            {videoServices.map((service, index) => (
+              <article key={service.name}>
+                <span className="row-index" aria-hidden="true">
+                  V{String(index + 1).padStart(2, "0")}
+                </span>
+                <h3>{service.name}</h3>
+                <p>{service.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="experience" className="experience section-shell" aria-labelledby="experience-title">
+          <div className="section-lead experience-lead">
+            <p className="eyebrow">Experience and recognition</p>
+            <h2 id="experience-title">Proof from the work.</h2>
+            <a className="text-link" href="/about">
+              Read the full story <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div className="proof-list">
+            {experience.map((item, index) => (
+              <article key={`${item.organization}-${item.role}`}>
+                <span className="row-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3>{item.role}</h3>
+                  <p className="proof-meta">
+                    {item.organization} / {item.period}
+                  </p>
+                </div>
+                <p>{item.summary}</p>
+              </article>
+            ))}
+            {recognition.map((item, index) => (
+              <article className="recognition-row" key={item}>
+                <span className="row-index" aria-hidden="true">
+                  {String(experience.length + index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3>{item}</h3>
+                  <p className="proof-meta">Recognition</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="process" className="process-v2 section-shell" aria-labelledby="process-title">
+          <div className="section-lead process-lead">
+            <p className="eyebrow">Shared working process</p>
+            <h2 id="process-title">One method. Different outputs.</h2>
+          </div>
+          <ol className="process-steps">
+            {process.map((step, index) => (
+              <li key={step.name}>
+                <span className="process-number" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3>{step.name}</h3>
+                <p>{step.description}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          id="about-preview"
+          className="about-preview section-shell"
+          data-portrait-reveal
+          aria-labelledby="about-preview-title"
+        >
+          <figure className="portrait-frame">
+            {/* The task requires the approved, pre-optimized portrait with explicit dimensions. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/ahsan-khizar.png"
+              width={960}
+              height={1131}
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              loading="lazy"
+              decoding="async"
+              alt="Portrait of Ahsan Khizar"
+            />
+            <figcaption className="portrait-caption">
+              <strong>{profile.name}</strong>
+              <span>{profile.location}</span>
+              <span>Applied AI systems</span>
+            </figcaption>
+          </figure>
+          <div className="about-preview-copy">
+            <p className="eyebrow">About Ahsan</p>
+            <h2 id="about-preview-title">
+              Technical enough to build it. Creative enough to make it land.
+            </h2>
+            <p>
+              A final-year Software Engineering student who builds deployable AI systems and
+              complements that work with AI video production.
+            </p>
+            <a className="button button-light" href="/about">
+              About Ahsan <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </section>
+
+        <section id="contact" className="contact-v2 section-shell" aria-labelledby="contact-title">
+          <p className="eyebrow">Project inquiry</p>
           <h2 id="contact-title">Build the system. Create the cut.</h2>
-          <p>
-            Tell me what needs to work, who needs to see it, and what a strong result looks like.
-          </p>
+          <p>Tell me what needs to work, who needs to see it, and what a strong result looks like.</p>
           <div className="contact-actions">
-            <a className="contact-email" href="mailto:ahsankhizar1075@gmail.com?subject=Project%20inquiry">
+            <a
+              className="contact-email"
+              href={`mailto:${profile.email}?subject=Project%20inquiry`}
+            >
               Start a project <span aria-hidden="true">↗</span>
             </a>
-            <CopyEmail email="ahsankhizar1075@gmail.com" />
+            <CopyEmail email={profile.email} />
           </div>
         </section>
       </main>
