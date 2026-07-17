@@ -1380,6 +1380,9 @@ button {
 
   .desktop-nav a {
     position: relative;
+    justify-content: center;
+    min-width: 2.75rem;
+    padding-inline: 0.2rem;
   }
 
   .desktop-nav a::after {
@@ -1713,11 +1716,15 @@ html[data-motion="full"] .operator-frame {
   animation: operator-system-enter 580ms var(--ease-out) 80ms both;
 }
 
-.conversion-home h1,
-.conversion-home h2,
-.conversion-home h3,
 .conversion-home p {
   overflow-wrap: anywhere;
+}
+
+.conversion-home h1,
+.conversion-home h2,
+.conversion-home h3 {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .signal-label {

@@ -12,6 +12,7 @@ const navigation = [
 ] as const;
 
 function anchorHref(activePage: ActivePage, target: string) {
+  if (target === "contact") return "#contact";
   return `${activePage === "home" ? "" : "/"}#${target}`;
 }
 

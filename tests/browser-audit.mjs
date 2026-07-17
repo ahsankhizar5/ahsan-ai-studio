@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { chromium } from "playwright";
 
-const executablePath =
-  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
+const installedEdge = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
+const executablePath = process.env.BROWSER_EXECUTABLE_PATH ??
+  (process.platform === "win32" && existsSync(installedEdge) ? installedEdge : undefined);
 const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
-const browser = await chromium.launch({ executablePath, headless: true });
+const browser = await chromium.launch({ ...(executablePath ? { executablePath } : {}), headless: true });
 await mkdir("artifacts", { recursive: true });
 
 function oklchLuminance(lightness, chroma, hue) {
@@ -58,7 +60,7 @@ assert.ok(
   "white text contrast",
 );
 
-async function audit(name, viewport, { mobile = false } = {}) {
+async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
   const errors = [];
   page.on("console", (message) => {
@@ -73,15 +75,12 @@ async function audit(name, viewport, { mobile = false } = {}) {
       errors.push(`http ${response.status()}: ${response.url()}`);
   });
 
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseUrl}${path === "/" ? "" : path}`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() =>
     document.documentElement.hasAttribute("data-motion"),
   );
   await page.evaluate(() => document.fonts.ready);
-  assert.equal(
-    await page.title(),
-    "Ahsan Khizar — AI Engineer & AI Video Producer",
-  );
+  assert.match(await page.title(), /Ahsan Khizar/);
   assert.equal(await page.locator("main").count(), 1);
   assert.equal(await page.locator("h1").count(), 1);
   assert.equal(
@@ -126,6 +125,16 @@ async function audit(name, viewport, { mobile = false } = {}) {
   );
   assert.ok(geometry.text > 1_000, `${name} content did not render`);
   assert.equal(geometry.unlabeled, 0, `${name} has unlabeled controls`);
+  assert.equal(
+    await page.locator(".header-cta").getAttribute("href"),
+    "#contact",
+    `${name} keeps the desktop inquiry CTA on the current page`,
+  );
+  assert.equal(
+    await page.locator(".mobile-menu-cta").getAttribute("href"),
+    "#contact",
+    `${name} keeps the mobile inquiry CTA on the current page`,
+  );
   await page.keyboard.press("Home");
   await page.keyboard.press("Tab");
   assert.equal(
@@ -255,6 +264,8 @@ await audit("laptop-1024", { width: 1024, height: 768 });
 await audit("tablet-768", { width: 768, height: 1024 });
 await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });
 await audit("mobile-375", { width: 375, height: 812 }, { mobile: true });
+await audit("about-desktop-1440", { width: 1440, height: 1000 }, { path: "/about" });
+await audit("about-mobile-390", { width: 390, height: 844 }, { mobile: true, path: "/about" });
 await auditNoJavaScriptMobile();
 await auditReducedMotion();
 await auditDeferredMotion();

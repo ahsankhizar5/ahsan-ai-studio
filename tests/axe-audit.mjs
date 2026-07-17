@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { chromium } from "playwright";
 
-const executablePath =
-  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
+const installedEdge = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
+const executablePath = process.env.BROWSER_EXECUTABLE_PATH ??
+  (process.platform === "win32" && existsSync(installedEdge) ? installedEdge : undefined);
 const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
-const browser = await chromium.launch({ executablePath, headless: true });
+const browser = await chromium.launch({ ...(executablePath ? { executablePath } : {}), headless: true });
 
 const cases = [
   { name: "home-desktop", path: "/", viewport: { width: 1440, height: 1000 } },
