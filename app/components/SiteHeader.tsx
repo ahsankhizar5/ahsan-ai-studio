@@ -81,7 +81,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
           <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         </div>
         <a className="header-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Start a project
+          Discuss a project
         </a>
         <button
           className="menu-button"
@@ -101,7 +101,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Start a project
+          Discuss a project
         </a>
       </nav>
     </header>

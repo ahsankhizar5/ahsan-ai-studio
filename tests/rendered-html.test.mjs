@@ -23,6 +23,9 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /<title>Ahsan Khizar — AI Engineer &amp; AI Video Producer<\/title>/i);
   assert.match(html, /<h1[^>]*id="hero-title"/i);
   assert.match(html, /I build AI/i);
+  assert.match(html, /AI systems built to ship/i);
+  assert.match(html, /Evidence before promises/i);
+  assert.match(html, /Discuss an AI build/i);
   assert.match(html, /AI engineering/i);
   assert.match(html, /AI video production/i);
   assert.match(html, /Audio Deepfake Detection System/i);
@@ -104,15 +107,20 @@ test("source preserves accessible and responsive contracts", async () => {
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /<main id="main-content" data-motion-page="home">/);
+  assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(page, /aria-labelledby="work-title"/);
   assert.match(page, /aria-labelledby="services-title"/);
+  assert.match(page, /className="operator-frame"/);
+  assert.match(page, /className="engagement-paths"/);
   assert.match(page, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /min-height:\s*2\.75rem/);
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?gap:\s*0\.5rem/);
   assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.match(css, /--signal-red:\s*#ff3347/i);
+  assert.match(css, /--signal-yellow:\s*#e9f400/i);
+  assert.match(css, /--signal-cyan:\s*#00d8d2/i);
   assert.match(css, /@media \(max-width:\s*760px\)/);
   assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
   assert.doesNotMatch(css, /background-clip:\s*text|repeating-linear-gradient|border-radius:\s*(3[2-9]|[4-9]\d)px/i);
