@@ -1,4 +1,5 @@
 import { CopyEmail } from "./components/CopyEmail";
+import { MotionController } from "./components/MotionController";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import {
@@ -120,7 +121,7 @@ export default function Home() {
         </section>
 
         <section id="services" className="engagement-section" aria-labelledby="services-title">
-          <div className="conversion-section-heading">
+          <div className="conversion-section-heading" data-motion-reveal>
             <p className="signal-label">Ways to work together</p>
             <h2 id="services-title">Bring the problem. Leave with something real.</h2>
             <p>
@@ -183,7 +184,7 @@ export default function Home() {
         </section>
 
         <section id="work" className="evidence-stage" data-project-stage aria-labelledby="work-title">
-          <div className="evidence-stage-intro">
+          <div className="evidence-stage-intro" data-motion-reveal>
             <p className="signal-label">Selected engineering evidence</p>
             <h2 id="work-title">Not a tool list. A record of what I built.</h2>
             <p>
@@ -222,7 +223,7 @@ export default function Home() {
         </section>
 
         <section className="video-capability-section" aria-labelledby="video-capability-title">
-          <div className="video-capability-heading">
+          <div className="video-capability-heading" data-motion-reveal>
             <p className="signal-label">AI video, without a second persona</p>
             <h2 id="video-capability-title">When the system needs a story, I can make that too.</h2>
           </div>
@@ -238,12 +239,12 @@ export default function Home() {
         </section>
 
         <section id="experience" className="proof-section" aria-labelledby="experience-title">
-          <div className="conversion-section-heading proof-section-heading">
+          <div className="conversion-section-heading proof-section-heading" data-motion-reveal>
             <p className="signal-label">Experience + recognition</p>
             <h2 id="experience-title">Trust the evidence, not a slogan.</h2>
             <a href="/about">See the full background <span aria-hidden="true">→</span></a>
           </div>
-          <div className="proof-timeline">
+          <div className="proof-timeline" data-reveal-group>
             {experience.map((item) => (
               <article key={`${item.organization}-${item.role}`}>
                 <time>{item.period}</time>
@@ -264,11 +265,11 @@ export default function Home() {
         </section>
 
         <section id="process" className="delivery-process" aria-labelledby="process-title">
-          <div className="conversion-section-heading">
+          <div className="conversion-section-heading" data-motion-reveal>
             <p className="signal-label">Working method</p>
             <h2 id="process-title">A clear path from brief to output.</h2>
           </div>
-          <ol>
+          <ol data-reveal-group>
             {process.map((step, index) => (
               <li key={step.name}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -313,7 +314,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="conversion-contact" aria-labelledby="contact-title">
+        <section id="contact" className="conversion-contact" data-motion-reveal aria-labelledby="contact-title">
           <p className="signal-label">Start with the real brief</p>
           <h2 id="contact-title">What needs to work—and who needs to care?</h2>
           <p>
@@ -326,6 +327,7 @@ export default function Home() {
             <CopyEmail email={profile.email} />
           </div>
         </section>
+        <MotionController page="home" />
       </main>
 
       <SiteFooter />

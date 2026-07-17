@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { CopyEmail } from "../components/CopyEmail";
+import { MotionController } from "../components/MotionController";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
 import {
@@ -113,7 +114,7 @@ export default async function AboutPage() {
             </figcaption>
           </figure>
 
-          <div className="about-hero-copy">
+          <div className="about-hero-copy" data-hero-reveal>
             <p className="eyebrow">About / Ahsan Khizar</p>
             <h1 id="about-title">I build the system around the model.</h1>
             <p className="about-introduction">
@@ -132,7 +133,7 @@ export default async function AboutPage() {
         </section>
 
         <section className="about-philosophy section-shell" aria-labelledby="philosophy-title">
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Working philosophy</p>
             <h2 id="philosophy-title">Useful AI is a systems problem.</h2>
           </div>
@@ -150,7 +151,7 @@ export default async function AboutPage() {
         </section>
 
         <section className="about-profile section-shell" aria-labelledby="profile-title">
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Current profile and education</p>
             <h2 id="profile-title">Software engineering in progress. Applied work now.</h2>
           </div>
@@ -183,11 +184,11 @@ export default async function AboutPage() {
           className="about-experience section-shell"
           aria-labelledby="about-experience-title"
         >
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Experience timeline</p>
             <h2 id="about-experience-title">Three roles. Three working contexts.</h2>
           </div>
-          <ol className="about-timeline">
+          <ol className="about-timeline" data-reveal-group>
             {experience.map((item, index) => (
               <li key={`${item.organization}-${item.role}`}>
                 <span className="timeline-index" aria-hidden="true">
@@ -209,11 +210,11 @@ export default async function AboutPage() {
         </section>
 
         <section className="about-capabilities section-shell" aria-labelledby="technical-title">
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Technical capability index</p>
             <h2 id="technical-title">The working stack, grouped by job.</h2>
           </div>
-          <ol className="indexed-list about-capability-index">
+          <ol className="indexed-list about-capability-index" data-reveal-group>
             {capabilityGroups.map((group, index) => (
               <li key={group.name}>
                 <span className="row-index" aria-hidden="true">
@@ -227,11 +228,11 @@ export default async function AboutPage() {
         </section>
 
         <section className="about-recognition section-shell" aria-labelledby="recognition-title">
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Awards and certifications</p>
             <h2 id="recognition-title">Recognition, earned and documented.</h2>
           </div>
-          <ul className="about-recognition-list">
+          <ul className="about-recognition-list" data-reveal-group>
             {recognitionAndCredentials.map((item, index) => (
               <li key={item}>
                 <span aria-hidden="true">R{String(index + 1).padStart(2, "0")}</span>
@@ -242,11 +243,11 @@ export default async function AboutPage() {
         </section>
 
         <section className="about-principles section-shell" aria-labelledby="principles-title">
-          <div className="about-section-head">
+          <div className="about-section-head" data-motion-reveal>
             <p className="eyebrow">Personal operating principles</p>
             <h2 id="principles-title">Discover. Design. Build. Refine.</h2>
           </div>
-          <ol className="about-principle-list">
+          <ol className="about-principle-list" data-reveal-group>
             {process.map((principle, index) => (
               <li key={principle.name}>
                 <span aria-hidden="true">P{String(index + 1).padStart(2, "0")}</span>
@@ -257,7 +258,7 @@ export default async function AboutPage() {
           </ol>
         </section>
 
-        <section id="contact" className="about-contact contact-v2 section-shell" aria-labelledby="contact-title">
+        <section id="contact" className="about-contact contact-v2 section-shell" data-motion-reveal aria-labelledby="contact-title">
           <p className="eyebrow">Project inquiry</p>
           <h2 id="contact-title">Bring the problem. I will help shape the system.</h2>
           <p>
@@ -271,6 +272,7 @@ export default async function AboutPage() {
             <CopyEmail email={profile.email} />
           </div>
         </section>
+        <MotionController page="about" />
       </main>
 
       <SiteFooter />

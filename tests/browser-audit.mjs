@@ -107,10 +107,31 @@ async function auditNoJavaScriptMobile() {
   await page.close();
 }
 
+async function auditReducedMotion() {
+  for (const path of ["/", "/about"]) {
+    const page = await browser.newPage({
+      viewport: { width: 390, height: 844 },
+      deviceScaleFactor: 1,
+      reducedMotion: "reduce",
+    });
+
+    await page.goto(`http://localhost:3000${path}`, { waitUntil: "networkidle" });
+    assert.equal(await page.locator("html").getAttribute("data-motion"), "reduced");
+    assert.equal(await page.locator(".pin-spacer").count(), 0);
+    const visible = await page.locator("main").evaluate((main) => {
+      const styles = getComputedStyle(main.querySelector("h1"));
+      return styles.opacity === "1" && styles.transform === "none";
+    });
+    assert.equal(visible, true, `${path} keeps primary content visible with reduced motion`);
+    await page.close();
+  }
+}
+
 await audit("desktop-1440", { width: 1440, height: 1000 });
 await audit("laptop-1024", { width: 1024, height: 768 });
 await audit("tablet-768", { width: 768, height: 1024 });
 await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });
 await audit("mobile-375", { width: 375, height: 812 }, { mobile: true });
 await auditNoJavaScriptMobile();
+await auditReducedMotion();
 await browser.close();

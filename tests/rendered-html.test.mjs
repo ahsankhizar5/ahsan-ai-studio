@@ -87,7 +87,7 @@ test("server-renders the factual portrait-led About page", async () => {
     /<img[^>]*src="\/ahsan-khizar\.png"[^>]*width="960"[^>]*height="1131"[^>]*alt="Portrait of Ahsan Khizar"/i,
   );
   assert.match(html, /data-motion-page="about"/i);
-  assert.doesNotMatch(html, /MotionController/i);
+  assert.match(html, /MotionController/i);
 });
 
 test("publishes absolute crawl endpoints", async () => {
@@ -112,6 +112,7 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(page, /aria-labelledby="services-title"/);
   assert.match(page, /className="operator-frame"/);
   assert.match(page, /className="engagement-paths"/);
+  assert.match(page, /<MotionController page="home" \/>/);
   assert.match(page, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);
@@ -148,6 +149,7 @@ test("About source preserves semantic, responsive, and metadata contracts", asyn
   assert.match(about, /sizes="\(max-width: 760px\) 100vw, 42vw"/);
   assert.match(about, /<SiteHeader activePage="about"/);
   assert.match(about, /<SiteFooter \/>/);
+  assert.match(about, /<MotionController page="about" \/>/);
   assert.match(css, /\.about-hero\s*\{/);
   assert.match(css, /\.about-capability-index\s*\{/);
 });
