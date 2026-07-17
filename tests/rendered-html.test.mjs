@@ -38,6 +38,7 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /application\/ld\+json/i);
   assert.match(html, /"@type":"Person"/i);
   assert.match(html, /"@type":"ProfessionalService"/i);
+  assert.doesNotMatch(html, /"provider":\{"@type":"Person"/i);
   assert.match(html, /og:image/i);
   assert.match(html, /\/og\.png/i);
   assert.match(html, /Skip to main content/i);
@@ -72,6 +73,8 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /min-height:\s*2\.75rem/);
+  assert.match(css, /\.mobile-menu\s*\{[\s\S]*?gap:\s*0\.5rem/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
   assert.match(css, /@media \(max-width:\s*760px\)/);
   assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
   assert.doesNotMatch(css, /background-clip:\s*text|repeating-linear-gradient|border-radius:\s*(3[2-9]|[4-9]\d)px/i);

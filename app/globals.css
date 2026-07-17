@@ -199,8 +199,10 @@ button {
   display: flex;
   width: min(19rem, calc(100vw - 1.5rem));
   flex-direction: column;
+  padding: 0.5rem;
   border: 1px solid var(--stage);
   background: var(--white);
+  gap: 0.5rem;
 }
 
 .site-header[data-enhanced="true"] .mobile-menu[data-open="false"] {
@@ -212,7 +214,7 @@ button {
   align-items: center;
   min-height: 2.75rem;
   padding: 0 1rem;
-  border-bottom: 1px solid var(--rule);
+  border: 1px solid var(--rule);
   font-weight: 700;
   text-decoration: none;
 }
@@ -224,7 +226,7 @@ button {
 }
 
 .mobile-menu .mobile-menu-cta {
-  border-bottom: 0;
+  border-color: var(--stage);
   background: var(--cyan);
   font-weight: 800;
 }
@@ -863,7 +865,18 @@ button {
   .indexed-list li,
   .service-rows article,
   .proof-list article {
-    grid-template-columns: 3rem minmax(13rem, 0.7fr) minmax(0, 1.3fr);
+    grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .service-rows article > *,
+  .proof-list article > * {
+    min-width: 0;
+  }
+
+  .service-rows h3,
+  .proof-list h3 {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.15rem, 2vw, 1.8rem);
   }
 
   .indexed-list p,
@@ -1063,7 +1076,7 @@ button {
   .work {
     display: grid;
     align-items: start;
-    grid-template-columns: minmax(20rem, 0.68fr) minmax(0, 1.32fr);
+    grid-template-columns: minmax(24rem, 0.8fr) minmax(0, 1.2fr);
   }
 
   .work-intro {
@@ -1073,10 +1086,13 @@ button {
     min-height: 100svh;
     flex-direction: column;
     justify-content: center;
+    padding-inline: clamp(2rem, 4vw, 5rem);
   }
 
   .work-intro h2 {
-    font-size: clamp(3.2rem, 5vw, 5.5rem);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: clamp(2.55rem, 4vw, 4.75rem);
   }
 
   .project-panel {
@@ -1120,7 +1136,7 @@ button {
   }
 
   .service-rows article {
-    grid-template-columns: 3rem minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .experience-lead .text-link {
@@ -1128,7 +1144,7 @@ button {
   }
 
   .proof-list article {
-    grid-template-columns: 3rem minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .process-v2 {

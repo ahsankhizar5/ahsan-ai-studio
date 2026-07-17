@@ -32,7 +32,6 @@ const structuredData = {
       "@type": "ProfessionalService",
       name: `${profile.name} professional services`,
       email: `mailto:${profile.email}`,
-      provider: { "@type": "Person", name: profile.name },
       areaServed: profile.location,
       sameAs: [profile.links.linkedin, profile.links.github],
     },
