@@ -14,6 +14,15 @@ async function render(path = "/") {
   );
 }
 
+test("ships local responsive hero media", async () => {
+  const [small, large] = await Promise.all([
+    readFile(new URL("../public/hero-system-story-960.webp", import.meta.url)),
+    readFile(new URL("../public/hero-system-story-1728.webp", import.meta.url)),
+  ]);
+  assert.ok(small.byteLength > 40_000);
+  assert.ok(large.byteLength > 100_000);
+});
+
 test("server-renders the complete portfolio", async () => {
   const response = await render();
   assert.equal(response.status, 200);
