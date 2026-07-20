@@ -18,13 +18,13 @@ Present Ahsan Khizar as one serious AI engineer with a complementary AI-video pr
 
 ## Positioning
 
-Ahsan builds AI that works—and produces video that gets watched.
+Ahsan transforms complex AI ideas into powerful products people understand and trust.
 
 ## Conversion & proof
 
 - Primary CTA: Start a project by email.
 - Secondary CTA: Explore engineering work.
-- The line a visitor remembers after 10 seconds: “I build AI that works. And video that gets watched.”
+- The line a visitor remembers after 10 seconds: “I transform complex AI ideas into powerful products people understand and trust.”
 - Belief ladder: one expert; credible engineering depth; a practical product-building process; complementary production capability; one consistent standard across both.
 - Proof on hand: DocuSync, PIGEON Reproduction, Customer Behavior Profiling, Audio Deepfake Detection System, 4th Position in the All Pakistan Prompt Engineering Competition, and Top 20 Finalist in the Global AI Hackathon 2026.
 

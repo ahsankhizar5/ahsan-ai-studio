@@ -37,7 +37,7 @@ Black text is used on optical white, carmine, citrus, cyan, and silver. White-on
 ## Components
 
 - Header: name, compact discipline statement, anchor navigation, project CTA.
-- Hero: name, primary selling line, short positioning copy, two outcome-led CTAs.
+- Hero: one unified product outcome, one accountable operator, short positioning copy, and two outcome-led CTAs.
 - Engineering field: selling headline, capabilities, and real project proof.
 - Video field: selling headline and service formats including avatars, UGC, ads, demos, explainers, localization, and content variations.
 - Process strip: one shared process across both capabilities.

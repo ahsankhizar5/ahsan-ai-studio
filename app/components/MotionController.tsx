@@ -62,8 +62,8 @@ export function MotionController({ page }: { page: "home" | "about" }) {
           const panels = gsap.utils.toArray<HTMLElement>("[data-project-panel]");
           panels.forEach((panel, index) => {
             gsap.from(panel, {
-              y: 32,
-              opacity: 0.18,
+              x: index % 2 === 0 ? -22 : 22,
+              opacity: 0.24,
               duration: 0.46,
               delay: Math.min(index * 0.02, 0.06),
               ease: "power2.out",
@@ -71,6 +71,19 @@ export function MotionController({ page }: { page: "home" | "about" }) {
               scrollTrigger: { trigger: panel, start: "top 82%", once: true },
             });
           });
+
+          const processTrack = document.querySelector<HTMLElement>("[data-process-track]");
+          if (processTrack) {
+            gsap.from(processTrack.children, {
+              y: 20,
+              opacity: 0,
+              duration: 0.38,
+              stagger: 0.05,
+              ease: "power2.out",
+              clearProps: "transform,opacity",
+              scrollTrigger: { trigger: processTrack, start: "top 84%", once: true },
+            });
+          }
         });
       });
 
@@ -80,11 +93,11 @@ export function MotionController({ page }: { page: "home" | "about" }) {
       };
     }
 
-    const motionGate = document.querySelector<HTMLElement>(
-      page === "home" ? "#services" : ".about-philosophy",
+    const motionGates = document.querySelectorAll<HTMLElement>(
+      page === "home" ? "#work, #services" : ".about-philosophy",
     );
 
-    if (motionGate) {
+    if (motionGates.length > 0) {
       observer = new IntersectionObserver(
         (entries) => {
           if (!entries.some((entry) => entry.isIntersecting)) return;
@@ -93,7 +106,7 @@ export function MotionController({ page }: { page: "home" | "about" }) {
         },
         { rootMargin: "0px 0px -10% 0px" },
       );
-      observer.observe(motionGate);
+      motionGates.forEach((gate) => observer?.observe(gate));
     }
 
     return () => {

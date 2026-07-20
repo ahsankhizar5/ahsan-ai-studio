@@ -20,14 +20,15 @@ test("server-renders the complete portfolio", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Ahsan Khizar — AI Engineer &amp; AI Video Producer<\/title>/i);
+  assert.match(html, /<title>Ahsan Khizar — AI Product Engineer<\/title>/i);
   assert.match(html, /<h1[^>]*id="hero-title"/i);
-  assert.match(html, /I build AI/i);
-  assert.match(html, /AI systems built to ship/i);
-  assert.match(html, /Evidence before promises/i);
-  assert.match(html, /Discuss an AI build/i);
-  assert.match(html, /AI engineering/i);
-  assert.match(html, /AI video production/i);
+  assert.match(html, /I transform complex AI ideas/i);
+  assert.match(html, /powerful products people understand and trust/i);
+  assert.match(html, /One connected build/i);
+  assert.match(html, /Selected engineering evidence/i);
+  assert.match(html, /Discuss your AI product/i);
+  assert.match(html, /AI product engineer/i);
+  assert.match(html, /AI video for product communication/i);
   assert.match(html, /Audio Deepfake Detection System/i);
   assert.match(html, /DocuSync/i);
   assert.match(html, /PIGEON Reproduction/i);
@@ -49,7 +50,7 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /id="services"/i);
   assert.match(html, /id="experience"/i);
   assert.match(html, /href="\/about"/i);
-  assert.match(html, /data-project-stage/i);
+  assert.match(html, /data-project-panel/i);
   assert.match(html, /data-motion-page="home"/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -110,8 +111,8 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(page, /aria-labelledby="work-title"/);
   assert.match(page, /aria-labelledby="services-title"/);
-  assert.match(page, /className="operator-frame"/);
-  assert.match(page, /className="engagement-paths"/);
+  assert.match(page, /className="operator-dossier"/);
+  assert.match(page, /className="build-layer-list"/);
   assert.match(page, /<MotionController page="home" \/>/);
   assert.match(page, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
