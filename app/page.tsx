@@ -15,41 +15,9 @@ import {
 
 const proofSignals = [
   "B.E. Software Engineering · UET Taxila",
-  "Applied AI, backend, data, and product engineering",
+  "Software, data, and web engineering experience",
   certifications[0],
   recognition[0],
-] as const;
-
-const featuredProjectNames = [
-  "DocuSync",
-  "PIGEON Reproduction",
-  "Audio Deepfake Detection System",
-  "Customer Behavior Profiling",
-] as const;
-
-const featuredProjects = featuredProjectNames
-  .map((name) => engineeringProjects.find((project) => project.name === name))
-  .filter((project): project is (typeof engineeringProjects)[number] => Boolean(project));
-
-const buildLayers = [
-  {
-    label: "Product core",
-    title: "Engineer the intelligence",
-    description: "Models, data flows, APIs, agents, evaluation, and the automation around them.",
-    detail: technicalCapabilities.aiMl.slice(0, 6).join(" · "),
-  },
-  {
-    label: "Product experience",
-    title: "Make it usable",
-    description: "Interfaces and backend systems shaped around the people and workflows that depend on them.",
-    detail: technicalCapabilities.backendProduct.slice(0, 6).join(" · "),
-  },
-  {
-    label: "Communication layer",
-    title: "Make the value clear",
-    description: "Product demos and AI-assisted video that help an audience understand what the product changes.",
-    detail: videoServices.slice(0, 4).map((service) => service.name).join(" · "),
-  },
 ] as const;
 
 const structuredData = {
@@ -59,13 +27,12 @@ const structuredData = {
       "@type": "Person",
       name: profile.name,
       email: `mailto:${profile.email}`,
-      jobTitle: "AI Product Engineer",
       address: { "@type": "PostalAddress", addressCountry: profile.location },
       sameAs: [profile.links.linkedin, profile.links.github],
     },
     {
       "@type": "ProfessionalService",
-      name: `${profile.name} · AI product engineering`,
+      name: `${profile.name} professional services`,
       email: `mailto:${profile.email}`,
       areaServed: profile.location,
       sameAs: [profile.links.linkedin, profile.links.github],
@@ -81,132 +48,72 @@ export default function Home() {
       </a>
       <SiteHeader activePage="home" />
 
-      <main id="main-content" className="proof-home" data-motion-page="home">
-        <section className="proof-hero" aria-labelledby="hero-title">
-          <div className="proof-hero-copy">
-            <p className="hero-identity" data-hero-reveal>
-              <strong>Ahsan Khizar</strong>
-              <span>Independent AI product engineer</span>
+      <main id="main-content" className="conversion-home" data-motion-page="home">
+        <section className="conversion-hero" aria-labelledby="hero-title">
+          <div className="conversion-hero-copy">
+            <p className="signal-label" data-hero-reveal>
+              Ahsan Khizar · AI engineer + AI video producer
             </p>
             <h1 id="hero-title" data-hero-reveal>
-              I transform complex AI ideas into <span>powerful products people understand and trust.</span>
+              I transform complex AI ideas into{" "}
+              <span>powerful products people understand and trust.</span>
             </h1>
-            <p className="proof-hero-support" data-hero-reveal>
-              From the system behind the product to the demos and launch content that explain it, I lead the
-              work as one connected build.
+            <p className="conversion-hero-support" data-hero-reveal>
+              From the system behind the product to the demos and launch content that explain it, I lead
+              the work as one connected build.
             </p>
-            <div className="proof-hero-actions" data-hero-reveal>
+            <div className="conversion-actions" data-hero-reveal>
               <a
-                className="proof-button proof-button-primary"
-                href={`mailto:${profile.email}?subject=AI%20product%20project`}
+                className="conversion-button conversion-button-primary"
+                href={`mailto:${profile.email}?subject=AI%20engineering%20project`}
               >
-                Discuss your AI product <span aria-hidden="true">↗</span>
+                Discuss an AI build <span aria-hidden="true">↗</span>
               </a>
-              <a className="proof-button proof-button-secondary" href="#work">
-                See the work <span aria-hidden="true">↓</span>
+              <a className="conversion-button conversion-button-secondary" href="#work">
+                See selected work <span aria-hidden="true">↓</span>
               </a>
             </div>
-            <dl className="hero-proof-index" data-hero-reveal>
-              <div>
-                <dt>Build</dt>
-                <dd>Products · agents · automation</dd>
-              </div>
-              <div>
-                <dt>Explain</dt>
-                <dd>Demos · explainers · launch creative</dd>
-              </div>
-              <div>
-                <dt>Standard</dt>
-                <dd>One operator · one connected outcome</dd>
-              </div>
-            </dl>
+            <a className="video-brief-link" href="#services">
+              Have a video brief instead? Explore the production offer <span aria-hidden="true">→</span>
+            </a>
           </div>
 
-          <aside className="operator-dossier" aria-label="Ahsan Khizar operator profile">
-            <div className="dossier-portrait">
+          <div className="operator-frame" aria-label="Ahsan Khizar, one operator with two capabilities">
+            <div className="operator-portrait">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/ahsan-khizar.webp"
                 width={960}
                 height={1131}
-                sizes="(max-width: 767px) 100vw, 38vw"
+                sizes="(max-width: 760px) 92vw, 42vw"
                 fetchPriority="high"
-                decoding="async"
                 alt="Portrait of Ahsan Khizar"
               />
-              <p className="dossier-stamp">Operator dossier · AK / 01</p>
-            </div>
-            <div className="dossier-data">
-              <div className="dossier-heading">
-                <span>One accountable operator</span>
-                <span className="dossier-status">Available for selected projects</span>
+              <div className="operator-status glass-proof">
+                <span>One operator</span>
+                <strong>Two capabilities</strong>
+                <small>{profile.location} · Remote</small>
               </div>
-              <dl>
-                <div>
-                  <dt>Role</dt>
-                  <dd>AI product engineer</dd>
-                </div>
-                <div>
-                  <dt>Focus</dt>
-                  <dd>Products, agents, automation</dd>
-                </div>
-                <div>
-                  <dt>Added edge</dt>
-                  <dd>AI video for product communication</dd>
-                </div>
-                <div>
-                  <dt>Base</dt>
-                  <dd>{profile.location} · Remote</dd>
-                </div>
-              </dl>
             </div>
-          </aside>
-        </section>
-
-        <section id="work" className="case-stage" aria-labelledby="work-title">
-          <header className="case-stage-heading" data-motion-reveal>
-            <p>Selected engineering evidence</p>
-            <h2 id="work-title">Work that makes the claim believable.</h2>
-            <span>Real systems, concrete contributions, no invented outcomes.</span>
-          </header>
-
-          <div className="case-ledger">
-            {featuredProjects.map((project, index) => (
-              <article className="case-entry" data-project-panel key={project.name}>
-                <div className="case-entry-index">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <small>{project.category}</small>
-                </div>
-                <div className="case-entry-title">
-                  <h3>{project.name}</h3>
-                  <p>{project.description}</p>
-                </div>
-                <div className="case-system-flow" aria-label={`${project.name} implementation stack`}>
-                  {project.stack.slice(0, 4).map((item, stackIndex) => (
-                    <span key={item}>
-                      {item}
-                      {stackIndex < Math.min(project.stack.length, 4) - 1 ? <b aria-hidden="true">→</b> : null}
-                    </span>
-                  ))}
-                </div>
-                <div className="case-entry-contribution">
-                  <strong>My contribution</strong>
-                  <p>{project.contribution}</p>
-                  {project.href ? (
-                    <a href={project.href} target="_blank" rel="noreferrer">
-                      View project source <span aria-hidden="true">↗</span>
-                    </a>
-                  ) : (
-                    <span>Project summary available on request</span>
-                  )}
-                </div>
-              </article>
-            ))}
+            <div className="output-rail output-rail-engineering">
+              <span aria-hidden="true">01</span>
+              <div>
+                <strong>Engineered systems</strong>
+                <small>Products · Agents · Automation · Applied ML</small>
+              </div>
+            </div>
+            <div className="output-rail output-rail-video">
+              <span aria-hidden="true">02</span>
+              <div>
+                <strong>Produced stories</strong>
+                <small>Explainers · UGC · Ads · Product demos</small>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="credential-strip" aria-label="Selected credentials">
-          <strong>Signals behind the work</strong>
+        <section className="credibility-rail" aria-label="Selected credentials">
+          <p>Evidence before promises</p>
           <ul>
             {proofSignals.map((signal) => (
               <li key={signal}>{signal}</li>
@@ -214,39 +121,117 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="services" className="connected-practice" aria-labelledby="services-title">
-          <div className="connected-practice-heading" data-motion-reveal>
-            <h2 id="services-title">One build, from intelligence to clarity.</h2>
+        <section id="services" className="engagement-section" aria-labelledby="services-title">
+          <div className="conversion-section-heading" data-motion-reveal>
+            <p className="signal-label">Ways to work together</p>
+            <h2 id="services-title">Bring the problem. Leave with something real.</h2>
             <p>
-              You do not need to coordinate an engineer, a product translator, and a video producer. I
-              connect those decisions so the product and the story strengthen each other.
+              Choose the track that matches the job. Both are led by the same person and the same
+              standard: clear thinking, purposeful execution, and a usable final output.
             </p>
           </div>
 
-          <ol className="build-layer-list" data-reveal-group>
-            {buildLayers.map((layer, index) => (
-              <li key={layer.label} className={index === 2 ? "communication-layer" : undefined}>
-                <span>{layer.label}</span>
-                <h3>{layer.title}</h3>
-                <p>{layer.description}</p>
-                <small>{layer.detail}</small>
-              </li>
-            ))}
-          </ol>
+          <div className="engagement-paths" data-reveal-group>
+            <article className="engagement-path engineering-path">
+              <div className="path-heading">
+                <span>Primary practice</span>
+                <h3>AI engineering</h3>
+                <p>For a product, workflow, or model behavior that needs to work beyond a demo.</p>
+              </div>
+              <dl>
+                <div>
+                  <dt>Useful for</dt>
+                  <dd>AI products, agents, backend automation, applied ML systems</dd>
+                </div>
+                <div>
+                  <dt>Working depth</dt>
+                  <dd>{technicalCapabilities.backendProduct.slice(0, 6).join(" · ")}</dd>
+                </div>
+                <div>
+                  <dt>Start with</dt>
+                  <dd>The workflow, users, constraints, and what must be dependable</dd>
+                </div>
+              </dl>
+              <a href={`mailto:${profile.email}?subject=AI%20engineering%20project`}>
+                Brief an AI build <span aria-hidden="true">↗</span>
+              </a>
+            </article>
+
+            <article className="engagement-path video-path">
+              <div className="path-heading">
+                <span>Supporting practice</span>
+                <h3>AI video production</h3>
+                <p>For a product, campaign, or message that needs to become clear on screen.</p>
+              </div>
+              <dl>
+                <div>
+                  <dt>Useful for</dt>
+                  <dd>{videoServices.slice(0, 4).map((service) => service.name).join(" · ")}</dd>
+                </div>
+                <div>
+                  <dt>Production focus</dt>
+                  <dd>Message, hook, pacing, voice, edit, format, and variation</dd>
+                </div>
+                <div>
+                  <dt>Start with</dt>
+                  <dd>The audience, offer, platform, reference, and required deliverables</dd>
+                </div>
+              </dl>
+              <a href={`mailto:${profile.email}?subject=AI%20video%20brief`}>
+                Send a video brief <span aria-hidden="true">↗</span>
+              </a>
+            </article>
+          </div>
         </section>
 
-        <section className="screen-story" aria-labelledby="video-title">
-          <div className="screen-story-copy" data-motion-reveal>
-            <p>Supporting production capability</p>
-            <h2 id="video-title">When the product needs a clear story, the same build continues on screen.</h2>
-            <span>
-              Avatar-led demonstrations, UGC creative, ads, explainers, localization, and variations—made
-              to clarify the value of the product, not compete with it.
-            </span>
+        <section id="work" className="evidence-stage" data-project-stage aria-labelledby="work-title">
+          <div className="evidence-stage-intro" data-motion-reveal>
+            <p className="signal-label">Selected engineering evidence</p>
+            <h2 id="work-title">Not a tool list. A record of what I built.</h2>
+            <p>
+              Each case shows the system, the contribution, and the implementation depth behind it.
+            </p>
           </div>
-          <div className="screen-story-formats" data-reveal-group>
-            {videoServices.map((service) => (
+
+          <div className="evidence-list">
+            {engineeringProjects.map((project, index) => (
+              <article className="evidence-case" data-project-panel key={project.name}>
+                <div className="evidence-case-index">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <small>{project.category}</small>
+                </div>
+                <div className="evidence-case-main">
+                  <h3>{project.name}</h3>
+                  <p>{project.description}</p>
+                </div>
+                <div className="evidence-case-contribution">
+                  <span>My contribution</span>
+                  <p>{project.contribution}</p>
+                </div>
+                <div className="evidence-case-footer">
+                  <p>{project.stack.join(" · ")}</p>
+                  {project.href ? (
+                    <a href={project.href} target="_blank" rel="noreferrer">
+                      View {project.name} source <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    <span>Project summary available</span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="video-capability-section" aria-labelledby="video-capability-title">
+          <div className="video-capability-heading" data-motion-reveal>
+            <p className="signal-label">AI video, without a second persona</p>
+            <h2 id="video-capability-title">When the system needs a story, I can make that too.</h2>
+          </div>
+          <div className="video-capability-list" data-reveal-group>
+            {videoServices.map((service, index) => (
               <article key={service.name}>
+                <span>V{String(index + 1).padStart(2, "0")}</span>
                 <h3>{service.name}</h3>
                 <p>{service.description}</p>
               </article>
@@ -254,24 +239,25 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="experience" className="trust-record" aria-labelledby="experience-title">
-          <header data-motion-reveal>
-            <h2 id="experience-title">Experience across software, data, and delivery.</h2>
-            <a href="/about">Read the full background <span aria-hidden="true">→</span></a>
-          </header>
-          <div className="trust-timeline" data-reveal-group>
+        <section id="experience" className="proof-section" aria-labelledby="experience-title">
+          <div className="conversion-section-heading proof-section-heading" data-motion-reveal>
+            <p className="signal-label">Experience + recognition</p>
+            <h2 id="experience-title">Trust the evidence, not a slogan.</h2>
+            <a href="/about">See the full background <span aria-hidden="true">→</span></a>
+          </div>
+          <div className="proof-timeline" data-reveal-group>
             {experience.map((item) => (
               <article key={`${item.organization}-${item.role}`}>
                 <time>{item.period}</time>
                 <div>
                   <h3>{item.role}</h3>
-                  <strong>{item.organization} · {item.location}</strong>
+                  <p className="proof-organization">{item.organization} · {item.location}</p>
                   <p>{item.summary}</p>
                 </div>
               </article>
             ))}
             {recognition.map((item) => (
-              <article className="recognition-row" key={item}>
+              <article className="proof-recognition" key={item}>
                 <span>Recognition</span>
                 <div><h3>{item}</h3></div>
               </article>
@@ -279,12 +265,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="process" className="build-process" aria-labelledby="process-title">
-          <header data-motion-reveal>
-            <h2 id="process-title">A direct path from problem to proof.</h2>
-            <p>One shared working method keeps the engineering and communication decisions aligned.</p>
-          </header>
-          <ol data-process-track>
+        <section id="process" className="delivery-process" aria-labelledby="process-title">
+          <div className="conversion-section-heading" data-motion-reveal>
+            <p className="signal-label">Working method</p>
+            <h2 id="process-title">A clear path from brief to output.</h2>
+          </div>
+          <ol data-reveal-group>
             {process.map((step, index) => (
               <li key={step.name}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -295,41 +281,53 @@ export default function Home() {
           </ol>
         </section>
 
-        <section className="operator-about" aria-labelledby="about-preview-title">
-          <div className="operator-about-statement" data-motion-reveal>
-            <h2 id="about-preview-title">The person behind the system.</h2>
-            <p>
-              I am a final-year Software Engineering student focused on turning AI capabilities into
-              products that fit real workflows. My work spans the model, backend, automation, product
-              surface, and the communication needed to make the result understood.
-            </p>
-            <a href="/about">Meet Ahsan <span aria-hidden="true">→</span></a>
+        <section
+          id="about-preview"
+          className="about-conversion"
+          data-portrait-reveal
+          aria-labelledby="about-preview-title"
+        >
+          <div className="about-conversion-portrait">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/ahsan-khizar.webp"
+              width={960}
+              height={1131}
+              sizes="(max-width: 760px) 36vw, 18vw"
+              loading="lazy"
+              decoding="async"
+              alt="Ahsan Khizar"
+            />
           </div>
-          <dl className="operator-about-facts">
-            <div><dt>Education</dt><dd>Software Engineering · UET Taxila</dd></div>
-            <div><dt>Working range</dt><dd>AI · backend · data · web · video</dd></div>
-            <div><dt>Recognition</dt><dd>{recognition.length} national and global competition signals</dd></div>
-            <div><dt>Collaboration</dt><dd>Remote · project-based</dd></div>
-          </dl>
+          <div className="about-conversion-copy">
+            <p className="signal-label">The person behind both outputs</p>
+            <h2 id="about-preview-title">Technical enough to build it. Creative enough to make it land.</h2>
+            <p>
+              I am a final-year Software Engineering student building applied AI systems across model,
+              backend, automation, and product layers—with AI video as a focused production capability.
+            </p>
+            <a href="/about">Read my full story <span aria-hidden="true">→</span></a>
+          </div>
+          <div className="about-conversion-facts">
+            <span>UET Taxila</span>
+            <span>{experience.length} professional internships</span>
+            <span>{certifications.length} certifications and scholarship signals</span>
+          </div>
         </section>
 
-        <section id="contact" className="proof-contact" aria-labelledby="contact-title">
-          <div data-motion-reveal>
-            <p>Start with the real problem</p>
-            <h2 id="contact-title">What should your AI product make possible?</h2>
-            <span>
-              Send the workflow, audience, constraints, and desired outcome. I will reply with the right
-              starting point.
-            </span>
-          </div>
-          <div className="proof-contact-actions">
-            <a href={`mailto:${profile.email}?subject=AI%20product%20project`}>
-              Discuss your AI product <span aria-hidden="true">↗</span>
+        <section id="contact" className="conversion-contact" data-motion-reveal aria-labelledby="contact-title">
+          <p className="signal-label">Start with the real brief</p>
+          <h2 id="contact-title">What needs to work—and who needs to care?</h2>
+          <p>
+            Send the problem, audience, constraints, and desired output. I will reply from there.
+          </p>
+          <div className="conversion-contact-actions">
+            <a href={`mailto:${profile.email}?subject=Project%20inquiry`}>
+              Discuss a project <span aria-hidden="true">↗</span>
             </a>
             <CopyEmail email={profile.email} />
           </div>
         </section>
-
         <MotionController page="home" />
       </main>
 

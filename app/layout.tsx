@@ -11,9 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase,
-    title: "Ahsan Khizar — AI Product Engineer",
+    title: "Ahsan Khizar — AI Engineer & AI Video Producer",
     description:
-      "Ahsan Khizar transforms complex AI ideas into products people understand and trust, from engineering through product communication.",
+      "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust.",
     alternates: { canonical: "/" },
     applicationName: "Ahsan Khizar",
     authors: [{ name: "Ahsan Khizar" }],
@@ -31,23 +31,23 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: "/",
-      title: "Ahsan Khizar — AI products people understand and trust",
-      description: "One connected build from AI system to clear product story.",
+      title: "Ahsan Khizar — AI ideas transformed into trusted products",
+      description: "From the system behind the product to the content that explains it: one connected build.",
       siteName: "Ahsan Khizar",
       locale: "en_US",
       images: [
         {
           url: "/og.png",
-          width: 1729,
-          height: 910,
-          alt: "Ahsan Khizar — AI Product Engineer",
+          width: 1200,
+          height: 630,
+          alt: "Ahsan Khizar — AI Engineer and AI Video Producer",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Ahsan Khizar — AI products people understand and trust",
-      description: "One connected build from AI system to clear product story.",
+      title: "Ahsan Khizar — AI ideas transformed into trusted products",
+      description: "From the system behind the product to the content that explains it: one connected build.",
       images: ["/og.png"],
     },
     icons: {

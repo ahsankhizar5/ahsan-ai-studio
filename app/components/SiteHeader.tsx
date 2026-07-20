@@ -6,7 +6,7 @@ type ActivePage = "home" | "about";
 
 const navigation = [
   { label: "Work", target: "work" },
-  { label: "Capabilities", target: "services" },
+  { label: "Services", target: "services" },
   { label: "Experience", target: "experience" },
   { label: "Process", target: "process" },
 ] as const;
@@ -82,7 +82,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
           <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         </div>
         <a className="header-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Discuss your AI product
+          Discuss a project
         </a>
         <button
           className="menu-button"
@@ -102,7 +102,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Discuss your AI product
+          Discuss a project
         </a>
       </nav>
     </header>

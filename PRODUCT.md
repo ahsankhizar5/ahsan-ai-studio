@@ -18,7 +18,7 @@ Present Ahsan Khizar as one serious AI engineer with a complementary AI-video pr
 
 ## Positioning
 
-Ahsan transforms complex AI ideas into powerful products people understand and trust.
+Ahsan transforms complex AI ideas into powerful products people understand and trust. He leads the system, demos, and launch content as one connected build.
 
 ## Conversion & proof
 
