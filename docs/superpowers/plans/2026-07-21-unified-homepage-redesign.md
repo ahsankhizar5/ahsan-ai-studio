@@ -94,7 +94,8 @@ Run with the bundled workspace Python runtime:
 ```powershell
 $python = 'C:\Users\ahsan\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
 $source = 'C:\Users\ahsan\.codex\generated_images\019f6cb3-5d94-7b32-b2eb-309ecdb94e68\exec-9f91b49b-33d2-4d57-b5ee-348a7de7b1f0.png'
-& $python -c "from PIL import Image; from pathlib import Path; src=Image.open(r'$source').convert('RGB'); root=Path(r'C:\Users\ahsan\Downloads\Profile\Ahsan-AI-Studio\public'); [(src.resize((w, round(src.height*w/src.width)), Image.Resampling.LANCZOS).save(root/f'hero-system-story-{w}.webp','WEBP',quality=86,method=6)) for w in (960,1728)]"
+$root = (Resolve-Path 'public').Path
+& $python -c "from PIL import Image; from pathlib import Path; src=Image.open(r'$source').convert('RGB'); root=Path(r'$root'); [(src.resize((w, round(src.height*w/src.width)), Image.Resampling.LANCZOS).save(root/f'hero-system-story-{w}.webp','WEBP',quality=86,method=6)) for w in (960,1728)]"
 ```
 
 Verify:
