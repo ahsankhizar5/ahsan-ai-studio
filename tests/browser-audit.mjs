@@ -192,10 +192,45 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
       .getByRole("navigation", { name: "Mobile navigation" })
       .getByRole("link")
       .first();
+    const lastMenuLink = page
+      .getByRole("navigation", { name: "Mobile navigation" })
+      .getByRole("link")
+      .last();
     await page.waitForFunction(
       (link) => document.activeElement === link,
       await firstMenuLink.elementHandle(),
     );
+
+    await lastMenuLink.focus();
+    await page.keyboard.press("Tab");
+    assert.equal(
+      await menu.evaluate((button) => document.activeElement === button),
+      true,
+      `${name} wraps forward focus from the last menu control to the trigger`,
+    );
+    assert.equal(
+      await page.locator(".site-header").evaluate(
+        (header) => header.dataset.menuOpen === "true" && header.contains(document.activeElement),
+      ),
+      true,
+      `${name} keeps forward focus inside the open menu`,
+    );
+
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(
+      await lastMenuLink.evaluate((link) => document.activeElement === link),
+      true,
+      `${name} wraps reverse focus from the trigger to the last menu control`,
+    );
+    assert.equal(
+      await page.locator(".site-header").evaluate(
+        (header) => header.dataset.menuOpen === "true" && header.contains(document.activeElement),
+      ),
+      true,
+      `${name} keeps reverse focus inside the open menu`,
+    );
+
+    await firstMenuLink.focus();
     await page.keyboard.press("Escape");
     assert.equal(await menu.getAttribute("aria-label"), "Open menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "false");

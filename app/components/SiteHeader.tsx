@@ -77,10 +77,47 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
 
   useEffect(() => {
     if (menuOpen) {
+      function getFocusTargets() {
+        const trigger = menuButtonRef.current;
+        const menuLinks = mobileMenuRef.current
+          ? Array.from(mobileMenuRef.current.querySelectorAll<HTMLAnchorElement>("a[href]"))
+              .filter((link) => link.getClientRects().length > 0)
+          : [];
+
+        return trigger && trigger.getClientRects().length > 0
+          ? [trigger, ...menuLinks]
+          : menuLinks;
+      }
+
+      function handleFocusContainment(event: KeyboardEvent) {
+        if (event.key !== "Tab") return;
+
+        const focusTargets = getFocusTargets();
+        if (focusTargets.length === 0) return;
+
+        const firstTarget = focusTargets[0];
+        const lastTarget = focusTargets.at(-1);
+        const activeTarget = document.activeElement;
+        const focusIsContained = focusTargets.some((target) => target === activeTarget);
+
+        if (event.shiftKey && (!focusIsContained || activeTarget === firstTarget)) {
+          event.preventDefault();
+          lastTarget?.focus();
+        } else if (!event.shiftKey && (!focusIsContained || activeTarget === lastTarget)) {
+          event.preventDefault();
+          firstTarget?.focus();
+        }
+      }
+
       const focusFrame = window.requestAnimationFrame(() => {
         mobileMenuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
       });
-      return () => window.cancelAnimationFrame(focusFrame);
+      document.addEventListener("keydown", handleFocusContainment);
+
+      return () => {
+        window.cancelAnimationFrame(focusFrame);
+        document.removeEventListener("keydown", handleFocusContainment);
+      };
     }
 
     if (restoreTriggerFocus.current) {
