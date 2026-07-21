@@ -126,28 +126,91 @@ button {
 .site-header {
   position: fixed;
   z-index: var(--z-nav);
-  inset: max(0.75rem, env(safe-area-inset-top)) 0.75rem auto;
+  inset: max(1rem, env(safe-area-inset-top)) var(--page-gutter) auto;
   display: flex;
   align-items: center;
-  min-height: 3.5rem;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--stage);
-  background: var(--white);
-  transition: border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+  justify-content: space-between;
+  min-height: 3.875rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid oklch(0.98 0 0 / 0.22);
+  border-radius: 0.875rem;
+  background: oklch(0.06 0 0 / 0.58);
+  color: var(--white);
+  backdrop-filter: blur(18px);
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
 }
 
-.site-header.is-scrolled {
+.site-header.is-scrolled,
+body:has([data-motion-page="about"]) .site-header {
   border-color: var(--stage);
+  background: var(--white);
+  color: var(--stage);
+  backdrop-filter: none;
 }
 
-.wordmark {
+.brand-lockup {
   display: inline-flex;
   align-items: center;
+  gap: 0.75rem;
   min-height: 2.75rem;
-  font-family: var(--font-display), sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.03em;
   text-decoration: none;
+}
+
+.brand-lockup > span:last-child {
+  display: grid;
+  line-height: 1.05;
+}
+
+.brand-lockup strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.brand-lockup small {
+  margin-top: 0.2rem;
+  font-size: 0.625rem;
+  font-weight: 650;
+  opacity: 0.68;
+}
+
+.ak-mark-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--stage);
+}
+
+.ak-mark-shape {
+  position: relative;
+  width: 1.65rem;
+  height: 1.35rem;
+}
+
+.ak-mark-shape::before,
+.ak-mark-shape::after {
+  position: absolute;
+  bottom: 0;
+  background: currentColor;
+  content: "";
+}
+
+.ak-mark-shape::before {
+  left: 0;
+  width: 1.15rem;
+  height: 1.35rem;
+  clip-path: polygon(0 100%, 34% 18%, 53% 0, 100% 0, 59% 100%);
+}
+
+.ak-mark-shape::after {
+  right: 0;
+  width: 0.82rem;
+  height: 1.05rem;
+  clip-path: polygon(45% 0, 70% 7%, 100% 100%, 0 100%, 22% 32%);
 }
 
 .site-navigation {
@@ -169,16 +232,30 @@ button {
   text-decoration: none;
 }
 
+.header-cta {
+  color: var(--stage);
+}
+
 .menu-button {
   display: none;
   justify-content: center;
-  min-width: 6.5rem;
-  padding: 0 1rem;
-  border: 1px solid var(--stage);
+  flex-direction: column;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0;
+  border: 1px solid currentColor;
   background: transparent;
+  color: inherit;
   cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 800;
+  gap: 0.35rem;
+}
+
+.menu-button span {
+  display: block;
+  width: 1.05rem;
+  height: 2px;
+  background: currentColor;
+  transition: transform 180ms var(--ease-out);
 }
 
 .site-header[data-enhanced="true"] .menu-button {
@@ -187,8 +264,24 @@ button {
 
 .menu-button:hover,
 .menu-button[aria-expanded="true"] {
+  background: var(--white);
+  color: var(--stage);
+}
+
+.site-header.is-scrolled .menu-button:hover,
+.site-header.is-scrolled .menu-button[aria-expanded="true"],
+body:has([data-motion-page="about"]) .menu-button:hover,
+body:has([data-motion-page="about"]) .menu-button[aria-expanded="true"] {
   background: var(--stage);
   color: var(--white);
+}
+
+.menu-button[aria-expanded="true"] span:first-child {
+  transform: translateY(0.25rem) rotate(45deg);
+}
+
+.menu-button[aria-expanded="true"] span:last-child {
+  transform: translateY(-0.25rem) rotate(-45deg);
 }
 
 .mobile-menu {
@@ -202,6 +295,7 @@ button {
   padding: 0.5rem;
   border: 1px solid var(--stage);
   background: var(--white);
+  color: var(--stage);
   gap: 0.5rem;
 }
 
@@ -229,14 +323,6 @@ button {
   border-color: var(--stage);
   background: var(--cyan);
   font-weight: 800;
-}
-
-@supports (backdrop-filter: blur(12px)) {
-  .site-header,
-  .mobile-menu {
-    background: var(--glass-light);
-    backdrop-filter: blur(14px) saturate(1.12);
-  }
 }
 
 .section-shell {
@@ -1239,11 +1325,6 @@ button {
 }
 
 @media (min-width: 768px) {
-  .site-header {
-    inset-inline: clamp(1rem, 3vw, 2.5rem);
-    padding-inline: clamp(0.75rem, 2vw, 1.5rem);
-  }
-
   .hero-actions,
   .contact-actions {
     flex-direction: row;
@@ -1363,10 +1444,6 @@ button {
 }
 
 @media (min-width: 1024px) {
-  .site-header {
-    min-height: 3.75rem;
-  }
-
   .desktop-nav,
   .header-cta {
     display: flex;
@@ -1391,7 +1468,7 @@ button {
     bottom: 0.35rem;
     left: 0;
     height: 2px;
-    background: var(--stage);
+    background: currentColor;
     content: "";
     transform: scaleX(0);
     transform-origin: right;
@@ -1623,10 +1700,6 @@ button {
 }
 
 @media (max-width: 760px) {
-  .site-header {
-    min-height: 3.5rem;
-  }
-
   .portrait-caption {
     grid-template-columns: 1fr;
   }
@@ -1734,70 +1807,6 @@ html[data-motion="full"] .operator-frame {
   letter-spacing: 0.12em;
   line-height: 1.35;
   text-transform: uppercase;
-}
-
-.site-header {
-  inset: max(0.9rem, env(safe-area-inset-top)) clamp(0.9rem, 2vw, 2rem) auto;
-  min-height: 4rem;
-  padding: 0.35rem 0.45rem 0.35rem clamp(1rem, 2vw, 1.4rem);
-  border-color: rgb(7 7 7 / 16%);
-  border-radius: 1rem;
-  background: rgb(247 247 244 / 88%);
-  box-shadow: 0 0.75rem 2.5rem rgb(7 7 7 / 7%);
-}
-
-.site-header.is-scrolled {
-  border-color: rgb(7 7 7 / 28%);
-}
-
-.wordmark {
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.82rem;
-  font-weight: 850;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
-}
-
-.desktop-nav {
-  color: rgb(7 7 7 / 68%);
-}
-
-.desktop-nav a:hover,
-.desktop-nav a:focus-visible,
-.desktop-nav a[aria-current="page"] {
-  color: var(--ink);
-}
-
-.desktop-nav a::after {
-  background: var(--signal-red);
-}
-
-.header-cta {
-  min-height: 3rem;
-  border-radius: 0.7rem;
-  background: var(--signal-red);
-  color: var(--ink);
-}
-
-.header-cta:hover,
-.header-cta:focus-visible {
-  background: var(--ink);
-  color: var(--surface);
-}
-
-.mobile-menu {
-  border-color: rgb(7 7 7 / 20%);
-  border-radius: 1rem;
-  background: rgb(247 247 244 / 94%);
-  box-shadow: 0 1.5rem 4rem rgb(7 7 7 / 14%);
-}
-
-.mobile-menu a {
-  border-radius: 0.55rem;
-}
-
-.mobile-menu .mobile-menu-cta {
-  background: var(--signal-red);
 }
 
 .conversion-hero {
@@ -2688,10 +2697,6 @@ html[data-motion="full"] .operator-frame {
 }
 
 @media (min-width: 1024px) {
-  .site-header {
-    padding-right: 0.45rem;
-  }
-
   .conversion-hero {
     grid-template-columns: minmax(0, 1.15fr) minmax(27rem, 0.85fr);
   }

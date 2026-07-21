@@ -111,12 +111,18 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout] = await Promise.all([
+  const [page, css, layout, header] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
   ]);
 
+  assert.match(page, /<SiteHeader activePage="home"/);
+  assert.match(header, /<AkMark \/>/);
+  assert.match(header, /AI product engineer/);
+  assert.match(header, /Start a project/);
+  assert.match(header, /aria-label=\{menuOpen \? "Close menu" : "Open menu"\}/);
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(page, /aria-labelledby="work-title"/);
   assert.match(page, /aria-labelledby="services-title"/);

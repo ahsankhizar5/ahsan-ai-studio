@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AkMark } from "./AkMark";
 
 type ActivePage = "home" | "about";
 
 const navigation = [
   { label: "Work", target: "work" },
-  { label: "Services", target: "services" },
-  { label: "Experience", target: "experience" },
+  { label: "Practice", target: "practice" },
   { label: "Process", target: "process" },
+  { label: "Contact", target: "contact" },
 ] as const;
 
 function anchorHref(activePage: ActivePage, target: string) {
@@ -69,29 +70,35 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       {/* vinext's next/link shim currently loads a second React runtime in client components. */}
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a
-        className="wordmark"
+        className="brand-lockup"
         href="/"
         aria-label="Ahsan Khizar, home"
         aria-current={activePage === "home" ? "page" : undefined}
         onClick={closeMenu}
       >
-        Ahsan Khizar
+        <AkMark />
+        <span>
+          <strong>Ahsan Khizar</strong>
+          <small>AI product engineer · AI video producer</small>
+        </span>
       </a>
       <nav className="site-navigation" aria-label="Main navigation">
         <div className="desktop-nav">
           <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         </div>
         <a className="header-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Discuss a project
+          Start a project <span aria-hidden="true">↗</span>
         </a>
         <button
           className="menu-button"
           type="button"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
           onClick={() => setMenuOpen((isOpen) => !isOpen)}
         >
-          Open menu
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
         </button>
       </nav>
       <nav
@@ -102,7 +109,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
-          Discuss a project
+          Start a project <span aria-hidden="true">↗</span>
         </a>
       </nav>
     </header>
