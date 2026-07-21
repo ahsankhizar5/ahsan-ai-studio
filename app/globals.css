@@ -1723,6 +1723,15 @@ body:has([data-motion-page="about"]) .menu-button[aria-expanded="true"] {
     transition-delay: 0ms !important;
   }
 
+  .hero-media img,
+  .hero-media-beam,
+  html[data-motion="reduced"] [data-home-hero-copy] {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+
   .capabilities .section-lead,
   .work-intro {
     position: static;
@@ -1767,26 +1776,22 @@ body:has([data-motion-page="about"]) .menu-button[aria-expanded="true"] {
   color: var(--ink);
 }
 
-@keyframes hero-system-enter {
+@keyframes hero-copy-in {
   from {
     opacity: 0;
-    transform: translateY(1rem);
+    transform: translateY(1.5rem);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 
-@keyframes operator-system-enter {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-  }
-}
-
-html[data-motion="full"] [data-hero-reveal] {
-  animation: hero-system-enter 480ms var(--ease-out) both;
-}
-
-html[data-motion="full"] .operator-frame {
-  animation: operator-system-enter 580ms var(--ease-out) 80ms both;
+html[data-motion="full"] [data-home-hero-copy] {
+  animation: hero-copy-in 0.85s var(--ease-out) both;
 }
 
 .conversion-home p {
@@ -2085,11 +2090,13 @@ html[data-motion="full"] .operator-frame {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-media img,
-  .hero-media-beam {
-    animation: none;
-  }
+html[data-motion="reduced"] .hero-media img,
+html[data-motion="reduced"] .hero-media-beam,
+html[data-motion="reduced"] [data-home-hero-copy] {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+  opacity: 1 !important;
 }
 
 .conversion-hero {

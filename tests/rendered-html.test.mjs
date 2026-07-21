@@ -123,7 +123,7 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header, hero, media, projectStage, connectedBuild] = await Promise.all([
+  const [page, css, layout, header, hero, media, projectStage, connectedBuild, motion] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -132,6 +132,7 @@ test("source preserves accessible and responsive contracts", async () => {
     readFile(new URL("../app/components/HeroMedia.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ProjectStage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ConnectedBuild.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/MotionController.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<SiteHeader activePage="home"/);
@@ -186,6 +187,16 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(projectStage, /data-project-panel/);
   assert.match(connectedBuild, /data-pipeline/);
   assert.match(connectedBuild, /data-reveal-group/);
+  assert.match(motion, /data-pipeline/);
+  assert.match(motion, /data-about-portrait/);
+  assert.match(motion, /import\("gsap"\)/);
+  assert.doesNotMatch(motion, /querySelectorAll<HTMLElement>\("\[data-motion-reveal\]"\)/);
+  assert.doesNotMatch(motion, /data-reveal-group|data-portrait-reveal|data-project-panel/);
+  assert.match(motion, /page === "home" \? "#work" : "\[data-about-portrait\]"/);
+  assert.match(motion, /clipPath: "inset\(0 100% 0 0\)"[\s\S]*duration: 0\.62[\s\S]*stagger: 0\.08[\s\S]*ease: "power3\.out"[\s\S]*start: "top 78%"/);
+  assert.match(motion, /clipPath: "inset\(0 0 100% 0\)"[\s\S]*duration: 0\.72[\s\S]*ease: "expo\.out"[\s\S]*start: "top 84%"/);
+  assert.match(css, /html\[data-motion="full"\] \[data-home-hero-copy\][\s\S]*animation: hero-copy-in 0\.85s/);
+  assert.match(css, /html\[data-motion="reduced"\][\s\S]*animation:\s*none/);
   assert.match(connectedBuild, /Engineer the intelligence/);
   assert.match(connectedBuild, /AI video is the communication layer of the same build/);
   assert.match(css, /\.positioning-scene\s*\{/);
