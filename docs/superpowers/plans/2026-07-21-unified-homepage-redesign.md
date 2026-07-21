@@ -911,6 +911,27 @@ Add a homepage portrait absence check:
 assert.equal(await page.locator('main[data-motion-page="home"] img[src*="ahsan-khizar"]').count(), 0);
 ```
 
+Repair the mobile-menu audit so its locator remains valid after the accessible name changes:
+
+```js
+const menu = page.locator(".menu-button");
+assert.equal(await menu.getAttribute("aria-label"), "Open menu");
+await menu.click();
+assert.equal(await menu.getAttribute("aria-label"), "Close menu");
+assert.equal(await menu.getAttribute("aria-expanded"), "true");
+await page.keyboard.press("Escape");
+assert.equal(await menu.getAttribute("aria-label"), "Open menu");
+assert.equal(await menu.getAttribute("aria-expanded"), "false");
+```
+
+Strengthen the About portrait source contract:
+
+```js
+assert.match(aboutPortrait, /<figure/);
+assert.match(aboutPortrait, /<figcaption/);
+assert.equal((aboutPortrait.match(/aria-hidden="true"/g) ?? []).length, 3);
+```
+
 - [ ] **Step 2: Add complete responsive CSS**
 
 ```css
@@ -944,6 +965,8 @@ assert.equal(await page.locator('main[data-motion-page="home"] img[src*="ahsan-k
   .about-portrait-art { min-height: 34rem; }
 }
 ```
+
+Remove every obsolete legacy `.about-portrait`, `.about-portrait::before`, `.about-portrait img`, and `.about-portrait-caption` rule. The live component uses `.about-portrait-art` and `.about-portrait-color-field`; do not leave competing dead styles behind.
 
 - [ ] **Step 3: Update metadata copy**
 
