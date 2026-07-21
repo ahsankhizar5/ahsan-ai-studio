@@ -10,8 +10,14 @@ type ProjectStageProps = {
 
 export function ProjectStage({ projects }: ProjectStageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [enhanced, setEnhanced] = useState(false);
   const [selectionVersion, setSelectionVersion] = useState(0);
   const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const enhancementFrame = window.requestAnimationFrame(() => setEnhanced(true));
+    return () => window.cancelAnimationFrame(enhancementFrame);
+  }, []);
 
   function selectProject(index: number) {
     setActiveIndex(index);
@@ -43,23 +49,27 @@ export function ProjectStage({ projects }: ProjectStageProps) {
     let active = true;
     let context: { revert: () => void } | undefined;
 
-    void import("gsap").then(({ default: gsap }) => {
-      if (!active || !panelRef.current) return;
+    void import("gsap")
+      .then(({ default: gsap }) => {
+        if (!active || !panelRef.current) return;
 
-      context = gsap.context(() => {
-        gsap.fromTo(
-          panelRef.current,
-          { opacity: 0.2, clipPath: "inset(0 7% 0 0)" },
-          {
-            opacity: 1,
-            clipPath: "inset(0 0 0 0)",
-            duration: 0.42,
-            ease: "power3.out",
-            clearProps: "opacity,clipPath",
-          },
-        );
-      }, panelRef);
-    });
+        context = gsap.context(() => {
+          gsap.fromTo(
+            panelRef.current,
+            { opacity: 0.2, clipPath: "inset(0 7% 0 0)" },
+            {
+              opacity: 1,
+              clipPath: "inset(0 0 0 0)",
+              duration: 0.42,
+              ease: "power3.out",
+              clearProps: "opacity,clipPath",
+            },
+          );
+        }, panelRef);
+      })
+      .catch((error: unknown) => {
+        if (active) console.warn("Project transition enhancement unavailable.", error);
+      });
 
     return () => {
       active = false;
@@ -76,6 +86,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
       className="project-stage"
       aria-labelledby="work-title"
       data-project-stage
+      data-enhanced={enhanced}
     >
       <header className="project-stage-heading">
         <div>

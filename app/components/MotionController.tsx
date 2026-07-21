@@ -61,7 +61,9 @@ export function MotionController({ page }: { page: "home" | "about" }) {
         (entries) => {
           if (!entries.some((entry) => entry.isIntersecting)) return;
           observer?.disconnect();
-          void setupMotion();
+          void setupMotion().catch((error: unknown) => {
+            if (active) console.warn("Optional motion enhancement unavailable.", error);
+          });
         },
         { rootMargin: "0px 0px -10% 0px" },
       );

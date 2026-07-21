@@ -89,6 +89,13 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
   );
   assert.ok((await page.locator(".site-header").boundingBox()).height >= 52);
   assert.equal(await page.locator(".site-footer").count(), 1);
+  if (path === "/about") {
+    assert.equal(
+      await page.locator(".site-header").evaluate((header) => header.classList.contains("is-scrolled")),
+      true,
+      `${name} uses the solid header from initial render`,
+    );
+  }
   assert.equal(
     await page.locator("[id]").evaluateAll((nodes) => {
       const ids = nodes.map((node) => node.id).filter(Boolean);
@@ -174,9 +181,29 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     );
     assert.equal(await menu.getAttribute("aria-label"), "Close menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "true");
+    const menuBox = await page
+      .getByRole("navigation", { name: "Mobile navigation" })
+      .boundingBox();
+    assert.ok(
+      menuBox && menuBox.height >= viewport.height - 1,
+      `${name} enhanced mobile menu fills the viewport`,
+    );
+    const firstMenuLink = page
+      .getByRole("navigation", { name: "Mobile navigation" })
+      .getByRole("link")
+      .first();
+    await page.waitForFunction(
+      (link) => document.activeElement === link,
+      await firstMenuLink.elementHandle(),
+    );
     await page.keyboard.press("Escape");
     assert.equal(await menu.getAttribute("aria-label"), "Open menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "false");
+    assert.equal(
+      await menu.evaluate((button) => document.activeElement === button),
+      true,
+      `${name} restores focus to the menu trigger after Escape`,
+    );
   }
 
   assert.deepEqual(errors, []);
@@ -186,21 +213,67 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
   await page.close();
 }
 
-async function auditNoJavaScriptMobile() {
-  const page = await browser.newPage({
-    viewport: { width: 375, height: 812 },
-    deviceScaleFactor: 1,
-    javaScriptEnabled: false,
-  });
+async function auditNoJavaScript() {
+  for (const viewport of [
+    { width: 375, height: 812 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+  ]) {
+    const page = await browser.newPage({
+      viewport,
+      deviceScaleFactor: 1,
+      javaScriptEnabled: false,
+    });
 
+    await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+
+    if (viewport.width < 768) {
+      await expectVisible(
+        page.getByRole("navigation", { name: "Mobile navigation" }),
+      );
+      assert.equal(
+        await page.locator(".menu-button").getAttribute("aria-expanded"),
+        "true",
+      );
+    }
+
+    const stackedProjects = page.locator(".project-stage-mobile article");
+    assert.equal(await stackedProjects.count(), 4);
+    for (const projectName of [
+      "DocuSync",
+      "PIGEON Reproduction",
+      "Audio Deepfake Detection System",
+      "Customer Behavior Profiling",
+    ]) {
+      await expectVisible(stackedProjects.filter({ hasText: projectName }));
+    }
+
+    await page.close();
+  }
+}
+
+async function auditHeaderBoundary() {
+  const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await expectVisible(
-    page.getByRole("navigation", { name: "Mobile navigation" }),
+  await page.waitForFunction(() =>
+    document.querySelector(".site-header")?.getAttribute("data-enhanced") === "true",
   );
-  assert.equal(
-    await page.locator(".menu-button").getAttribute("aria-expanded"),
-    "true",
+
+  const boundary = await page.locator(".cinematic-hero").evaluate(
+    (hero) => hero.getBoundingClientRect().bottom + window.scrollY,
   );
+  await page.evaluate((top) => {
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, top);
+  }, boundary - 100);
+  await page.waitForFunction(() =>
+    !document.querySelector(".site-header")?.classList.contains("is-scrolled"),
+  );
+  await page.evaluate((top) => window.scrollTo(0, top), boundary + 1);
+  await page.waitForFunction(() =>
+    document.querySelector(".site-header")?.classList.contains("is-scrolled"),
+  );
+
   await page.close();
 }
 
@@ -292,6 +365,37 @@ async function auditDeferredMotion() {
   await reducedPage.close();
 }
 
+async function auditRejectedMotionImports() {
+  const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
+  const pageErrors = [];
+  let resolveRejectedImport;
+  const rejectedImport = new Promise((resolve) => {
+    resolveRejectedImport = resolve;
+  });
+
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  await page.route(/\/assets\/(?:gsap|ScrollTrigger)-/, async (route) => {
+    resolveRejectedImport(route.request().url());
+    await route.abort();
+  });
+
+  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() =>
+    document.documentElement.hasAttribute("data-motion"),
+  );
+  await page.locator("#work").scrollIntoViewIfNeeded();
+  await rejectedImport;
+
+  const tabs = page.locator("[data-project-stage]").getByRole("tab");
+  await tabs.nth(1).click();
+  assert.equal(await tabs.nth(1).getAttribute("aria-selected"), "true");
+  await expectVisible(page.getByRole("tabpanel").getByRole("heading", { name: "PIGEON Reproduction" }));
+  await expectVisible(page.getByRole("heading", { name: "Engineer the intelligence." }));
+  assert.deepEqual(pageErrors, [], "rejected optional imports do not become unhandled errors");
+
+  await page.close();
+}
+
 await audit("desktop-1440", { width: 1440, height: 1000 });
 await audit("laptop-1024", { width: 1024, height: 768 });
 await audit("tablet-768", { width: 768, height: 1024 });
@@ -299,7 +403,9 @@ await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });
 await audit("mobile-375", { width: 375, height: 812 }, { mobile: true });
 await audit("about-desktop-1440", { width: 1440, height: 1000 }, { path: "/about" });
 await audit("about-mobile-390", { width: 390, height: 844 }, { mobile: true, path: "/about" });
-await auditNoJavaScriptMobile();
+await auditNoJavaScript();
+await auditHeaderBoundary();
 await auditReducedMotion();
 await auditDeferredMotion();
+await auditRejectedMotionImports();
 await browser.close();

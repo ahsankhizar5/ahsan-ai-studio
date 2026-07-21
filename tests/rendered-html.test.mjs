@@ -52,6 +52,14 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /powerful products people understand and trust/i);
   assert.match(html, /one connected build/i);
   assert.match(html, /Evidence before promises/i);
+  const credibilityRail = html.match(/<section class="credibility-rail"[\s\S]*?<\/section>/i)?.[0];
+  assert.ok(credibilityRail, "the credibility rail is server-rendered");
+  assert.equal((credibilityRail.match(/<li>/g) ?? []).length, 4);
+  assert.match(credibilityRail, /Bachelor of Engineering in Software Engineering/i);
+  assert.match(credibilityRail, /Software Engineer Intern/i);
+  assert.match(credibilityRail, /4th Position, All Pakistan Prompt Engineering Competition/i);
+  assert.match(credibilityRail, /Top 20 Finalist, Global AI Hackathon/i);
+  assert.doesNotMatch(credibilityRail, /Generative AI Application Developer/i);
   assert.match(html, /id="practice"/i);
   assert.match(html, /id="process"/i);
   assert.match(html, /id="contact"/i);
@@ -158,6 +166,12 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(header, /AI product engineer/);
   assert.match(header, /Start a project/);
   assert.match(header, /aria-label=\{menuOpen \? "Close menu" : "Open menu"\}/);
+  assert.match(header, /new IntersectionObserver/);
+  assert.match(header, /hero\.getBoundingClientRect\(\)\.bottom <= 0/);
+  assert.match(header, /observer\?\.disconnect\(\)/);
+  assert.match(header, /querySelector<HTMLAnchorElement>\("a"\)\?\.focus\(\)/);
+  assert.match(header, /restoreTriggerFocus\.current = true/);
+  assert.match(header, /menuButtonRef\.current\?\.focus\(\)/);
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(projectStage, /aria-labelledby="work-title"/);
   assert.match(connectedBuild, /id="practice"/);
@@ -177,6 +191,7 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /:focus-visible/);
   assert.match(css, /min-height:\s*2\.75rem/);
   assert.match(css, /\.mobile-menu\s*\{[\s\S]*?gap:\s*0\.5rem/);
+  assert.match(css, /\.site-header\[data-enhanced="true"\]\[data-menu-open="true"\][\s\S]*?min-height:\s*100dvh/);
   assert.match(css, /overflow-wrap:\s*anywhere/);
   assert.match(css, /--signal-red:\s*#ff3347/i);
   assert.match(css, /--signal-yellow:\s*#e9f400/i);
@@ -213,6 +228,9 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(projectStage, /\[activeIndex, selectionVersion\]/);
   assert.doesNotMatch(projectStage, /hasMountedPanel/);
   assert.match(projectStage, /project-stage-mobile/);
+  assert.match(projectStage, /data-enhanced=\{enhanced\}/);
+  assert.match(css, /\.project-stage\[data-enhanced="true"\] \.project-stage-desktop\s*\{\s*display:\s*block/);
+  assert.match(css, /\.project-stage\[data-enhanced="true"\] \.project-stage-mobile\s*\{\s*display:\s*none/);
   assert.match(projectStage, /data-project-panel/);
   assert.match(browserAudit, /const projectStage = page\.locator\("\[data-project-stage\]"\)/);
   assert.match(browserAudit, /projectStage\.getByRole\("tab"\)/);
@@ -222,6 +240,10 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(motion, /data-pipeline/);
   assert.match(motion, /data-about-portrait/);
   assert.match(motion, /import\("gsap"\)/);
+  assert.match(motion, /void setupMotion\(\)\.catch\(\(error: unknown\)/);
+  assert.match(motion, /Optional motion enhancement unavailable/);
+  assert.match(projectStage, /\.catch\(\(error: unknown\)/);
+  assert.match(projectStage, /Project transition enhancement unavailable/);
   const reducedMotionGate = motion.indexOf("if (prefersReducedMotion) return;");
   const gsapImports = [...motion.matchAll(/import\(\s*["'](gsap(?:\/[^"']+)?)["']\s*\)/g)];
   const importedGsapModules = gsapImports.map((match) => match[1]);
@@ -263,6 +285,28 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /\.red-noir-contact-actions[\s\S]*?min-height:\s*2\.75rem/);
   assert.match(page, /"DocuSync",[\s\S]*"PIGEON Reproduction",[\s\S]*"Audio Deepfake Detection System",[\s\S]*"Customer Behavior Profiling"/);
   assert.match(page, /<ProjectStage projects=\{featuredProjects\} \/>/);
+  assert.match(page, /profile\.education\.degree/);
+  assert.match(page, /experience\.map\(\(\{ role \}\) => role\)/);
+  assert.match(page, /recognition\[0\],[\s\S]*recognition\[1\]/);
+  assert.doesNotMatch(page, /certifications/);
+  assert.doesNotMatch(
+    css,
+    /@media \(max-width: 760px\)\s*\{\s*\.cinematic-hero/,
+  );
+  const cinematicMobileStart = css.lastIndexOf("@media (max-width: 767px)");
+  assert.notEqual(cinematicMobileStart, -1, "the authoritative 767px block exists");
+  const cinematicMobileCss = css.slice(cinematicMobileStart);
+  assert.match(cinematicMobileCss, /\.cinematic-hero\s*\{[\s\S]*min-height:\s*53rem[\s\S]*height:\s*100dvh/);
+  assert.match(cinematicMobileCss, /\.hero-media img[\s\S]*object-position:\s*58% center/);
+  assert.match(cinematicMobileCss, /\.hero-media-vignette/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero-copy[\s\S]*bottom:\s*10\.25rem/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.8rem, 12vw, 4rem\)/);
+  assert.match(browserAudit, /\{ width: 768, height: 1024 \}/);
+  assert.match(browserAudit, /\{ width: 1024, height: 768 \}/);
+  assert.match(browserAudit, /restores focus to the menu trigger after Escape/);
+  assert.match(browserAudit, /async function auditHeaderBoundary/);
+  assert.match(browserAudit, /async function auditRejectedMotionImports/);
+  assert.match(browserAudit, /rejected optional imports do not become unhandled errors/);
 });
 
 test("defines the factual portfolio data source", async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AkMark } from "./AkMark";
 
 type ActivePage = "home" | "about";
@@ -35,38 +35,79 @@ function NavigationLinks({ activePage, onNavigate }: { activePage: ActivePage; o
 export function SiteHeader({ activePage }: { activePage: ActivePage }) {
   const [enhanced, setEnhanced] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(activePage === "about");
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const restoreTriggerFocus = useRef(false);
 
   useEffect(() => {
     const enhancementFrame = window.requestAnimationFrame(() => setEnhanced(true));
+    let boundaryFrame: number | undefined;
+    let observer: IntersectionObserver | undefined;
+    const hero = activePage === "home"
+      ? document.querySelector<HTMLElement>(".cinematic-hero")
+      : null;
 
-    function handleScroll() {
-      setScrolled(window.scrollY > 12);
+    function syncHeaderWithHero() {
+      setScrolled(!hero || hero.getBoundingClientRect().bottom <= 0);
     }
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setMenuOpen(false);
-    }
+    if (activePage === "home") {
+      boundaryFrame = window.requestAnimationFrame(syncHeaderWithHero);
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("keydown", handleKeyDown);
+      if (hero && "IntersectionObserver" in window) {
+        observer = new IntersectionObserver(([entry]) => {
+          if (entry) setScrolled(entry.boundingClientRect.bottom <= 0);
+        });
+        observer.observe(hero);
+      } else {
+        window.addEventListener("scroll", syncHeaderWithHero, { passive: true });
+        window.addEventListener("resize", syncHeaderWithHero);
+      }
+    }
 
     return () => {
       window.cancelAnimationFrame(enhancementFrame);
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("keydown", handleKeyDown);
+      if (boundaryFrame !== undefined) window.cancelAnimationFrame(boundaryFrame);
+      observer?.disconnect();
+      window.removeEventListener("scroll", syncHeaderWithHero);
+      window.removeEventListener("resize", syncHeaderWithHero);
     };
-  }, []);
+  }, [activePage]);
+
+  useEffect(() => {
+    if (menuOpen) {
+      const focusFrame = window.requestAnimationFrame(() => {
+        mobileMenuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+      });
+      return () => window.cancelAnimationFrame(focusFrame);
+    }
+
+    if (restoreTriggerFocus.current) {
+      restoreTriggerFocus.current = false;
+      menuButtonRef.current?.focus();
+    }
+  }, [menuOpen]);
 
   function closeMenu() {
+    setMenuOpen(false);
+  }
+
+  function handleMobileMenuKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    restoreTriggerFocus.current = true;
     setMenuOpen(false);
   }
 
   const menuExpanded = !enhanced || menuOpen;
 
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}`} data-enhanced={enhanced}>
+    <header
+      className={`site-header${scrolled ? " is-scrolled" : ""}`}
+      data-enhanced={enhanced}
+      data-menu-open={menuOpen}
+    >
       {/* vinext's next/link shim currently loads a second React runtime in client components. */}
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a
@@ -92,6 +133,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
         <button
           className="menu-button"
           type="button"
+          ref={menuButtonRef}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
@@ -106,6 +148,8 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
         className="mobile-menu"
         aria-label="Mobile navigation"
         data-open={menuOpen}
+        ref={mobileMenuRef}
+        onKeyDown={handleMobileMenuKeyDown}
       >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>

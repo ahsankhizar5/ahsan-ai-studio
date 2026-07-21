@@ -6,8 +6,8 @@ import { ProjectStage } from "./components/ProjectStage";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import {
-  certifications,
   engineeringProjects,
+  experience,
   process,
   profile,
   recognition,
@@ -16,10 +16,10 @@ import {
 } from "./data/profile";
 
 const proofSignals = [
-  "B.E. Software Engineering · UET Taxila",
-  "Software, data, and web engineering experience",
-  certifications[0],
+  `${profile.education.degree} · ${profile.education.institution}`,
+  experience.map(({ role }) => role).join(" · "),
   recognition[0],
+  recognition[1],
 ] as const;
 
 const featuredProjectNames = [
