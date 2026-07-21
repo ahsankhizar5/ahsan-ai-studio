@@ -12,7 +12,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [enhanced, setEnhanced] = useState(false);
   const [selectionVersion, setSelectionVersion] = useState(0);
-  const panelRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const enhancementFrame = window.requestAnimationFrame(() => setEnhanced(true));
