@@ -115,13 +115,14 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header, hero, media] = await Promise.all([
+  const [page, css, layout, header, hero, media, projectStage] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/HomepageHero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/HeroMedia.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ProjectStage.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<SiteHeader activePage="home"/);
@@ -130,13 +131,13 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(header, /Start a project/);
   assert.match(header, /aria-label=\{menuOpen \? "Close menu" : "Open menu"\}/);
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
-  assert.match(page, /aria-labelledby="work-title"/);
+  assert.match(projectStage, /aria-labelledby="work-title"/);
   assert.match(page, /aria-labelledby="services-title"/);
   assert.match(page, /<HomepageHero email=\{profile\.email\} location=\{profile\.location\} \/>/);
   assert.doesNotMatch(page, /ahsan-khizar\.(?:webp|png)|operator-(?:frame|portrait)/i);
   assert.match(page, /className="engagement-paths"/);
   assert.match(page, /<MotionController page="home" \/>/);
-  assert.match(page, /rel="noreferrer"/);
+  assert.match(projectStage, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /min-height:\s*2\.75rem/);
@@ -156,6 +157,19 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(media, /width=\{960\}[\s\S]*height=\{540\}/);
   assert.match(media, /width=\{1728\}[\s\S]*height=\{973\}/);
   assert.match(media, /alt=""/);
+  assert.match(projectStage, /role="tablist"/);
+  assert.match(projectStage, /role="tab"/);
+  assert.match(projectStage, /aria-selected/);
+  assert.match(projectStage, /aria-controls="active-project-panel"/);
+  assert.match(projectStage, /aria-labelledby=\{`project-tab-\$\{activeIndex\}`\}/);
+  assert.match(projectStage, /tabIndex=\{index === activeIndex \? 0 : -1\}/);
+  assert.match(projectStage, /onKeyDown/);
+  assert.match(projectStage, /"ArrowLeft", "ArrowRight", "Home", "End"/);
+  assert.match(projectStage, /getElementById\(`project-tab-\$\{nextIndex\}`\)\?\.focus\(\)/);
+  assert.match(projectStage, /project-stage-mobile/);
+  assert.match(projectStage, /data-project-panel/);
+  assert.match(page, /"DocuSync",[\s\S]*"PIGEON Reproduction",[\s\S]*"Audio Deepfake Detection System",[\s\S]*"Customer Behavior Profiling"/);
+  assert.match(page, /<ProjectStage projects=\{featuredProjects\} \/>/);
 });
 
 test("defines the factual portfolio data source", async () => {

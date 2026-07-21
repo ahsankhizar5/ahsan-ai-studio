@@ -1,6 +1,7 @@
 import { CopyEmail } from "./components/CopyEmail";
 import { HomepageHero } from "./components/HomepageHero";
 import { MotionController } from "./components/MotionController";
+import { ProjectStage } from "./components/ProjectStage";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import {
@@ -20,6 +21,19 @@ const proofSignals = [
   certifications[0],
   recognition[0],
 ] as const;
+
+const featuredProjectNames = [
+  "DocuSync",
+  "PIGEON Reproduction",
+  "Audio Deepfake Detection System",
+  "Customer Behavior Profiling",
+] as const;
+
+const featuredProjects = featuredProjectNames
+  .map((name) => engineeringProjects.find((project) => project.name === name))
+  .filter(
+    (project): project is (typeof engineeringProjects)[number] => Boolean(project),
+  );
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -124,44 +138,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="work" className="evidence-stage" data-project-stage aria-labelledby="work-title">
-          <div className="evidence-stage-intro" data-motion-reveal>
-            <p className="signal-label">Selected engineering evidence</p>
-            <h2 id="work-title">Not a tool list. A record of what I built.</h2>
-            <p>
-              Each case shows the system, the contribution, and the implementation depth behind it.
-            </p>
-          </div>
-
-          <div className="evidence-list">
-            {engineeringProjects.map((project, index) => (
-              <article className="evidence-case" data-project-panel key={project.name}>
-                <div className="evidence-case-index">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <small>{project.category}</small>
-                </div>
-                <div className="evidence-case-main">
-                  <h3>{project.name}</h3>
-                  <p>{project.description}</p>
-                </div>
-                <div className="evidence-case-contribution">
-                  <span>My contribution</span>
-                  <p>{project.contribution}</p>
-                </div>
-                <div className="evidence-case-footer">
-                  <p>{project.stack.join(" · ")}</p>
-                  {project.href ? (
-                    <a href={project.href} target="_blank" rel="noreferrer">
-                      View {project.name} source <span aria-hidden="true">↗</span>
-                    </a>
-                  ) : (
-                    <span>Project summary available</span>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <ProjectStage projects={featuredProjects} />
 
         <section className="video-capability-section" aria-labelledby="video-capability-title">
           <div className="video-capability-heading" data-motion-reveal>
