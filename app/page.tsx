@@ -1,4 +1,5 @@
 import { CopyEmail } from "./components/CopyEmail";
+import { HomepageHero } from "./components/HomepageHero";
 import { MotionController } from "./components/MotionController";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
@@ -49,68 +50,7 @@ export default function Home() {
       <SiteHeader activePage="home" />
 
       <main id="main-content" className="conversion-home" data-motion-page="home">
-        <section className="conversion-hero" aria-labelledby="hero-title">
-          <div className="conversion-hero-copy">
-            <p className="signal-label" data-hero-reveal>
-              Ahsan Khizar · AI engineer + AI video producer
-            </p>
-            <h1 id="hero-title" data-hero-reveal>
-              I transform complex AI ideas into{" "}
-              <span>powerful products people understand and trust.</span>
-            </h1>
-            <p className="conversion-hero-support" data-hero-reveal>
-              From the system behind the product to the demos and launch content that explain it, I lead
-              the work as one connected build.
-            </p>
-            <div className="conversion-actions" data-hero-reveal>
-              <a
-                className="conversion-button conversion-button-primary"
-                href={`mailto:${profile.email}?subject=AI%20engineering%20project`}
-              >
-                Discuss an AI build <span aria-hidden="true">↗</span>
-              </a>
-              <a className="conversion-button conversion-button-secondary" href="#work">
-                See selected work <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-            <a className="video-brief-link" href="#services">
-              Have a video brief instead? Explore the production offer <span aria-hidden="true">→</span>
-            </a>
-          </div>
-
-          <div className="operator-frame" aria-label="Ahsan Khizar, one operator with two capabilities">
-            <div className="operator-portrait">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/ahsan-khizar.webp"
-                width={960}
-                height={1131}
-                sizes="(max-width: 760px) 92vw, 42vw"
-                fetchPriority="high"
-                alt="Portrait of Ahsan Khizar"
-              />
-              <div className="operator-status glass-proof">
-                <span>One operator</span>
-                <strong>Two capabilities</strong>
-                <small>{profile.location} · Remote</small>
-              </div>
-            </div>
-            <div className="output-rail output-rail-engineering">
-              <span aria-hidden="true">01</span>
-              <div>
-                <strong>Engineered systems</strong>
-                <small>Products · Agents · Automation · Applied ML</small>
-              </div>
-            </div>
-            <div className="output-rail output-rail-video">
-              <span aria-hidden="true">02</span>
-              <div>
-                <strong>Produced stories</strong>
-                <small>Explainers · UGC · Ads · Product demos</small>
-              </div>
-            </div>
-          </div>
-        </section>
+        <HomepageHero email={profile.email} location={profile.location} />
 
         <section className="credibility-rail" aria-label="Selected credentials">
           <p>Evidence before promises</p>
@@ -284,21 +224,8 @@ export default function Home() {
         <section
           id="about-preview"
           className="about-conversion"
-          data-portrait-reveal
           aria-labelledby="about-preview-title"
         >
-          <div className="about-conversion-portrait">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/ahsan-khizar.webp"
-              width={960}
-              height={1131}
-              sizes="(max-width: 760px) 36vw, 18vw"
-              loading="lazy"
-              decoding="async"
-              alt="Ahsan Khizar"
-            />
-          </div>
           <div className="about-conversion-copy">
             <p className="signal-label">The person behind both outputs</p>
             <h2 id="about-preview-title">Technical enough to build it. Creative enough to make it land.</h2>

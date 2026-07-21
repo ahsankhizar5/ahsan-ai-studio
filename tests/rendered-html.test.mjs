@@ -35,7 +35,11 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /powerful products people understand and trust/i);
   assert.match(html, /one connected build/i);
   assert.match(html, /Evidence before promises/i);
-  assert.match(html, /Discuss an AI build/i);
+  assert.match(html, /Discuss your project/i);
+  assert.match(html, /data-hero-media/i);
+  assert.match(html, /data-home-hero-copy/i);
+  assert.match(html, /class="hero-capability-rail"/i);
+  assert.doesNotMatch(html, /ahsan-khizar\.(?:webp|png)|Portrait of Ahsan Khizar/i);
   assert.match(html, /AI engineering/i);
   assert.match(html, /AI video production/i);
   assert.match(html, /Audio Deepfake Detection System/i);
@@ -111,11 +115,13 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header] = await Promise.all([
+  const [page, css, layout, header, hero, media] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/HomepageHero.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/HeroMedia.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<SiteHeader activePage="home"/);
@@ -126,7 +132,8 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(page, /aria-labelledby="work-title"/);
   assert.match(page, /aria-labelledby="services-title"/);
-  assert.match(page, /className="operator-frame"/);
+  assert.match(page, /<HomepageHero email=\{profile\.email\} location=\{profile\.location\} \/>/);
+  assert.doesNotMatch(page, /ahsan-khizar\.(?:webp|png)|operator-(?:frame|portrait)/i);
   assert.match(page, /className="engagement-paths"/);
   assert.match(page, /<MotionController page="home" \/>/);
   assert.match(page, /rel="noreferrer"/);
@@ -141,6 +148,14 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /@media \(max-width:\s*760px\)/);
   assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
   assert.doesNotMatch(css, /background-clip:\s*text|repeating-linear-gradient|border-radius:\s*(3[2-9]|[4-9]\d)px/i);
+  assert.match(hero, /I transform complex AI ideas into/);
+  assert.match(hero, /powerful products people understand and trust/);
+  assert.match(hero, /Discuss your project/);
+  assert.match(media, /hero-system-story-960\.webp/);
+  assert.match(media, /hero-system-story-1728\.webp/);
+  assert.match(media, /width=\{960\}[\s\S]*height=\{540\}/);
+  assert.match(media, /width=\{1728\}[\s\S]*height=\{973\}/);
+  assert.match(media, /alt=""/);
 });
 
 test("defines the factual portfolio data source", async () => {
