@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { AboutPortrait } from "../components/AboutPortrait";
 import { CopyEmail } from "../components/CopyEmail";
 import { MotionController } from "../components/MotionController";
 import { SiteFooter } from "../components/SiteFooter";
@@ -95,24 +96,7 @@ export default async function AboutPage() {
 
       <main id="main-content" data-motion-page="about">
         <section className="about-hero" aria-labelledby="about-title">
-          <figure className="about-portrait" data-portrait-reveal>
-            {/* The approved, optimized portrait is intentionally rendered with its intrinsic dimensions. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/ahsan-khizar.webp"
-              width={960}
-              height={1131}
-              alt="Portrait of Ahsan Khizar"
-              sizes="(max-width: 760px) 100vw, 42vw"
-              fetchPriority="high"
-              decoding="async"
-            />
-            <figcaption className="portrait-caption about-portrait-caption">
-              <strong>{profile.name}</strong>
-              <span>{profile.location}</span>
-              <span>Applied AI systems</span>
-            </figcaption>
-          </figure>
+          <AboutPortrait name={profile.name} location={profile.location} />
 
           <div className="about-hero-copy" data-hero-reveal>
             <p className="eyebrow">About / Ahsan Khizar</p>

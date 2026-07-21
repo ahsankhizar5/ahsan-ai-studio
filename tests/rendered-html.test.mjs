@@ -209,16 +209,22 @@ test("defines the factual portfolio data source", async () => {
 });
 
 test("About source preserves semantic, responsive, and metadata contracts", async () => {
-  const [about, css] = await Promise.all([
+  const [about, css, aboutPortrait] = await Promise.all([
     readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/AboutPortrait.tsx", import.meta.url), "utf8"),
   ]);
 
+  assert.match(aboutPortrait, /ahsan-khizar\.webp/);
+  assert.match(aboutPortrait, /data-about-portrait/);
+  assert.match(aboutPortrait, /alt="Portrait of Ahsan Khizar"/);
+  assert.match(about, /<AboutPortrait/);
+  assert.match(css, /\.about-portrait-color-field/);
   assert.match(about, /export const metadata/);
   assert.match(about, /alternates:\s*\{ canonical:\s*"\/about" \}/);
   assert.match(about, /<main id="main-content" data-motion-page="about">/);
-  assert.match(about, /fetchPriority="high"/);
-  assert.match(about, /sizes="\(max-width: 760px\) 100vw, 42vw"/);
+  assert.match(aboutPortrait, /fetchPriority="high"/);
+  assert.match(aboutPortrait, /sizes="\(max-width: 760px\) 100vw, 42vw"/);
   assert.match(about, /<SiteHeader activePage="about"/);
   assert.match(about, /<SiteFooter \/>/);
   assert.match(about, /<MotionController page="about" \/>/);
