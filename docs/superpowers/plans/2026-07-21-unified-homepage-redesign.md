@@ -1036,7 +1036,7 @@ git rev-parse HEAD
 npm test
 ```
 
-Expected: only the pre-existing untracked `.impeccable/` directory is shown; build/tests pass; retain the printed commit SHA.
+Expected: the isolated worktree is clean; build/tests pass; retain the printed commit SHA.
 
 - [ ] **Step 2: Push using a short-lived Sites source credential**
 
@@ -1045,7 +1045,7 @@ Obtain a fresh credential with the existing project ID from `.openai/hosting.jso
 - [ ] **Step 3: Package the validated build**
 
 ```powershell
-& 'C:\Program Files\Git\bin\bash.exe' 'C:/Users/ahsan/.codex/plugins/cache/openai-bundled/sites/0.1.30/scripts/package-site.sh' '/c/Users/ahsan/Downloads/Profile/Ahsan-AI-Studio' '/c/Users/ahsan/AppData/Local/Temp/ahsan-ai-studio-unified-homepage.tar.gz'
+& 'C:\Program Files\Git\bin\bash.exe' 'C:/Users/ahsan/.codex/plugins/cache/openai-bundled/sites/0.1.30/scripts/package-site.sh' '/c/Users/ahsan/Downloads/Profile/Ahsan-AI-Studio/.worktrees/unified-homepage-redesign' '/c/Users/ahsan/AppData/Local/Temp/ahsan-ai-studio-unified-homepage.tar.gz'
 ```
 
 Expected: the archive path is printed and the helper exits successfully.
