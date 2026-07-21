@@ -208,9 +208,14 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(motion, /data-about-portrait/);
   assert.match(motion, /import\("gsap"\)/);
   const reducedMotionGate = motion.indexOf("if (prefersReducedMotion) return;");
-  const firstGsapImport = motion.indexOf('import("gsap")');
+  const gsapImports = [...motion.matchAll(/import\(\s*["'](gsap(?:\/[^"']+)?)["']\s*\)/g)];
+  const importedGsapModules = gsapImports.map((match) => match[1]);
   assert.ok(reducedMotionGate >= 0, "the reduced-motion early return is present");
-  assert.ok(firstGsapImport > reducedMotionGate, "the reduced-motion gate precedes every GSAP import path");
+  assert.ok(importedGsapModules.includes("gsap"), "the core GSAP dynamic import is present");
+  assert.ok(importedGsapModules.includes("gsap/ScrollTrigger"), "the ScrollTrigger dynamic import is present");
+  for (const gsapImport of gsapImports) {
+    assert.ok(gsapImport.index > reducedMotionGate, `${gsapImport[1]} imports after the reduced-motion gate`);
+  }
   assert.doesNotMatch(motion, /querySelectorAll<HTMLElement>\("\[data-motion-reveal\]"\)/);
   assert.doesNotMatch(motion, /data-reveal-group|data-portrait-reveal|data-project-panel/);
   assert.match(motion, /page === "home" \? "#work" : "\[data-about-portrait\]"/);
@@ -225,9 +230,12 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(aboutReveal, /clipPath: "inset\(0 0 100% 0\)"[\s\S]*duration: 0\.72[\s\S]*ease: "expo\.out"[\s\S]*clearProps: "clipPath"[\s\S]*scrollTrigger: \{ trigger: aboutPortrait, start: "top 84%", once: true \}/);
   assert.match(css, /html\[data-motion="full"\] \[data-home-hero-copy\][\s\S]*animation: hero-copy-in 0\.85s/);
   const reducedMotionCss = extractSourceBlock(css, "@media (prefers-reduced-motion: reduce)");
-  assert.match(reducedMotionCss, /\*,\s*\*::before,\s*\*::after\s*\{[\s\S]*animation-duration:\s*0\.01ms\s*!important/);
-  assert.match(reducedMotionCss, /animation-iteration-count:\s*1\s*!important/);
-  assert.match(reducedMotionCss, /transition-duration:\s*0\.01ms\s*!important/);
+  const universalSelector = reducedMotionCss.match(/\*\s*,\s*\*::before\s*,\s*\*::after\s*\{/);
+  assert.ok(universalSelector, "the reduced-motion universal selector is present");
+  const universalReducedMotionRule = extractSourceBlock(reducedMotionCss, universalSelector[0]);
+  assert.match(universalReducedMotionRule, /animation-duration:\s*0\.01ms\s*!important/);
+  assert.match(universalReducedMotionRule, /animation-iteration-count:\s*1\s*!important/);
+  assert.match(universalReducedMotionRule, /transition-duration:\s*0\.01ms\s*!important/);
   assert.match(reducedMotionCss, /html\[data-motion="reduced"\] \[data-home-hero-copy\][\s\S]*animation:\s*none\s*!important/);
   assert.match(connectedBuild, /Engineer the intelligence/);
   assert.match(connectedBuild, /AI video is the communication layer of the same build/);
