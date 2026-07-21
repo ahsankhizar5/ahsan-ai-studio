@@ -171,10 +171,12 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(header, /observer\?\.disconnect\(\)/);
   assert.match(header, /querySelector<HTMLAnchorElement>\("a"\)\?\.focus\(\)/);
   assert.match(header, /querySelectorAll<HTMLAnchorElement>\("a\[href\]"\)/);
+  assert.match(header, /event\.key === "Escape"/);
   assert.match(header, /event\.key !== "Tab"/);
   assert.match(header, /event\.shiftKey/);
   assert.match(header, /document\.addEventListener\("keydown", handleFocusContainment\)/);
   assert.match(header, /document\.removeEventListener\("keydown", handleFocusContainment\)/);
+  assert.doesNotMatch(header, /onKeyDown=\{handleMobileMenuKeyDown\}/);
   assert.match(header, /restoreTriggerFocus\.current = true/);
   assert.match(header, /menuButtonRef\.current\?\.focus\(\)/);
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
@@ -311,6 +313,9 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(browserAudit, /restores focus to the menu trigger after Escape/);
   assert.match(browserAudit, /wraps forward focus from the last menu control to the trigger/);
   assert.match(browserAudit, /wraps reverse focus from the trigger to the last menu control/);
+  assert.match(browserAudit, /closes from the wrapped trigger and retains trigger focus/);
+  assert.match(browserAudit, /firstMenuLink\.press\("Enter"\)/);
+  assert.match(browserAudit, /window\.location\.hash === "#work"/);
   assert.match(browserAudit, /keeps forward focus inside the open menu/);
   assert.match(browserAudit, /keeps reverse focus inside the open menu/);
   assert.match(browserAudit, /async function auditHeaderBoundary/);

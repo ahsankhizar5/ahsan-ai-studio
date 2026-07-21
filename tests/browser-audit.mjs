@@ -216,6 +216,22 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
       `${name} keeps forward focus inside the open menu`,
     );
 
+    await page.keyboard.press("Escape");
+    assert.equal(await menu.getAttribute("aria-label"), "Open menu");
+    assert.equal(await menu.getAttribute("aria-expanded"), "false");
+    assert.equal(await page.locator("#mobile-menu").getAttribute("data-open"), "false");
+    assert.equal(
+      await menu.evaluate((button) => document.activeElement === button),
+      true,
+      `${name} closes from the wrapped trigger and retains trigger focus`,
+    );
+
+    await menu.click();
+    await page.waitForFunction(
+      (link) => document.activeElement === link,
+      await firstMenuLink.elementHandle(),
+    );
+    await menu.focus();
     await page.keyboard.press("Shift+Tab");
     assert.equal(
       await lastMenuLink.evaluate((link) => document.activeElement === link),
@@ -239,6 +255,25 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
       true,
       `${name} restores focus to the menu trigger after Escape`,
     );
+
+    if (path === "/") {
+      await menu.click();
+      await page.waitForFunction(
+        (link) => document.activeElement === link,
+        await firstMenuLink.elementHandle(),
+      );
+      await firstMenuLink.press("Enter");
+      await page.waitForFunction(() => window.location.hash === "#work");
+      assert.equal(await menu.getAttribute("aria-label"), "Open menu");
+      assert.equal(await menu.getAttribute("aria-expanded"), "false");
+      assert.equal(await page.locator("#mobile-menu").getAttribute("data-open"), "false");
+
+      await page.evaluate(() => {
+        history.replaceState(null, "", window.location.pathname);
+        document.documentElement.style.scrollBehavior = "auto";
+        window.scrollTo(0, 0);
+      });
+    }
   }
 
   assert.deepEqual(errors, []);

@@ -90,6 +90,13 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       }
 
       function handleFocusContainment(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          restoreTriggerFocus.current = true;
+          setMenuOpen(false);
+          return;
+        }
+
         if (event.key !== "Tab") return;
 
         const focusTargets = getFocusTargets();
@@ -127,13 +134,6 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
   }, [menuOpen]);
 
   function closeMenu() {
-    setMenuOpen(false);
-  }
-
-  function handleMobileMenuKeyDown(event: React.KeyboardEvent<HTMLElement>) {
-    if (event.key !== "Escape") return;
-    event.preventDefault();
-    restoreTriggerFocus.current = true;
     setMenuOpen(false);
   }
 
@@ -186,7 +186,6 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
         aria-label="Mobile navigation"
         data-open={menuOpen}
         ref={mobileMenuRef}
-        onKeyDown={handleMobileMenuKeyDown}
       >
         <NavigationLinks activePage={activePage} onNavigate={closeMenu} />
         <a className="mobile-menu-cta" href={anchorHref(activePage, "contact")} onClick={closeMenu}>
