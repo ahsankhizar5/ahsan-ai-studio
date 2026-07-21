@@ -3803,7 +3803,8 @@ html[data-motion="full"] .operator-frame {
 }
 
 .red-noir-contact :focus-visible {
-  box-shadow: 0 0 0 6px var(--stage);
+  outline-color: var(--white);
+  box-shadow: 0 0 0 6px #ffd870;
 }
 
 @media (min-width: 640px) {
