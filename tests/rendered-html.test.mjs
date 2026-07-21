@@ -35,20 +35,27 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /powerful products people understand and trust/i);
   assert.match(html, /one connected build/i);
   assert.match(html, /Evidence before promises/i);
+  assert.match(html, /id="practice"/i);
+  assert.match(html, /id="process"/i);
+  assert.match(html, /id="contact"/i);
+  assert.match(html, /Engineer the intelligence/i);
+  assert.match(html, /Make it usable/i);
+  assert.match(html, /Make the value clear/i);
+  assert.match(html, /Product demonstrations/i);
+  assert.match(html, /Avatar-led explainers/i);
+  assert.match(html, /UGC &amp; performance ads/i);
+  assert.doesNotMatch(html, /Ways to work together|Have a video brief instead|Send a video brief/i);
   assert.match(html, /Discuss your project/i);
   assert.match(html, /data-hero-media/i);
   assert.match(html, /data-home-hero-copy/i);
   assert.match(html, /class="hero-capability-rail"/i);
   assert.doesNotMatch(html, /ahsan-khizar\.(?:webp|png)|Portrait of Ahsan Khizar/i);
   assert.match(html, /AI engineering/i);
-  assert.match(html, /AI video production/i);
+  assert.match(html, /Communication layer/i);
   assert.match(html, /Audio Deepfake Detection System/i);
   assert.match(html, /DocuSync/i);
   assert.match(html, /PIGEON Reproduction/i);
   assert.match(html, /Customer Behavior Profiling/i);
-  assert.match(html, /Qadri Group/i);
-  assert.match(html, /DevelopersHub Corporation/i);
-  assert.match(html, /Prodigy InfoTech/i);
   assert.match(html, /All Pakistan Prompt Engineering Competition/i);
   assert.match(html, /Global AI Hackathon/i);
   assert.match(html, /ahsankhizar1075@gmail\.com/i);
@@ -60,8 +67,9 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /\/og\.png/i);
   assert.match(html, /Skip to main content/i);
   assert.match(html, /id="work"/i);
-  assert.match(html, /id="services"/i);
-  assert.match(html, /id="experience"/i);
+  assert.match(html, /id="practice"/i);
+  assert.match(html, /id="process"/i);
+  assert.match(html, /id="contact"/i);
   assert.match(html, /href="\/about"/i);
   assert.match(html, /data-project-stage/i);
   assert.match(html, /data-motion-page="home"/i);
@@ -115,7 +123,7 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header, hero, media, projectStage] = await Promise.all([
+  const [page, css, layout, header, hero, media, projectStage, connectedBuild] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -123,6 +131,7 @@ test("source preserves accessible and responsive contracts", async () => {
     readFile(new URL("../app/components/HomepageHero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/HeroMedia.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ProjectStage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ConnectedBuild.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<SiteHeader activePage="home"/);
@@ -132,10 +141,17 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(header, /aria-label=\{menuOpen \? "Close menu" : "Open menu"\}/);
   assert.match(page, /<main id="main-content"[^>]*data-motion-page="home"[^>]*>/);
   assert.match(projectStage, /aria-labelledby="work-title"/);
-  assert.match(page, /aria-labelledby="services-title"/);
+  assert.match(connectedBuild, /id="practice"/);
+  assert.match(connectedBuild, /aria-labelledby="practice-title"/);
   assert.match(page, /<HomepageHero email=\{profile\.email\} location=\{profile\.location\} \/>/);
   assert.doesNotMatch(page, /ahsan-khizar\.(?:webp|png)|operator-(?:frame|portrait)/i);
-  assert.match(page, /className="engagement-paths"/);
+  assert.match(page, /className="positioning-scene"/);
+  assert.match(page, /className="unified-process"/);
+  assert.match(page, /className="recognition-band"/);
+  assert.match(page, /className="red-noir-contact"/);
+  assert.match(page, /technicalCapabilities\.aiMl\[0\]/);
+  assert.match(page, /<ConnectedBuild videoServices=\{videoServices\} \/>/);
+  assert.doesNotMatch(page, /engagement-section|proof-timeline|about-conversion|Send a video brief/i);
   assert.match(page, /<MotionController page="home" \/>/);
   assert.match(projectStage, /rel="noreferrer"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
@@ -168,6 +184,17 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(projectStage, /getElementById\(`project-tab-\$\{nextIndex\}`\)\?\.focus\(\)/);
   assert.match(projectStage, /project-stage-mobile/);
   assert.match(projectStage, /data-project-panel/);
+  assert.match(connectedBuild, /data-pipeline/);
+  assert.match(connectedBuild, /data-reveal-group/);
+  assert.match(connectedBuild, /Engineer the intelligence/);
+  assert.match(connectedBuild, /AI video is the communication layer of the same build/);
+  assert.match(css, /\.positioning-scene\s*\{/);
+  assert.match(css, /\.connected-build\s*\{/);
+  assert.match(css, /\.video-layer\s*\{/);
+  assert.match(css, /\.unified-process\s*\{/);
+  assert.match(css, /\.recognition-band\s*\{/);
+  assert.match(css, /\.red-noir-contact\s*\{/);
+  assert.match(css, /\.red-noir-contact-actions[\s\S]*?min-height:\s*2\.75rem/);
   assert.match(page, /"DocuSync",[\s\S]*"PIGEON Reproduction",[\s\S]*"Audio Deepfake Detection System",[\s\S]*"Customer Behavior Profiling"/);
   assert.match(page, /<ProjectStage projects=\{featuredProjects\} \/>/);
 });
