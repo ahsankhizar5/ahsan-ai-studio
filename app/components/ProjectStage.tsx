@@ -11,6 +11,7 @@ type ProjectStageProps = {
 export function ProjectStage({ projects }: ProjectStageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const panelRef = useRef<HTMLElement>(null);
+  const hasMountedPanel = useRef(false);
 
   function selectFromKeyboard(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
@@ -30,6 +31,11 @@ export function ProjectStage({ projects }: ProjectStageProps) {
   }
 
   useEffect(() => {
+    if (!hasMountedPanel.current) {
+      hasMountedPanel.current = true;
+      return;
+    }
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !panelRef.current) return;
 
     let active = true;

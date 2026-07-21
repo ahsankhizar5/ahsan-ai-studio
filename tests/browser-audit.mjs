@@ -142,14 +142,39 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     "Skip to main content",
   );
 
+  if (path === "/") {
+    const hero = page.locator(".cinematic-hero");
+    await assert.doesNotReject(() => hero.waitFor({ state: "visible" }));
+    const heroBox = await hero.boundingBox();
+    assert.ok(
+      heroBox && heroBox.height >= Math.min(viewport.height * 0.9, 820),
+      `${name} hero is not viewport-led`,
+    );
+    assert.equal(
+      await page.locator('main[data-motion-page="home"] img[src*="ahsan-khizar"]').count(),
+      0,
+    );
+
+    if (viewport.width >= 768) {
+      const tabs = page.getByRole("tab");
+      assert.equal(await tabs.count(), 4, `${name} project stage must expose four tabs`);
+      await tabs.nth(0).focus();
+      await page.keyboard.press("ArrowRight");
+      assert.equal(await tabs.nth(1).getAttribute("aria-selected"), "true");
+    }
+  }
+
   if (mobile) {
-    const menu = page.getByRole("button", { name: /open menu/i });
+    const menu = page.locator(".menu-button");
+    assert.equal(await menu.getAttribute("aria-label"), "Open menu");
     await menu.click();
     await expectVisible(
       page.getByRole("navigation", { name: "Mobile navigation" }),
     );
+    assert.equal(await menu.getAttribute("aria-label"), "Close menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "true");
     await page.keyboard.press("Escape");
+    assert.equal(await menu.getAttribute("aria-label"), "Open menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "false");
   }
 
@@ -230,7 +255,7 @@ async function auditDeferredMotion() {
     "GSAP stays off the initial rendering path",
   );
 
-  await page.locator("#services").scrollIntoViewIfNeeded();
+  await page.locator("#work").scrollIntoViewIfNeeded();
   await page.waitForFunction(
     (pattern) =>
       performance
@@ -245,7 +270,7 @@ async function auditDeferredMotion() {
     reducedMotion: "reduce",
   });
   await reducedPage.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await reducedPage.locator("#services").scrollIntoViewIfNeeded();
+  await reducedPage.locator("#work").scrollIntoViewIfNeeded();
   assert.equal(
     await reducedPage.evaluate((pattern) =>
       performance

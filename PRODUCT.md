@@ -16,6 +16,8 @@ Founders, product teams, and organizations looking for one technically credible 
 
 Present Ahsan Khizar as one serious AI engineer with a complementary AI-video production capability. The site should make technical depth immediately clear, show real engineering work, explain the video offer without turning it into a second persona, and convert qualified visitors into project conversations.
 
+The homepage is a seven-scene narrative: a cinematic positioning hero; a system-to-story positioning scene with a credibility rail; an engineering-first project stage; a connected build pipeline; a concise video communication layer; one unified process; and a recognition/contact close. Engineering evidence leads the hierarchy throughout; video remains a communication layer of the same one-person practice.
+
 ## Positioning
 
 Ahsan transforms complex AI ideas into powerful products people understand and trust. He leads the system, demos, and launch content as one connected build.
@@ -43,6 +45,7 @@ Do not inspect or reuse any prior personal-brand identity system. Avoid split pe
 3. Selling lines communicate outcomes before discipline labels.
 4. Real projects and concrete capabilities replace invented metrics or testimonials.
 5. Poster-scale typography creates distinction; semantic structure keeps it usable.
+6. The homepage never uses Ahsan's portrait; the factual portrait belongs exclusively to the About page.
 
 ## Accessibility & Inclusion
 

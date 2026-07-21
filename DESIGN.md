@@ -28,26 +28,27 @@ Black text is used on optical white, carmine, citrus, cyan, and silver. White-on
 
 ## Layout
 
-- Mobile-first and responsive at 375px, 768px, 1024px, and 1440px.
-- Desktop hero uses an asymmetric 7/5 composition; mobile stacks in reading order.
+- Responsive contracts are verified at 375px, 390px, 768px, 1024px, and 1440px with no horizontal overflow or hidden substantive content.
+- The viewport-led homepage hero uses local responsive WebP media; mobile keeps the positioning copy and actions above the capability rail without replacing the media or message.
 - Use a 4px-based spacing scale with deliberate tight groups and generous section separations.
-- Hard-edged fields and 1px rules create structure. Avoid rounded card grids and decorative shadows.
+- Hard-edged fields and 1px rules create structure. Section and card radii never exceed 14px; avoid rounded card grids and decorative shadows.
 - AI engineering receives the strongest colored field and the largest proof section. AI video remains visually distinct but shorter.
 
 ## Components
 
-- Header: name, compact discipline statement, anchor navigation, project CTA.
-- Hero: name, primary selling line, short positioning copy, two outcome-led CTAs.
-- Engineering field: selling headline, capabilities, and real project proof.
-- Video field: selling headline and service formats including avatars, UGC, ads, demos, explainers, localization, and content variations.
+- Header: name, compact discipline statement, anchor navigation, project CTA. Purposeful glass is reserved for the hero header only.
+- Hero: local cinematic media, primary selling line, short positioning copy, two outcome-led CTAs, and a capability rail.
+- Project stage: four keyboard-operable tabs on tablet and desktop; all four projects become a complete linear reading sequence on mobile.
+- Engineering field: selling headline, capabilities, and real project proof, followed by one connected system-to-story pipeline.
+- Video field: a concise communication layer with formats including avatars, UGC, ads, demos, explainers, localization, and content variations.
 - Process strip: one shared process across both capabilities.
-- About/proof section: concise biography, selected recognition, GitHub and LinkedIn links.
+- About/proof section: concise biography, selected recognition, GitHub and LinkedIn links. The homepage contains no portrait; the About figure layers the factual portrait over three aria-hidden carmine, citrus, and cyan color fields with a semantic caption.
 - Contact section: direct email CTA with accessible copy-to-email enhancement.
 - Footer: one identity, social links, current year.
 
 ## Motion
 
-Use one orchestrated hero entrance and concise interaction feedback. No scroll-jacking, parallax, cursor replacement, or repeated fade-up sections. Keep feedback under 300ms and provide a `prefers-reduced-motion` path that removes translation and timing delays.
+Use one orchestrated hero entrance, a focused connected-pipeline reveal, a focused About portrait reveal, and concise interaction feedback. Motion never gates content visibility. No scroll-jacking, parallax, cursor replacement, blanket section fades, or canvas effects. Keep feedback under 300ms and provide a `prefers-reduced-motion` path that removes translation and timing delays and avoids downloading motion code.
 
 ## Content Rules
 

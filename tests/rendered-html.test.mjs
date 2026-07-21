@@ -182,6 +182,10 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /--signal-cyan:\s*#00d8d2/i);
   assert.match(css, /@media \(max-width:\s*760px\)/);
   assert.match(layout, /alternates:\s*\{ canonical:\s*"\/" \}/);
+  assert.equal(
+    (layout.match(/Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust—from the system to the story that explains it\./g) ?? []).length,
+    3,
+  );
   assert.doesNotMatch(css, /background-clip:\s*text|repeating-linear-gradient|border-radius:\s*(3[2-9]|[4-9]\d)px/i);
   assert.match(hero, /I transform complex AI ideas into/);
   assert.match(hero, /powerful products people understand and trust/);
@@ -268,9 +272,16 @@ test("About source preserves semantic, responsive, and metadata contracts", asyn
 
   assert.match(aboutPortrait, /ahsan-khizar\.webp/);
   assert.match(aboutPortrait, /data-about-portrait/);
+  assert.match(aboutPortrait, /<figure/);
+  assert.match(aboutPortrait, /<figcaption/);
+  assert.equal((aboutPortrait.match(/aria-hidden="true"/g) ?? []).length, 3);
   assert.match(aboutPortrait, /alt="Portrait of Ahsan Khizar"/);
   assert.match(about, /<AboutPortrait/);
   assert.match(css, /\.about-portrait-color-field/);
+  assert.doesNotMatch(
+    css,
+    /\.about-portrait(?:\s|::before|\s+img|-caption)(?!-art|-color-field|-red|-citrus|-cyan)/,
+  );
   assert.match(about, /export const metadata/);
   assert.match(about, /alternates:\s*\{ canonical:\s*"\/about" \}/);
   assert.match(about, /<main id="main-content" data-motion-page="about">/);

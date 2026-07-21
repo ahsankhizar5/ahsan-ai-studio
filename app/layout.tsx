@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase,
     title: "Ahsan Khizar — AI Engineer & AI Video Producer",
     description:
-      "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust.",
+      "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust—from the system to the story that explains it.",
     alternates: { canonical: "/" },
     applicationName: "Ahsan Khizar",
     authors: [{ name: "Ahsan Khizar" }],
@@ -32,7 +32,8 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       url: "/",
       title: "Ahsan Khizar — AI ideas transformed into trusted products",
-      description: "From the system behind the product to the content that explains it: one connected build.",
+      description:
+        "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust—from the system to the story that explains it.",
       siteName: "Ahsan Khizar",
       locale: "en_US",
       images: [
@@ -47,7 +48,8 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "Ahsan Khizar — AI ideas transformed into trusted products",
-      description: "From the system behind the product to the content that explains it: one connected build.",
+      description:
+        "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust—from the system to the story that explains it.",
       images: ["/og.png"],
     },
     icons: {
