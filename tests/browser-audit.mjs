@@ -156,7 +156,8 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     );
 
     if (viewport.width >= 768) {
-      const tabs = page.getByRole("tab");
+      const projectStage = page.locator("[data-project-stage]");
+      const tabs = projectStage.getByRole("tab");
       assert.equal(await tabs.count(), 4, `${name} project stage must expose four tabs`);
       await tabs.nth(0).focus();
       await page.keyboard.press("ArrowRight");
@@ -270,6 +271,13 @@ async function auditDeferredMotion() {
     reducedMotion: "reduce",
   });
   await reducedPage.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await reducedPage.waitForFunction(
+    () => document.documentElement.dataset.motion === "reduced",
+  );
+  assert.equal(
+    await reducedPage.locator("html").getAttribute("data-motion"),
+    "reduced",
+  );
   await reducedPage.locator("#work").scrollIntoViewIfNeeded();
   assert.equal(
     await reducedPage.evaluate((pattern) =>

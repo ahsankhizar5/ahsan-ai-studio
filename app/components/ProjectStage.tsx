@@ -10,8 +10,13 @@ type ProjectStageProps = {
 
 export function ProjectStage({ projects }: ProjectStageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectionVersion, setSelectionVersion] = useState(0);
   const panelRef = useRef<HTMLElement>(null);
-  const hasMountedPanel = useRef(false);
+
+  function selectProject(index: number) {
+    setActiveIndex(index);
+    setSelectionVersion((version) => version + 1);
+  }
 
   function selectFromKeyboard(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
@@ -26,15 +31,12 @@ export function ProjectStage({ projects }: ProjectStageProps) {
             ? (index + 1) % projects.length
             : (index - 1 + projects.length) % projects.length;
 
-    setActiveIndex(nextIndex);
+    selectProject(nextIndex);
     document.getElementById(`project-tab-${nextIndex}`)?.focus();
   }
 
   useEffect(() => {
-    if (!hasMountedPanel.current) {
-      hasMountedPanel.current = true;
-      return;
-    }
+    if (selectionVersion === 0) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !panelRef.current) return;
 
@@ -63,7 +65,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
       active = false;
       context?.revert();
     };
-  }, [activeIndex]);
+  }, [activeIndex, selectionVersion]);
 
   const activeProject = projects[activeIndex];
   if (!activeProject) return null;
@@ -94,7 +96,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
               aria-selected={index === activeIndex}
               aria-controls="active-project-panel"
               tabIndex={index === activeIndex ? 0 : -1}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => selectProject(index)}
               onKeyDown={(event) => selectFromKeyboard(event, index)}
             >
               {project.name}

@@ -140,7 +140,7 @@ test("publishes absolute crawl endpoints", async () => {
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header, hero, media, projectStage, connectedBuild, motion] = await Promise.all([
+  const [page, css, layout, header, hero, media, projectStage, connectedBuild, motion, browserAudit] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -150,6 +150,7 @@ test("source preserves accessible and responsive contracts", async () => {
     readFile(new URL("../app/components/ProjectStage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ConnectedBuild.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/MotionController.tsx", import.meta.url), "utf8"),
+    readFile(new URL("./browser-audit.mjs", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /<SiteHeader activePage="home"/);
@@ -204,8 +205,18 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(projectStage, /onKeyDown/);
   assert.match(projectStage, /"ArrowLeft", "ArrowRight", "Home", "End"/);
   assert.match(projectStage, /getElementById\(`project-tab-\$\{nextIndex\}`\)\?\.focus\(\)/);
+  assert.match(projectStage, /const \[selectionVersion, setSelectionVersion\] = useState\(0\)/);
+  assert.match(projectStage, /if \(selectionVersion === 0\) return/);
+  assert.match(projectStage, /setSelectionVersion\(\(version\) => version \+ 1\)/);
+  assert.match(projectStage, /selectProject\(nextIndex\)/);
+  assert.match(projectStage, /onClick=\{\(\) => selectProject\(index\)\}/);
+  assert.match(projectStage, /\[activeIndex, selectionVersion\]/);
+  assert.doesNotMatch(projectStage, /hasMountedPanel/);
   assert.match(projectStage, /project-stage-mobile/);
   assert.match(projectStage, /data-project-panel/);
+  assert.match(browserAudit, /const projectStage = page\.locator\("\[data-project-stage\]"\)/);
+  assert.match(browserAudit, /projectStage\.getByRole\("tab"\)/);
+  assert.match(browserAudit, /document\.documentElement\.dataset\.motion === "reduced"/);
   assert.match(connectedBuild, /data-pipeline/);
   assert.match(connectedBuild, /data-reveal-group/);
   assert.match(motion, /data-pipeline/);
