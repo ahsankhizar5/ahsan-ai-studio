@@ -312,7 +312,7 @@ export function HeroMedia() {
         <img
           src="/hero-system-story-1728.webp"
           width={1728}
-          height={972}
+          height={973}
           alt=""
           fetchPriority="high"
           decoding="async"
