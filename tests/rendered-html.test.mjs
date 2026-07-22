@@ -144,7 +144,7 @@ test("server-renders the factual portrait-led About page", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>About Ahsan Khizar \u2014 AI Engineer &amp; AI Video Producer<\/title>/i);
-  assert.match(html, /<link rel="canonical" href="http:\/\/localhost(?::3000)?\/about"/i);
+  assert.match(html, /<link rel="canonical" href="https:\/\/ahsankhizar\.me\/about"/i);
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
   assert.match(html, /University of Engineering and Technology, Taxila/i);
   assert.match(html, /Bachelor of Engineering in Software Engineering/i);
@@ -158,13 +158,13 @@ test("server-renders the factual portrait-led About page", async () => {
   const jsonLd = JSON.parse(jsonLdSource);
   assert.equal(jsonLd["@context"], "https://schema.org");
   assert.equal(jsonLd["@type"], "AboutPage");
-  assert.match(jsonLd.url, /^http:\/\/localhost(?::3000)?\/about$/);
+  assert.equal(jsonLd.url, "https://ahsankhizar.me/about");
   assert.equal(jsonLd.mainEntity["@type"], "Person");
   assert.equal(jsonLd.mainEntity.name, "Ahsan Khizar");
   assert.equal(jsonLd.primaryImageOfPage["@type"], "ImageObject");
   assert.equal(jsonLd.primaryImageOfPage.width, 1024);
   assert.equal(jsonLd.primaryImageOfPage.height, 1536);
-  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/media\/about-ai-model-bloom-cutout\.webp$/);
+  assert.equal(jsonLd.primaryImageOfPage.url, "https://ahsankhizar.me/media/about-ai-model-bloom-cutout.webp");
   assert.match(
     html,
     /<img[^>]*src="\/media\/about-ai-model-bloom-cutout\.webp"[^>]*alt="Ahsan Khizar, shown as a human and applied-AI systems builder"/i,
@@ -181,7 +181,7 @@ test("server-renders the dedicated contact experience", async () => {
 
   const html = await response.text();
   assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
-  assert.match(html, /<link rel="canonical" href="http:\/\/localhost(?::3000)?\/contact"/i);
+  assert.match(html, /<link rel="canonical" href="https:\/\/ahsankhizar\.me\/contact"/i);
   assert.match(html, /data-motion-page="contact"/i);
   assert.match(html, /data-contact-sequence/i);
   assert.match(html, /Bring me the hard part/i);
@@ -193,11 +193,11 @@ test("publishes absolute crawl endpoints", async () => {
   const [robotsResponse, sitemapResponse] = await Promise.all([render("/robots.txt"), render("/sitemap.xml")]);
   assert.equal(robotsResponse.status, 200);
   assert.equal(sitemapResponse.status, 200);
-  assert.match(await robotsResponse.text(), /Sitemap: http:\/\/localhost\/sitemap\.xml/i);
+  assert.match(await robotsResponse.text(), /Sitemap: https:\/\/ahsankhizar\.me\/sitemap\.xml/i);
   const sitemap = await sitemapResponse.text();
-  assert.match(sitemap, /<loc>http:\/\/localhost\/<\/loc>/i);
-  assert.match(sitemap, /<loc>http:\/\/localhost\/about<\/loc>/i);
-  assert.match(sitemap, /<loc>http:\/\/localhost\/contact<\/loc>/i);
+  assert.match(sitemap, /<loc>https:\/\/ahsankhizar\.me\/<\/loc>/i);
+  assert.match(sitemap, /<loc>https:\/\/ahsankhizar\.me\/about<\/loc>/i);
+  assert.match(sitemap, /<loc>https:\/\/ahsankhizar\.me\/contact<\/loc>/i);
 });
 
 test("source preserves accessible and responsive contracts", async () => {
