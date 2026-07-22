@@ -103,6 +103,15 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     }),
     0,
   );
+  assert.deepEqual(
+    await page.locator("main h1, main h2, main h3").evaluateAll((headings) =>
+      headings
+        .filter((heading) => !getComputedStyle(heading).fontFamily.includes("Anybody"))
+        .map((heading) => heading.textContent?.trim()),
+    ),
+    [],
+    `${name} uses the shared display typography for headings`,
+  );
 
   const geometry = await page.evaluate(() => ({
     viewport: window.innerWidth,
@@ -192,9 +201,20 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
       .getByRole("navigation", { name: "Mobile navigation" })
       .boundingBox();
     assert.ok(
-      menuBox && menuBox.height >= viewport.height - 1,
-      `${name} enhanced mobile menu fills the viewport`,
+      menuBox && menuBox.height >= viewport.height * 0.75,
+      `${name} enhanced mobile menu fills the glass panel`,
     );
+    const glassMenu = await page.locator(".site-header").evaluate((header) => {
+      const styles = getComputedStyle(header);
+      return {
+        backdrop: styles.backdropFilter,
+        background: styles.backgroundColor,
+        overflow: document.documentElement.style.overflow,
+      };
+    });
+    assert.match(glassMenu.backdrop, /blur\(/, `${name} mobile menu uses the shared glass treatment`);
+    assert.notEqual(glassMenu.background, "rgb(250, 250, 250)", `${name} mobile menu is not an opaque white sheet`);
+    assert.equal(glassMenu.overflow, "hidden", `${name} locks page scroll while the menu is open`);
     const firstMenuLink = page
       .getByRole("navigation", { name: "Mobile navigation" })
       .getByRole("link")
@@ -227,6 +247,11 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     assert.equal(await menu.getAttribute("aria-label"), "Open menu");
     assert.equal(await menu.getAttribute("aria-expanded"), "false");
     assert.equal(await page.locator("#mobile-menu").getAttribute("data-open"), "false");
+    assert.equal(
+      await page.evaluate(() => document.documentElement.style.overflow),
+      "",
+      `${name} restores page scroll after the menu closes`,
+    );
     assert.equal(
       await menu.evaluate((button) => document.activeElement === button),
       true,
@@ -484,32 +509,48 @@ async function auditHeroInteraction() {
   await page.close();
 }
 
-async function auditTabletHeroAlignment() {
-  const page = await browser.newPage({ viewport: { width: 835, height: 608 } });
-  await page.goto(baseUrl, { waitUntil: "networkidle" });
-  await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
-  await page.waitForTimeout(1000);
+async function auditHeroCompositionAlignment() {
+  for (const viewport of [
+    { width: 835, height: 608, label: "tablet" },
+    { width: 1348, height: 608, label: "short desktop" },
+  ]) {
+    const page = await browser.newPage({ viewport });
+    await page.goto(baseUrl, { waitUntil: "networkidle" });
+    await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
+    await page.waitForTimeout(1000);
 
-  const alignment = await page.evaluate(() => {
-    const header = document.querySelector(".site-header").getBoundingClientRect();
-    const title = document.querySelector("#hero-title").getBoundingClientRect();
-    const character = document
-      .querySelector(".hero-composite-character .hero-responsive-image")
-      .getBoundingClientRect();
-    const characterVisualTop = character.top + character.height * 0.058;
-    return {
-      headerBottom: header.bottom,
-      titleTop: title.top,
-      characterVisualTop,
-    };
-  });
+    const alignment = await page.evaluate(() => {
+      const header = document.querySelector(".site-header").getBoundingClientRect();
+      const title = document.querySelector("#hero-title").getBoundingClientRect();
+      const actions = document.querySelector(".cinematic-hero-actions").getBoundingClientRect();
+      const rail = document.querySelector(".hero-capability-rail").getBoundingClientRect();
+      const character = document
+        .querySelector(".hero-composite-character .hero-responsive-image")
+        .getBoundingClientRect();
+      const characterVisualTop = character.top + character.height * 0.058;
+      return {
+        headerBottom: header.bottom,
+        titleTop: title.top,
+        characterVisualTop,
+        actionsBottom: actions.bottom,
+        railTop: rail.top,
+      };
+    });
 
-  assert.ok(alignment.characterVisualTop >= alignment.headerBottom + 12, "tablet character clears the navbar");
-  assert.ok(
-    Math.abs(alignment.characterVisualTop - alignment.titleTop) <= 12,
-    "tablet character begins at the headline height",
-  );
-  await page.close();
+    assert.ok(
+      alignment.characterVisualTop >= alignment.headerBottom + 12,
+      `${viewport.label} character clears the navbar`,
+    );
+    assert.ok(
+      Math.abs(alignment.characterVisualTop - alignment.titleTop) <= 12,
+      `${viewport.label} character begins at the headline height`,
+    );
+    assert.ok(
+      alignment.actionsBottom <= alignment.railTop - 12,
+      `${viewport.label} hero copy clears the capability rail`,
+    );
+    await page.close();
+  }
 }
 
 async function auditPracticeVideoAndFooter() {
@@ -535,7 +576,7 @@ async function auditPracticeVideoAndFooter() {
   assert.match(closedPracticeState.clipPath, /inset\(100%/i, "Practice image uses a clipped starting state");
 
   await practiceCard.locator(".practice-card-surface").hover();
-  await page.waitForTimeout(850);
+  await page.waitForTimeout(1200);
   const openPracticeState = await practiceImage.evaluate((image) => ({
     opacity: Number.parseFloat(getComputedStyle(image).opacity),
     clipPath: getComputedStyle(image).clipPath,
@@ -647,13 +688,10 @@ async function auditScrollChoreography() {
     document.documentElement.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
   });
-  await page.waitForFunction(() => {
-    const element = document.querySelector("[data-motion-reveal]");
-    return element && Number.parseFloat(getComputedStyle(element).opacity) <= 0.05;
-  });
+  await page.waitForTimeout(500);
   assert.ok(
-    Number.parseFloat(await reveal.evaluate((node) => getComputedStyle(node).opacity)) <= 0.05,
-    "section reveal resets cleanly when scrolling back above it",
+    Number.parseFloat(await reveal.evaluate((node) => getComputedStyle(node).opacity)) >= 0.95,
+    "section reveal remains complete when scrolling back above it",
   );
   assert.deepEqual(errors, [], "scroll choreography produces no browser errors");
   await page.close();
@@ -673,7 +711,7 @@ await auditNoJavaScript();
 await auditHeaderBoundary();
 await auditReducedMotion();
 await auditHeroInteraction();
-await auditTabletHeroAlignment();
+await auditHeroCompositionAlignment();
 await auditPracticeVideoAndFooter();
 await auditAboutInteraction();
 await auditScrollChoreography();

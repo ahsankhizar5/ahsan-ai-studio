@@ -19,7 +19,7 @@ function animateReveal(element: HTMLElement) {
     {
       opacity: 0,
       y: pageMotion.reveal.distance,
-      clipPath: "inset(0 0 14% 0)",
+      clipPath: "inset(0 0 8% 0)",
     },
     {
       opacity: 1,
@@ -29,8 +29,8 @@ function animateReveal(element: HTMLElement) {
       ease: pageMotion.reveal.ease,
       scrollTrigger: {
         trigger: element,
-        start: "top 86%",
-        toggleActions: "play none none reverse",
+        start: pageMotion.flow.start,
+        toggleActions: "play none none none",
       },
     },
   );
@@ -42,18 +42,17 @@ function animateGroup(group: HTMLElement) {
 
   return gsap.fromTo(
     children,
-    { opacity: 0, y: pageMotion.group.distance, rotationX: 3 },
+    { opacity: 0, y: pageMotion.group.distance },
     {
       opacity: 1,
       y: 0,
-      rotationX: 0,
       duration: pageMotion.group.duration,
       stagger: pageMotion.group.stagger,
       ease: pageMotion.group.ease,
       scrollTrigger: {
         trigger: group,
-        start: "top 84%",
-        toggleActions: "play none none reverse",
+        start: pageMotion.flow.start,
+        toggleActions: "play none none none",
       },
     },
   );
@@ -79,6 +78,17 @@ export function SiteMotion({ page }: SiteMotionProps) {
           .toArray<HTMLElement>("[data-reveal-group]", root)
           .filter((group) => !group.hasAttribute("data-pipeline"))
           .forEach((group) => animateGroup(group));
+
+        gsap.utils
+          .toArray<HTMLElement>("[data-motion-flow]", root)
+          .forEach((group) => animateGroup(group));
+
+        const footer = document.querySelector<HTMLElement>(".site-footer");
+        if (footer) {
+          gsap.utils
+            .toArray<HTMLElement>("[data-footer-flow]", footer)
+            .forEach((group) => animateGroup(group));
+        }
 
         gsap.utils.toArray<HTMLElement>(":scope > section:not(:first-child)", root).forEach((section) => {
           gsap.fromTo(
@@ -112,7 +122,7 @@ export function SiteMotion({ page }: SiteMotionProps) {
               scrollTrigger: {
                 trigger: pipeline,
                 start: "top 80%",
-                toggleActions: "play none none reverse",
+                toggleActions: "play none none none",
               },
             },
           );
@@ -205,7 +215,7 @@ export function SiteMotion({ page }: SiteMotionProps) {
                 scrollTrigger: {
                   trigger: ".active-project",
                   start: "top 80%",
-                  toggleActions: "play none none reverse",
+                  toggleActions: "play none none none",
                 },
               },
             );
@@ -243,7 +253,7 @@ export function SiteMotion({ page }: SiteMotionProps) {
                 scrollTrigger: {
                   trigger: ".recognition-band",
                   start: "top 84%",
-                  toggleActions: "play none none reverse",
+                  toggleActions: "play none none none",
                 },
               },
             );
@@ -300,7 +310,7 @@ export function SiteMotion({ page }: SiteMotionProps) {
                 scrollTrigger: {
                   trigger: ".about-philosophy-copy",
                   start: "top 84%",
-                  toggleActions: "play none none reverse",
+                  toggleActions: "play none none none",
                 },
               },
             );

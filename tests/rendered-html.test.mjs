@@ -351,7 +351,9 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(siteMotion, /\[data-pipeline\]/);
   assert.match(siteMotion, /\[data-video-service-preview\]/);
   assert.match(siteMotion, /\[data-video-service-scan\]/);
-  assert.match(siteMotion, /toggleActions: "play none none reverse"/);
+  assert.match(siteMotion, /toggleActions: "play none none none"/);
+  assert.match(siteMotion, /\[data-motion-flow\]/);
+  assert.match(siteMotion, /\[data-footer-flow\]/);
   assert.match(siteMotion, /scrub: 0\.8/);
   assert.match(projectStage, /\.catch\(\(error: unknown\)/);
   assert.match(projectStage, /Project transition enhancement unavailable/);

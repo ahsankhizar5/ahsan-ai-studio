@@ -82,6 +82,9 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
 
   useEffect(() => {
     if (menuOpen) {
+      const previousOverflow = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = "hidden";
+
       function getFocusTargets() {
         const trigger = menuButtonRef.current;
         const menuLinks = mobileMenuRef.current
@@ -127,6 +130,7 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       document.addEventListener("keydown", handleFocusContainment);
 
       return () => {
+        document.documentElement.style.overflow = previousOverflow;
         window.cancelAnimationFrame(focusFrame);
         document.removeEventListener("keydown", handleFocusContainment);
       };

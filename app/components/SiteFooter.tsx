@@ -7,14 +7,14 @@ import { AkMark } from "./AkMark";
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div className="footer-invitation">
+      <div className="footer-invitation" data-footer-flow>
         <p>Have an AI product that needs to become real?</p>
         <a className="footer-email" href="/contact">
           Start with the problem <span aria-hidden="true">↗</span>
         </a>
       </div>
 
-      <div className="footer-directory">
+      <div className="footer-directory" data-footer-flow>
         <div className="footer-identity">
           <AkMark />
           <div>
@@ -38,8 +38,10 @@ export function SiteFooter() {
         </nav>
       </div>
 
-      <p className="footer-wordmark" aria-hidden="true">AHSAN KHIZAR</p>
-      <div className="footer-meta">
+      <div data-footer-flow>
+        <p className="footer-wordmark" aria-hidden="true">AHSAN KHIZAR</p>
+      </div>
+      <div className="footer-meta" data-footer-flow>
         <span>© {new Date().getFullYear()} {profile.name}</span>
         <span>{profile.location} · Available for remote projects</span>
         <a href="#main-content">Back to top ↑</a>

@@ -148,7 +148,7 @@ export default async function AboutPage() {
             <p className="eyebrow">Current profile and education</p>
             <h2 id="profile-title">Software engineering in progress. Applied work now.</h2>
           </div>
-          <dl className="about-fact-index">
+          <dl className="about-fact-index" data-motion-flow>
             <div>
               <dt>Current profile</dt>
               <dd>Final-year Software Engineering student building applied AI systems.</dd>

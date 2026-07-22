@@ -16,7 +16,8 @@ export const portraitMotion = {
 } as const;
 
 export const pageMotion = {
-  reveal: { distance: 42, duration: 0.86, ease: "power3.out" },
-  group: { distance: 34, duration: 0.72, stagger: 0.075, ease: "power3.out" },
+  flow: { distance: 30, duration: 0.78, stagger: 0.07, ease: "power3.out", start: "top 86%" },
+  reveal: { distance: 30, duration: 0.78, ease: "power3.out" },
+  group: { distance: 30, duration: 0.78, stagger: 0.07, ease: "power3.out" },
   magnetic: { travel: 4 },
 } as const;

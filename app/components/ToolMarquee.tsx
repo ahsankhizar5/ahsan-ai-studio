@@ -8,7 +8,7 @@ const rows = [
 export function ToolMarquee() {
   return (
     <section className="tool-marquee" aria-labelledby="tools-title" data-tool-marquee>
-      <header>
+      <header data-motion-reveal>
         <p>Working stack</p>
         <h2 id="tools-title">The tools change. The standard does not.</h2>
       </header>
