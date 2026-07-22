@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { siteOrigin } from "./data/site";
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const isLocalHost = /^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(host);
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (isLocalHost ? "http" : "https");
-  const metadataBase = new URL(`${protocol}://${host}`);
-
-  return {
-    metadataBase,
+export const metadata: Metadata = {
+    metadataBase: new URL(siteOrigin),
     title: "Ahsan Khizar — AI Engineer & AI Video Producer",
     description:
       "Ahsan Khizar transforms complex AI ideas into powerful products people understand and trust—from the system to the story that explains it.",
@@ -56,8 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: "/favicon.svg",
       shortcut: "/favicon.svg",
     },
-  };
-}
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

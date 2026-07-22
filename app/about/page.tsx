@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { AboutPortrait } from "../components/AboutPortrait";
 import { CopyEmail } from "../components/CopyEmail";
 import { MotionController } from "../components/MotionController";
@@ -13,6 +12,7 @@ import {
   recognition,
   technicalCapabilities,
 } from "../data/profile";
+import { siteOrigin } from "../data/site";
 
 export const metadata: Metadata = {
   title: "About Ahsan Khizar \u2014 AI Engineer & AI Video Producer",
@@ -55,15 +55,7 @@ const recognitionAndCredentials = [
   "Best Award \u2014 DevelopersHub Corporation internship",
 ] as const;
 
-async function requestOrigin() {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
-  return `${protocol}://${host}`;
-}
-
-export default async function AboutPage() {
-  const origin = await requestOrigin();
+export default function AboutPage() {
   const aboutTitleLines = ["I build the system", "around the model."] as const;
   const structuredData = {
     "@context": "https://schema.org",
@@ -71,10 +63,10 @@ export default async function AboutPage() {
     name: `About ${profile.name}`,
     description:
       "A factual profile of Ahsan Khizar's education, engineering experience, technical capabilities, and recognition.",
-    url: `${origin}/about`,
+    url: `${siteOrigin}/about`,
     primaryImageOfPage: {
       "@type": "ImageObject",
-      url: `${origin}/media/about-ai-model-bloom-cutout.webp`,
+      url: `${siteOrigin}/media/about-ai-model-bloom-cutout.webp`,
       width: 1024,
       height: 1536,
     },
@@ -82,7 +74,7 @@ export default async function AboutPage() {
       "@type": "Person",
       name: profile.name,
       email: `mailto:${profile.email}`,
-      image: `${origin}/media/about-ai-model-bloom-cutout.webp`,
+      image: `${siteOrigin}/media/about-ai-model-bloom-cutout.webp`,
       address: { "@type": "PostalAddress", addressCountry: profile.location },
       sameAs: [profile.links.linkedin, profile.links.github],
     },

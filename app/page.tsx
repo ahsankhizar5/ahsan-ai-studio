@@ -15,6 +15,7 @@ import {
   technicalCapabilities,
   videoServices,
 } from "./data/profile";
+import { siteOrigin } from "./data/site";
 
 const proofSignals = [
   `${profile.education.degree} · ${profile.education.institution}`,
@@ -42,6 +43,8 @@ const structuredData = {
     {
       "@type": "Person",
       name: profile.name,
+      url: siteOrigin,
+      image: `${siteOrigin}/og.png`,
       email: `mailto:${profile.email}`,
       address: { "@type": "PostalAddress", addressCountry: profile.location },
       sameAs: [profile.links.linkedin, profile.links.github],
@@ -49,6 +52,7 @@ const structuredData = {
     {
       "@type": "ProfessionalService",
       name: `${profile.name} professional services`,
+      url: siteOrigin,
       email: `mailto:${profile.email}`,
       areaServed: profile.location,
       sameAs: [profile.links.linkedin, profile.links.github],

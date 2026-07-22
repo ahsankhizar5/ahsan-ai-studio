@@ -1,10 +1,13 @@
-export function GET(request: Request) {
-  const origin = new URL(request.url).origin;
+import { siteOrigin } from "../data/site";
+
+export const dynamic = "force-static";
+
+export function GET() {
   const pages = ["/", "/about", "/contact"];
   const urls = pages
     .map(
       (path) =>
-        `  <url><loc>${origin}${path}</loc><changefreq>monthly</changefreq><priority>${path === "/" ? "1.0" : "0.8"}</priority></url>`,
+        `  <url><loc>${siteOrigin}${path}</loc><changefreq>monthly</changefreq><priority>${path === "/" ? "1.0" : "0.8"}</priority></url>`,
     )
     .join("\n");
   const body = `<?xml version="1.0" encoding="UTF-8"?>
