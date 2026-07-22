@@ -5334,21 +5334,22 @@ main[data-motion-page] > section:not(:first-child)::before {
   position: sticky;
   top: 0;
   height: 100svh;
-  min-height: 44rem;
+  min-height: 0;
   overflow: hidden;
   background: var(--stage);
 }
 
 .cinematic-hero-copy {
-  bottom: 7.1rem;
-  width: min(47rem, 56vw);
+  top: clamp(7.25rem, 18svh, 11.5rem);
+  bottom: auto;
+  width: min(59rem, 69vw);
 }
 
 .cinematic-hero h1 {
   max-width: 100%;
-  font-size: clamp(3.35rem, 5.2vw, 4.75rem);
+  font-size: clamp(3rem, 4.35vw, 4.15rem);
   letter-spacing: -0.035em;
-  line-height: 0.93;
+  line-height: 0.91;
 }
 
 .cinematic-hero-support {
@@ -5516,6 +5517,27 @@ main[data-motion-page] > section:not(:first-child)::before {
 .connected-build-phases li:hover .practice-card-copy,
 .connected-build-phases li:focus-within .practice-card-copy {
   color: var(--white);
+}
+
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  .connected-build-phases {
+    display: flex;
+  }
+
+  .connected-build-phases li {
+    flex: 1 1 0;
+    transition: flex 640ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .connected-build-phases:has(li:hover) li,
+  .connected-build-phases:has(li:focus-within) li {
+    flex-grow: 0.76;
+  }
+
+  .connected-build-phases li:hover,
+  .connected-build-phases li:focus-within {
+    flex-grow: 1.48;
+  }
 }
 
 /* Shared image preview before Process */
@@ -5714,7 +5736,7 @@ main[data-motion-page] > section:not(:first-child)::before {
 
 @media (max-width: 1023px) {
   .cinematic-hero-copy {
-    width: min(42rem, 66vw);
+    width: min(44rem, 72vw);
   }
 
   .video-layer {
@@ -5736,13 +5758,15 @@ main[data-motion-page] > section:not(:first-child)::before {
   }
 
   .cinematic-hero-copy {
-    bottom: 9.7rem;
+    top: 8.2rem;
+    bottom: auto;
     width: calc(100% - 2 * var(--page-gutter));
   }
 
   .cinematic-hero h1 {
     max-width: 100%;
-    font-size: clamp(2.7rem, 11.5vw, 3.7rem);
+    font-size: clamp(2.15rem, 9.3vw, 2.65rem);
+    line-height: 0.92;
   }
 
   .hero-composite img,
@@ -5781,6 +5805,18 @@ main[data-motion-page] > section:not(:first-child)::before {
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .practice-card-image {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+
+  .practice-card-copy {
+    color: var(--white);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cinematic-hero {
     height: 100dvh;
@@ -5801,6 +5837,16 @@ main[data-motion-page] > section:not(:first-child)::before {
   .video-service-list button,
   .video-service-list button i {
     transition: none !important;
+  }
+
+  .practice-card-image {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+
+  .practice-card-copy {
+    color: var(--white);
   }
 
   .video-service-scan {

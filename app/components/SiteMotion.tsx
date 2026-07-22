@@ -161,16 +161,18 @@ export function SiteMotion({ page }: SiteMotionProps) {
           if (videoPreview) {
             gsap.fromTo(
               videoPreview,
-              { clipPath: "inset(0 0 18% 0)", scale: 0.985 },
+              { clipPath: "inset(0 0 18% 0)", opacity: 0.72, scale: 0.94, y: 28 },
               {
                 clipPath: "inset(0 0 0% 0)",
+                opacity: 1,
                 scale: 1,
-                duration: 0.88,
-                ease: "power4.out",
+                y: 0,
+                ease: "none",
                 scrollTrigger: {
                   trigger: videoPreview,
-                  start: "top 84%",
-                  toggleActions: "play none none reverse",
+                  start: "top 94%",
+                  end: "top 54%",
+                  scrub: 0.6,
                 },
               },
             );

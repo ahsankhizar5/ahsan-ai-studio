@@ -11,7 +11,7 @@ const phases = [
     title: "Engineer the intelligence.",
     copy: "Models, agents, APIs, data flows, evaluation, and dependable automation.",
     footer: "AI engineering",
-    image: "/media/hero-background-plate.webp",
+    image: "/media/generated/practice-system.webp",
     imagePosition: "center",
   },
   {
@@ -19,7 +19,7 @@ const phases = [
     title: "Make it usable.",
     copy: "Interfaces and backend behavior shaped around real users and real workflows.",
     footer: "Product delivery",
-    image: "/og.png",
+    image: "/media/generated/practice-product.webp",
     imagePosition: "center",
   },
   {
@@ -27,7 +27,7 @@ const phases = [
     title: "Make the value clear.",
     copy: "Demos, explainers, launch content, and AI video that communicate what the product changes.",
     footer: "Communication layer",
-    image: "/hero-system-story-1728.webp",
+    image: "/media/generated/practice-story.webp",
     imagePosition: "center",
   },
 ] as const;

@@ -162,6 +162,13 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
       0,
     );
 
+    const heroClearance = await page.evaluate(() => {
+      const header = document.querySelector(".site-header").getBoundingClientRect();
+      const title = document.querySelector("#hero-title").getBoundingClientRect();
+      return title.top - header.bottom;
+    });
+    assert.ok(heroClearance >= 12, `${name} hero title clears the fixed navigation`);
+
     if (viewport.width >= 768) {
       const projectStage = page.locator("[data-project-stage]");
       const tabs = projectStage.getByRole("tab");
@@ -625,6 +632,7 @@ async function auditScrollChoreography() {
 }
 
 await audit("desktop-1440", { width: 1440, height: 1000 });
+await audit("short-desktop-1365", { width: 1365, height: 605 });
 await audit("laptop-1024", { width: 1024, height: 768 });
 await audit("tablet-768", { width: 768, height: 1024 });
 await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });

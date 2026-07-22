@@ -46,6 +46,25 @@ test("ships optimized local hero and About media layers", async () => {
   assert.ok(aboutPortrait.byteLength > 250_000);
 });
 
+test("ships a distinct optimized visual for every Practice and video-service state", async () => {
+  const assetNames = [
+    "practice-system.webp",
+    "practice-product.webp",
+    "practice-story.webp",
+    "service-avatar-explainers.webp",
+    "service-ugc-performance.webp",
+    "service-product-demo.webp",
+    "service-localized-content.webp",
+    "service-creative-variations.webp",
+  ];
+  const assets = await Promise.all(
+    assetNames.map((name) => readFile(new URL(`../public/media/generated/${name}`, import.meta.url))),
+  );
+
+  assert.equal(new Set(assetNames).size, 8);
+  assert.ok(assets.every((asset) => asset.byteLength > 20_000));
+});
+
 test("server-renders the complete portfolio", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -312,10 +331,14 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(connectedBuild, /data-reveal-group/);
   assert.match(connectedBuild, /data-practice-card/);
   assert.match(connectedBuild, /practice-card-image/);
+  assert.match(connectedBuild, /media\/generated\/practice-system\.webp/);
+  assert.match(connectedBuild, /media\/generated\/practice-product\.webp/);
+  assert.match(connectedBuild, /media\/generated\/practice-story\.webp/);
   assert.match(connectedBuild, /VideoServiceShowcase/);
   assert.match(videoServiceShowcase, /aria-pressed/);
   assert.match(videoServiceShowcase, /data-video-service-preview/);
   assert.match(videoServiceShowcase, /onPointerEnter/);
+  assert.equal((videoServiceShowcase.match(/media\/generated\/service-[\w-]+\.webp/g) ?? []).length, 5);
   assert.match(motion, /import\("\.\/SiteMotion"\)/);
   assert.match(motion, /ssr: false/);
   assert.match(motion, /reducedMotion \? null : <SiteMotion page=\{page\} \/>/);
@@ -377,8 +400,10 @@ test("source preserves accessible and responsive contracts", async () => {
   const cinematicMobileCss = css.slice(cinematicMobileStart, cinematicMobileEnd === -1 ? undefined : cinematicMobileEnd);
   assert.match(cinematicMobileCss, /\.cinematic-hero\s*\{[\s\S]*min-height:\s*53rem[\s\S]*height:\s*100dvh/);
   assert.match(cinematicMobileCss, /\.hero-composite img[\s\S]*object-position:\s*82% center/);
-  assert.match(cinematicMobileCss, /\.cinematic-hero-copy[\s\S]*bottom:\s*9\.7rem/);
-  assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.7rem, 11\.5vw, 3\.7rem\)/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero-copy[\s\S]*top:\s*8\.2rem[\s\S]*bottom:\s*auto/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.15rem, 9\.3vw, 2\.65rem\)/);
+  assert.match(css, /\.connected-build-phases:has\(li:hover\)[\s\S]*flex-grow:\s*0\.76/);
+  assert.match(css, /\.connected-build-phases li:hover[\s\S]*flex-grow:\s*1\.48/);
   assert.match(browserAudit, /\{ width: 768, height: 1024 \}/);
   assert.match(browserAudit, /\{ width: 1024, height: 768 \}/);
   assert.match(browserAudit, /restores focus to the menu trigger after Escape/);

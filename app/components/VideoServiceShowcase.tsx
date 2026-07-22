@@ -10,29 +10,29 @@ type VideoService = {
 
 const serviceVisuals = [
   {
-    src: "/hero-system-story-1728.webp",
-    alt: "A cinematic production environment connecting an AI system to a finished screen",
+    src: "/media/generated/service-avatar-explainers.webp",
+    alt: "An avatar presenter being filmed in a cinematic AI production studio",
     position: "center",
   },
   {
-    src: "/og.png",
-    alt: "Ahsan Khizar visual system in red, citrus, cyan, black, and white",
+    src: "/media/generated/service-ugc-performance.webp",
+    alt: "A performance-ad production setup with a phone camera and multiple visual treatments",
     position: "center",
   },
   {
-    src: "/hero.png",
-    alt: "Helmeted AI creator surrounded by red, cyan, and golden energy trails",
-    position: "78% center",
-  },
-  {
-    src: "/media/hero-background-plate.webp",
-    alt: "Layered red, cyan, and golden signal paths on a dark background",
+    src: "/media/generated/service-product-demo.webp",
+    alt: "A product moving from a physical input through an illuminated digital process to a finished output",
     position: "center",
   },
   {
-    src: "/media/hero-spotlight-reveal.webp",
-    alt: "Brightened cinematic AI production portrait",
-    position: "78% center",
+    src: "/media/generated/service-localized-content.webp",
+    alt: "A studio production branching one message into several localized video versions",
+    position: "center",
+  },
+  {
+    src: "/media/generated/service-creative-variations.webp",
+    alt: "Five distinct cinematic creative variations arranged as illuminated film frames",
+    position: "center",
   },
 ] as const;
 
