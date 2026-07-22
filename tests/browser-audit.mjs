@@ -484,6 +484,34 @@ async function auditHeroInteraction() {
   await page.close();
 }
 
+async function auditTabletHeroAlignment() {
+  const page = await browser.newPage({ viewport: { width: 835, height: 608 } });
+  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
+  await page.waitForTimeout(1000);
+
+  const alignment = await page.evaluate(() => {
+    const header = document.querySelector(".site-header").getBoundingClientRect();
+    const title = document.querySelector("#hero-title").getBoundingClientRect();
+    const character = document
+      .querySelector(".hero-composite-character .hero-responsive-image")
+      .getBoundingClientRect();
+    const characterVisualTop = character.top + character.height * 0.058;
+    return {
+      headerBottom: header.bottom,
+      titleTop: title.top,
+      characterVisualTop,
+    };
+  });
+
+  assert.ok(alignment.characterVisualTop >= alignment.headerBottom + 12, "tablet character clears the navbar");
+  assert.ok(
+    Math.abs(alignment.characterVisualTop - alignment.titleTop) <= 12,
+    "tablet character begins at the headline height",
+  );
+  await page.close();
+}
+
 async function auditPracticeVideoAndFooter() {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   const errors = [];
@@ -645,6 +673,7 @@ await auditNoJavaScript();
 await auditHeaderBoundary();
 await auditReducedMotion();
 await auditHeroInteraction();
+await auditTabletHeroAlignment();
 await auditPracticeVideoAndFooter();
 await auditAboutInteraction();
 await auditScrollChoreography();

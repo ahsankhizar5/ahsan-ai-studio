@@ -5744,6 +5744,12 @@ main[data-motion-page] > section:not(:first-child)::before {
   }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-composite-character .hero-responsive-image {
+    transform: translateY(6rem) scale(1.02);
+  }
+}
+
 @media (max-width: 767px) {
   .cinematic-hero {
     min-height: 53rem;

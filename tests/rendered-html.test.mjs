@@ -404,6 +404,7 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.15rem, 9\.3vw, 2\.65rem\)/);
   assert.match(css, /\.connected-build-phases:has\(li:hover\)[\s\S]*flex-grow:\s*0\.76/);
   assert.match(css, /\.connected-build-phases li:hover[\s\S]*flex-grow:\s*1\.48/);
+  assert.match(css, /@media \(min-width: 768px\) and \(max-width: 1023px\)[\s\S]*translateY\(6rem\) scale\(1\.02\)/);
   assert.match(browserAudit, /\{ width: 768, height: 1024 \}/);
   assert.match(browserAudit, /\{ width: 1024, height: 768 \}/);
   assert.match(browserAudit, /restores focus to the menu trigger after Escape/);
