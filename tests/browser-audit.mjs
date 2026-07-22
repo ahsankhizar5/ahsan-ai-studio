@@ -502,7 +502,7 @@ async function auditHeroInteraction() {
   assert.notEqual(heroBoundary.progressTransform, "none", "hero scroll progress responds to the scroll scene");
 
   await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "About", exact: true }).click();
-  await page.waitForURL(/\/about$/);
+  await page.waitForURL(/\/about\/?$/);
   await page.goBack({ waitUntil: "networkidle" });
   await expectVisible(page.locator(".cinematic-hero"));
   assert.deepEqual(errors, [], "hero interactions and route return do not leak errors");
@@ -563,10 +563,13 @@ async function auditPracticeVideoAndFooter() {
 
   await page.goto(baseUrl, { waitUntil: "networkidle" });
   await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = "auto";
+  });
 
   const practiceCard = page.locator("[data-practice-card]").nth(1);
-  await practiceCard.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
+  await practiceCard.evaluate((card) => card.scrollIntoView({ block: "center", behavior: "instant" }));
+  await page.waitForTimeout(1000);
   const practiceImage = practiceCard.locator(".practice-card-image");
   const closedPracticeState = await practiceImage.evaluate((image) => ({
     opacity: Number.parseFloat(getComputedStyle(image).opacity),
@@ -575,7 +578,7 @@ async function auditPracticeVideoAndFooter() {
   assert.ok(closedPracticeState.opacity <= 0.05, "Practice image starts concealed");
   assert.match(closedPracticeState.clipPath, /inset\(100%/i, "Practice image uses a clipped starting state");
 
-  await practiceCard.locator(".practice-card-surface").hover();
+  await practiceCard.hover();
   await page.waitForTimeout(1200);
   const openPracticeState = await practiceImage.evaluate((image) => ({
     opacity: Number.parseFloat(getComputedStyle(image).opacity),

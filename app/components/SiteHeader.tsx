@@ -159,7 +159,6 @@ export function SiteHeader({ activePage }: { activePage: ActivePage }) {
       <a
         className="brand-lockup"
         href="/"
-        aria-label="Ahsan Khizar, home"
         aria-current={activePage === "home" ? "page" : undefined}
         onClick={closeMenu}
       >
