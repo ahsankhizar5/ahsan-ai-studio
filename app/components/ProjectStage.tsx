@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import type { Project } from "../data/profile";
+import { ProjectVisual } from "./ProjectVisual";
 
 type ProjectStageProps = {
   projects: readonly Project[];
@@ -123,6 +124,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
           ref={panelRef}
           data-project-panel
         >
+          <ProjectVisual project={activeProject} />
           <div className="active-project-copy">
             <span>
               Selected system · {String(activeIndex + 1).padStart(2, "0")} /{" "}
@@ -163,6 +165,7 @@ export function ProjectStage({ projects }: ProjectStageProps) {
               {String(index + 1).padStart(2, "0")} · {project.category}
             </span>
             <h3>{project.name}</h3>
+            <ProjectVisual project={project} />
             <p>{project.description}</p>
             <strong>My contribution</strong>
             <p>{project.contribution}</p>

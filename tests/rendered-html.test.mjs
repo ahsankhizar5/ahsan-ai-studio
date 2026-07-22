@@ -31,13 +31,19 @@ async function render(path = "/") {
   );
 }
 
-test("ships local responsive hero media", async () => {
-  const [small, large] = await Promise.all([
-    readFile(new URL("../public/hero-system-story-960.webp", import.meta.url)),
-    readFile(new URL("../public/hero-system-story-1728.webp", import.meta.url)),
+test("ships optimized local hero and About media layers", async () => {
+  const [background, backgroundSmall, character, spotlight, aboutPortrait] = await Promise.all([
+    readFile(new URL("../public/media/hero-background-plate.webp", import.meta.url)),
+    readFile(new URL("../public/media/hero-background-plate-1280.webp", import.meta.url)),
+    readFile(new URL("../public/media/hero-character.webp", import.meta.url)),
+    readFile(new URL("../public/media/hero-spotlight-reveal.webp", import.meta.url)),
+    readFile(new URL("../public/media/about-ai-model-bloom-cutout.webp", import.meta.url)),
   ]);
-  assert.ok(small.byteLength > 40_000);
-  assert.ok(large.byteLength > 100_000);
+  assert.ok(background.byteLength > 70_000);
+  assert.ok(backgroundSmall.byteLength > 30_000);
+  assert.ok(character.byteLength > 30_000);
+  assert.ok(spotlight.byteLength > 70_000);
+  assert.ok(aboutPortrait.byteLength > 250_000);
 });
 
 test("server-renders the complete portfolio", async () => {
@@ -72,7 +78,15 @@ test("server-renders the complete portfolio", async () => {
   assert.doesNotMatch(html, /Ways to work together|Have a video brief instead|Send a video brief/i);
   assert.match(html, /Discuss your project/i);
   assert.match(html, /data-hero-media/i);
+  assert.match(html, /data-hero-spotlight/i);
+  assert.match(html, /data-hero-word/i);
+  assert.match(html, /hero-spotlight-reveal\.webp/i);
+  assert.match(html, /media\/hero-background-plate\.webp/i);
+  assert.match(html, /media\/hero-character\.webp/i);
+  assert.doesNotMatch(html, /class="hero-kicker"/i);
   assert.match(html, /data-home-hero-copy/i);
+  assert.match(html, /data-hero-sticky/i);
+  assert.match(html, /data-hero-scroll-progress/i);
   assert.match(html, /class="hero-capability-rail"/i);
   assert.doesNotMatch(html, /ahsan-khizar\.(?:webp|png)|Portrait of Ahsan Khizar/i);
   assert.match(html, /AI engineering/i);
@@ -97,6 +111,9 @@ test("server-renders the complete portfolio", async () => {
   assert.match(html, /id="contact"/i);
   assert.match(html, /href="\/about"/i);
   assert.match(html, /data-project-stage/i);
+  assert.match(html, /data-practice-card/i);
+  assert.match(html, /data-video-service-showcase/i);
+  assert.match(html, /aria-pressed/i);
   assert.match(html, /data-motion-page="home"/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -126,15 +143,31 @@ test("server-renders the factual portrait-led About page", async () => {
   assert.equal(jsonLd.mainEntity["@type"], "Person");
   assert.equal(jsonLd.mainEntity.name, "Ahsan Khizar");
   assert.equal(jsonLd.primaryImageOfPage["@type"], "ImageObject");
-  assert.equal(jsonLd.primaryImageOfPage.width, 960);
-  assert.equal(jsonLd.primaryImageOfPage.height, 1131);
-  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/ahsan-khizar\.webp$/);
+  assert.equal(jsonLd.primaryImageOfPage.width, 1024);
+  assert.equal(jsonLd.primaryImageOfPage.height, 1536);
+  assert.match(jsonLd.primaryImageOfPage.url, /^http:\/\/localhost(?::3000)?\/media\/about-ai-model-bloom-cutout\.webp$/);
   assert.match(
     html,
-    /<img[^>]*src="\/ahsan-khizar\.webp"[^>]*width="960"[^>]*height="1131"[^>]*alt="Portrait of Ahsan Khizar"/i,
+    /<img[^>]*src="\/media\/about-ai-model-bloom-cutout\.webp"[^>]*alt="Ahsan Khizar, shown as a human and applied-AI systems builder"/i,
   );
+  assert.match(html, /data-portrait-particle/i);
   assert.match(html, /data-motion-page="about"/i);
   assert.match(html, /MotionController/i);
+});
+
+test("server-renders the dedicated contact experience", async () => {
+  const response = await render("/contact");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+
+  const html = await response.text();
+  assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
+  assert.match(html, /<link rel="canonical" href="http:\/\/localhost(?::3000)?\/contact"/i);
+  assert.match(html, /data-motion-page="contact"/i);
+  assert.match(html, /data-contact-sequence/i);
+  assert.match(html, /Bring me the hard part/i);
+  assert.match(html, /ahsankhizar1075@gmail\.com/i);
+  assert.match(html, /<footer[^>]*class="site-footer"/i);
 });
 
 test("publishes absolute crawl endpoints", async () => {
@@ -145,19 +178,27 @@ test("publishes absolute crawl endpoints", async () => {
   const sitemap = await sitemapResponse.text();
   assert.match(sitemap, /<loc>http:\/\/localhost\/<\/loc>/i);
   assert.match(sitemap, /<loc>http:\/\/localhost\/about<\/loc>/i);
+  assert.match(sitemap, /<loc>http:\/\/localhost\/contact<\/loc>/i);
 });
 
 test("source preserves accessible and responsive contracts", async () => {
-  const [page, css, layout, header, hero, media, projectStage, connectedBuild, motion, browserAudit] = await Promise.all([
+  const [page, css, layout, header, hero, media, heroMediaMotion, projectStage, projectVisual, toolMarquee, connectedBuild, videoServiceShowcase, footer, contact, motion, siteMotion, browserAudit] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/HomepageHero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/HeroMedia.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/HeroMediaMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ProjectStage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ProjectVisual.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ToolMarquee.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ConnectedBuild.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/VideoServiceShowcase.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/SiteFooter.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/contact/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/MotionController.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/SiteMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("./browser-audit.mjs", import.meta.url), "utf8"),
   ]);
 
@@ -213,10 +254,25 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(hero, /I transform complex AI ideas into/);
   assert.match(hero, /powerful products people understand and trust/);
   assert.match(hero, /Discuss your project/);
-  assert.match(media, /hero-system-story-960\.webp/);
-  assert.match(media, /hero-system-story-1728\.webp/);
-  assert.match(media, /width=\{960\}[\s\S]*height=\{540\}/);
-  assert.match(media, /width=\{1728\}[\s\S]*height=\{973\}/);
+  assert.match(hero, /cinematic-hero-sticky/);
+  assert.match(hero, /data-hero-scroll-progress/);
+  assert.match(media, /HeroMediaMotion/);
+  assert.match(media, /ssr: false/);
+  assert.match(heroMediaMotion, /@gsap\/react/);
+  assert.match(heroMediaMotion, /gsap\/ScrollTrigger/);
+  assert.match(media, /hero-background-plate\.webp/);
+  assert.match(media, /hero-character\.webp/);
+  assert.match(media, /data-hero-spotlight/);
+  assert.match(media, /hero-spotlight-reveal\.webp/);
+  assert.match(hero, /data-hero-word/);
+  assert.match(heroMediaMotion, /quickTo/);
+  assert.match(heroMediaMotion, /contextSafe/);
+  assert.match(heroMediaMotion, /pointermove/);
+  assert.match(heroMediaMotion, /--spotlight-x/);
+  assert.match(heroMediaMotion, /titleWords/);
+  assert.match(heroMediaMotion, /scrub: 0\.6/);
+  assert.match(heroMediaMotion, /capabilityItems/);
+  assert.match(heroMediaMotion, /scrollProgress/);
   assert.match(media, /alt=""/);
   assert.match(projectStage, /role="tablist"/);
   assert.match(projectStage, /role="tab"/);
@@ -239,39 +295,47 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /\.project-stage\[data-enhanced="true"\] \.project-stage-desktop\s*\{\s*display:\s*block/);
   assert.match(css, /\.project-stage\[data-enhanced="true"\] \.project-stage-mobile\s*\{\s*display:\s*none/);
   assert.match(projectStage, /data-project-panel/);
+  assert.match(projectStage, /<ProjectVisual project=/);
+  assert.match(projectVisual, /data-project-visual/);
+  assert.match(projectVisual, /TechnologyLogo/);
+  assert.match(page, /<ToolMarquee \/>/);
+  assert.match(toolMarquee, /data-tool-track/);
+  assert.match(toolMarquee, /marqueeTechnologies/);
+  assert.match(footer, /footer-invitation/);
+  assert.match(footer, /href="\/contact"/);
+  assert.match(contact, /data-motion-page="contact"/);
+  assert.match(contact, /data-contact-sequence/);
   assert.match(browserAudit, /const projectStage = page\.locator\("\[data-project-stage\]"\)/);
   assert.match(browserAudit, /projectStage\.getByRole\("tab"\)/);
-  assert.match(browserAudit, /document\.documentElement\.dataset\.motion === "reduced"/);
+  assert.match(browserAudit, /document\.documentElement\.hasAttribute\("data-motion"\)/);
   assert.match(connectedBuild, /data-pipeline/);
   assert.match(connectedBuild, /data-reveal-group/);
-  assert.match(motion, /data-pipeline/);
-  assert.match(motion, /data-about-portrait/);
-  assert.match(motion, /import\("gsap"\)/);
-  assert.match(motion, /void setupMotion\(\)\.catch\(\(error: unknown\)/);
-  assert.match(motion, /Optional motion enhancement unavailable/);
+  assert.match(connectedBuild, /data-practice-card/);
+  assert.match(connectedBuild, /practice-card-image/);
+  assert.match(connectedBuild, /VideoServiceShowcase/);
+  assert.match(videoServiceShowcase, /aria-pressed/);
+  assert.match(videoServiceShowcase, /data-video-service-preview/);
+  assert.match(videoServiceShowcase, /onPointerEnter/);
+  assert.match(motion, /import\("\.\/SiteMotion"\)/);
+  assert.match(motion, /ssr: false/);
+  assert.match(motion, /reducedMotion \? null : <SiteMotion page=\{page\} \/>/);
+  assert.match(siteMotion, /@gsap\/react/);
+  assert.match(siteMotion, /gsap\/ScrollTrigger/);
+  assert.match(siteMotion, /gsap\.matchMedia\(\)/);
+  assert.match(siteMotion, /contextSafe/);
+  assert.match(siteMotion, /\[data-motion-reveal\]/);
+  assert.match(siteMotion, /\[data-reveal-group\]/);
+  assert.match(siteMotion, /\[data-pipeline\]/);
+  assert.match(siteMotion, /\[data-video-service-preview\]/);
+  assert.match(siteMotion, /\[data-video-service-scan\]/);
+  assert.match(siteMotion, /toggleActions: "play none none reverse"/);
+  assert.match(siteMotion, /scrub: 0\.8/);
   assert.match(projectStage, /\.catch\(\(error: unknown\)/);
   assert.match(projectStage, /Project transition enhancement unavailable/);
-  const reducedMotionGate = motion.indexOf("if (prefersReducedMotion) return;");
-  const gsapImports = [...motion.matchAll(/import\(\s*["'](gsap(?:\/[^"']+)?)["']\s*\)/g)];
-  const importedGsapModules = gsapImports.map((match) => match[1]);
-  assert.ok(reducedMotionGate >= 0, "the reduced-motion early return is present");
-  assert.ok(importedGsapModules.includes("gsap"), "the core GSAP dynamic import is present");
-  assert.ok(importedGsapModules.includes("gsap/ScrollTrigger"), "the ScrollTrigger dynamic import is present");
-  for (const gsapImport of gsapImports) {
-    assert.ok(gsapImport.index > reducedMotionGate, `${gsapImport[1]} imports after the reduced-motion gate`);
-  }
-  assert.doesNotMatch(motion, /querySelectorAll<HTMLElement>\("\[data-motion-reveal\]"\)/);
-  assert.doesNotMatch(motion, /data-reveal-group|data-portrait-reveal|data-project-panel/);
-  assert.match(motion, /page === "home" \? "#work" : "\[data-about-portrait\]"/);
-  const pipelineRevealStart = motion.indexOf("gsap.from(pipeline.children");
-  const aboutRevealStart = motion.indexOf("gsap.from(aboutPortrait");
-  const motionGateStart = motion.indexOf("const motionGate");
-  assert.ok(pipelineRevealStart >= 0 && aboutRevealStart > pipelineRevealStart, "the pipeline reveal is scoped");
-  assert.ok(motionGateStart > aboutRevealStart, "the About portrait reveal is scoped");
-  const pipelineReveal = motion.slice(pipelineRevealStart, aboutRevealStart);
-  const aboutReveal = motion.slice(aboutRevealStart, motionGateStart);
-  assert.match(pipelineReveal, /clipPath: "inset\(0 100% 0 0\)"[\s\S]*duration: 0\.62[\s\S]*stagger: 0\.08[\s\S]*ease: "power3\.out"[\s\S]*clearProps: "clipPath"[\s\S]*scrollTrigger: \{ trigger: pipeline, start: "top 78%", once: true \}/);
-  assert.match(aboutReveal, /clipPath: "inset\(0 0 100% 0\)"[\s\S]*duration: 0\.72[\s\S]*ease: "expo\.out"[\s\S]*clearProps: "clipPath"[\s\S]*scrollTrigger: \{ trigger: aboutPortrait, start: "top 84%", once: true \}/);
+  assert.match(siteMotion, /clipPath: "inset\(0 100% 0 0\)"/);
+  assert.match(siteMotion, /duration: 0\.72/);
+  assert.match(siteMotion, /stagger: 0\.1/);
+  assert.match(siteMotion, /start: "top 80%"/);
   assert.match(css, /html\[data-motion="full"\] \[data-home-hero-copy\][\s\S]*animation: hero-copy-in 0\.85s/);
   const reducedMotionCss = extractSourceBlock(css, "@media (prefers-reduced-motion: reduce)");
   const universalSelector = reducedMotionCss.match(/\*\s*,\s*\*::before\s*,\s*\*::after\s*\{/);
@@ -286,6 +350,11 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(css, /\.positioning-scene\s*\{/);
   assert.match(css, /\.connected-build\s*\{/);
   assert.match(css, /\.video-layer\s*\{/);
+  assert.match(css, /\.cinematic-hero-sticky\s*\{/);
+  assert.match(css, /\.hero-media-vignette\s*\{/);
+  assert.match(css, /\.practice-card-image\s*\{/);
+  assert.match(css, /\.video-service-preview\s*\{/);
+  assert.match(css, /\.footer-wordmark[\s\S]*font-size:\s*clamp\(2\.75rem, 11\.25vw, 10\.5rem\)/);
   assert.match(css, /\.unified-process\s*\{/);
   assert.match(css, /\.recognition-band\s*\{/);
   assert.match(css, /\.red-noir-contact\s*\{/);
@@ -300,14 +369,16 @@ test("source preserves accessible and responsive contracts", async () => {
     css,
     /@media \(max-width: 760px\)\s*\{\s*\.cinematic-hero/,
   );
-  const cinematicMobileStart = css.lastIndexOf("@media (max-width: 767px)");
+  const firstMobileBlock = css.lastIndexOf("@media (max-width: 767px)");
+  const cinematicHeroMobileIndex = css.indexOf(".cinematic-hero {", firstMobileBlock);
+  const cinematicMobileStart = css.lastIndexOf("@media (max-width: 767px)", cinematicHeroMobileIndex);
   assert.notEqual(cinematicMobileStart, -1, "the authoritative 767px block exists");
-  const cinematicMobileCss = css.slice(cinematicMobileStart);
+  const cinematicMobileEnd = css.indexOf("@media ", cinematicHeroMobileIndex);
+  const cinematicMobileCss = css.slice(cinematicMobileStart, cinematicMobileEnd === -1 ? undefined : cinematicMobileEnd);
   assert.match(cinematicMobileCss, /\.cinematic-hero\s*\{[\s\S]*min-height:\s*53rem[\s\S]*height:\s*100dvh/);
-  assert.match(cinematicMobileCss, /\.hero-media img[\s\S]*object-position:\s*58% center/);
-  assert.match(cinematicMobileCss, /\.hero-media-vignette/);
-  assert.match(cinematicMobileCss, /\.cinematic-hero-copy[\s\S]*bottom:\s*10\.25rem/);
-  assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.8rem, 12vw, 4rem\)/);
+  assert.match(cinematicMobileCss, /\.hero-composite img[\s\S]*object-position:\s*82% center/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero-copy[\s\S]*bottom:\s*9\.7rem/);
+  assert.match(cinematicMobileCss, /\.cinematic-hero h1[\s\S]*font-size:\s*clamp\(2\.7rem, 11\.5vw, 3\.7rem\)/);
   assert.match(browserAudit, /\{ width: 768, height: 1024 \}/);
   assert.match(browserAudit, /\{ width: 1024, height: 768 \}/);
   assert.match(browserAudit, /restores focus to the menu trigger after Escape/);
@@ -319,8 +390,9 @@ test("source preserves accessible and responsive contracts", async () => {
   assert.match(browserAudit, /keeps forward focus inside the open menu/);
   assert.match(browserAudit, /keeps reverse focus inside the open menu/);
   assert.match(browserAudit, /async function auditHeaderBoundary/);
-  assert.match(browserAudit, /async function auditRejectedMotionImports/);
-  assert.match(browserAudit, /rejected optional imports do not become unhandled errors/);
+  assert.match(browserAudit, /async function auditHeroInteraction/);
+  assert.match(browserAudit, /async function auditAboutInteraction/);
+  assert.match(browserAudit, /async function auditPracticeVideoAndFooter/);
 });
 
 test("defines the factual portfolio data source", async () => {
@@ -333,29 +405,38 @@ test("defines the factual portfolio data source", async () => {
 });
 
 test("About source preserves semantic, responsive, and metadata contracts", async () => {
-  const [about, css, aboutPortrait] = await Promise.all([
+  const [about, css, aboutPortrait, aboutPortraitMotion] = await Promise.all([
     readFile(new URL("../app/about/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AboutPortrait.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/AboutPortraitMotion.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(aboutPortrait, /ahsan-khizar\.webp/);
+  assert.match(aboutPortrait, /about-ai-model-bloom-cutout\.webp/);
+  assert.match(aboutPortrait, /AboutPortraitMotion/);
+  assert.match(aboutPortrait, /ssr: false/);
+  assert.match(aboutPortraitMotion, /@gsap\/react/);
+  assert.match(aboutPortraitMotion, /gsap\/ScrollTrigger/);
+  assert.match(aboutPortrait, /data-human-assembly/);
+  assert.match(aboutPortrait, /data-ai-assembly/);
+  assert.match(aboutPortrait, /data-fragment-assembly/);
+  assert.match(aboutPortrait, /data-portrait-particle/);
+  assert.match(aboutPortraitMotion, /particleDrift/);
+  assert.match(aboutPortraitMotion, /pointermove/);
+  assert.match(aboutPortraitMotion, /scrub: 0\.6/);
   assert.match(aboutPortrait, /data-about-portrait/);
   assert.match(aboutPortrait, /<figure/);
   assert.match(aboutPortrait, /<figcaption/);
-  assert.equal((aboutPortrait.match(/aria-hidden="true"/g) ?? []).length, 3);
-  assert.match(aboutPortrait, /alt="Portrait of Ahsan Khizar"/);
+  assert.match(aboutPortrait, /alt="Ahsan Khizar, shown as a human and applied-AI systems builder"/);
   assert.match(about, /<AboutPortrait/);
-  assert.match(css, /\.about-portrait-color-field/);
-  assert.doesNotMatch(
-    css,
-    /\.about-portrait(?:\s|::before|\s+img|-caption)(?!-art|-color-field|-red|-citrus|-cyan)/,
-  );
+  assert.match(css, /\.about-portrait-fragment/);
+  assert.match(css, /\.about-portrait-human/);
+  assert.match(css, /\.about-portrait-ai/);
   assert.match(about, /export const metadata/);
   assert.match(about, /alternates:\s*\{ canonical:\s*"\/about" \}/);
   assert.match(about, /<main id="main-content" data-motion-page="about">/);
-  assert.match(aboutPortrait, /fetchPriority="high"/);
-  assert.match(aboutPortrait, /sizes="\(max-width: 760px\) 100vw, 42vw"/);
+  assert.match(aboutPortrait, /loading="lazy"/);
+  assert.match(aboutPortrait, /sizes="\(max-width: 767px\) calc\(100vw - 2\.5rem\), 42vw"/);
   assert.match(about, /<SiteHeader activePage="about"/);
   assert.match(about, /<SiteFooter \/>/);
   assert.match(about, /<MotionController page="about" \/>/);

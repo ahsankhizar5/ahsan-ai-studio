@@ -89,7 +89,7 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
   );
   assert.ok((await page.locator(".site-header").boundingBox()).height >= 52);
   assert.equal(await page.locator(".site-footer").count(), 1);
-  if (path === "/about") {
+  if (path !== "/") {
     assert.equal(
       await page.locator(".site-header").evaluate((header) => header.classList.contains("is-scrolled")),
       true,
@@ -134,13 +134,13 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
   assert.equal(geometry.unlabeled, 0, `${name} has unlabeled controls`);
   assert.equal(
     await page.locator(".header-cta").getAttribute("href"),
-    "#contact",
-    `${name} keeps the desktop inquiry CTA on the current page`,
+    "/contact",
+    `${name} routes the desktop inquiry CTA to the contact page`,
   );
   assert.equal(
     await page.locator(".mobile-menu-cta").getAttribute("href"),
-    "#contact",
-    `${name} keeps the mobile inquiry CTA on the current page`,
+    "/contact",
+    `${name} routes the mobile inquiry CTA to the contact page`,
   );
   await page.keyboard.press("Home");
   await page.keyboard.press("Tab");
@@ -348,7 +348,7 @@ async function auditHeaderBoundary() {
 }
 
 async function auditReducedMotion() {
-  for (const path of ["/", "/about"]) {
+  for (const path of ["/", "/about", "/contact"]) {
     const page = await browser.newPage({
       viewport: { width: 390, height: 844 },
       deviceScaleFactor: 1,
@@ -375,94 +375,252 @@ async function auditReducedMotion() {
       true,
       `${path} keeps primary content visible with reduced motion`,
     );
+    if (path === "/") {
+      assert.equal(await page.locator("[data-hero-spotlight]").evaluate((node) => getComputedStyle(node).display), "none");
+    } else if (path === "/about") {
+      assert.equal(await page.locator("[data-fragment-assembly]").first().evaluate((node) => getComputedStyle(node).display), "none");
+    }
     await page.close();
   }
 }
 
-async function auditDeferredMotion() {
-  const motionAssets = /\/assets\/(gsap|ScrollTrigger)-/;
-  const page = await browser.newPage({ viewport: { width: 1440, height: 800 } });
-
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() =>
-    document.documentElement.hasAttribute("data-motion"),
-  );
-  assert.equal(await page.locator("html").getAttribute("data-motion"), "full");
-  assert.equal(
-    await page.evaluate((pattern) =>
-      performance
-        .getEntriesByType("resource")
-        .some((entry) => new RegExp(pattern).test(entry.name)),
-      motionAssets.source,
-    ),
-    false,
-    "GSAP stays off the initial rendering path",
-  );
-
-  await page.locator("#work").scrollIntoViewIfNeeded();
-  await page.waitForFunction(
-    (pattern) =>
-      performance
-        .getEntriesByType("resource")
-        .some((entry) => new RegExp(pattern).test(entry.name)),
-    motionAssets.source,
-  );
-  await page.close();
-
-  const reducedPage = await browser.newPage({
-    viewport: { width: 390, height: 844 },
-    reducedMotion: "reduce",
+async function auditHeroInteraction() {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
   });
-  await reducedPage.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await reducedPage.waitForFunction(
-    () => document.documentElement.dataset.motion === "reduced",
+
+  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
+  assert.equal(await page.locator(".hero-kicker").count(), 0, "the removed hero kicker stays removed");
+
+  const headerAlignment = await page.locator(".site-header").evaluate((header) => {
+    const headerBox = header.getBoundingClientRect();
+    const center = headerBox.top + headerBox.height / 2;
+    const controls = [...header.querySelectorAll(".desktop-nav a, .header-cta")];
+    return controls.map((control) => {
+      const box = control.getBoundingClientRect();
+      return Math.abs(box.top + box.height / 2 - center);
+    });
+  });
+  assert.ok(headerAlignment.every((offset) => offset <= 1), "desktop navigation is vertically centered");
+
+  await page.mouse.move(760, 450);
+  await page.waitForTimeout(650);
+  const openState = await page.locator("[data-hero-media]").evaluate((root) => ({
+    spotlightX: getComputedStyle(root).getPropertyValue("--spotlight-x").trim(),
+    spotlightY: getComputedStyle(root).getPropertyValue("--spotlight-y").trim(),
+    spotlightOpacity: Number.parseFloat(getComputedStyle(root.querySelector("[data-hero-spotlight]")).opacity),
+    spotlightMask: getComputedStyle(root.querySelector("[data-hero-spotlight]")).maskImage,
+    characterTransform: getComputedStyle(root.querySelector("[data-pointer-character]")).transform,
+  }));
+  assert.match(openState.spotlightX, /px$/, "spotlight follows the horizontal pointer coordinate");
+  assert.match(openState.spotlightY, /px$/, "spotlight follows the vertical pointer coordinate");
+  assert.ok(openState.spotlightOpacity >= 0.9, "spotlight reveal opens on pointer enter");
+  assert.match(openState.spotlightMask, /radial-gradient/i, "spotlight uses a soft radial mask");
+  assert.notEqual(openState.characterTransform, "none", "character follows the pointer");
+
+  const heroWords = page.locator("[data-hero-word]");
+  assert.ok(await heroWords.count() > 6, "hero heading is split into accessible animated words");
+  const titleState = await page.locator(".hero-title-line").first().evaluate((line) => ({
+    opacity: Number.parseFloat(getComputedStyle(line.querySelector("[data-hero-word]")).opacity),
+    underline: getComputedStyle(line, "::after").content,
+  }));
+  assert.ok(titleState.opacity >= 0.95, "hero word sequence completes after load");
+  assert.ok(titleState.underline === "none" || titleState.underline === "normal", "old hero underline hover stays removed");
+  await page.mouse.move(100, 40);
+  await page.waitForTimeout(850);
+  assert.ok(
+    Number.parseFloat(await page.locator("[data-hero-spotlight]").evaluate((node) => getComputedStyle(node).opacity)) <= 0.05,
+    "spotlight closes smoothly",
   );
-  assert.equal(
-    await reducedPage.locator("html").getAttribute("data-motion"),
-    "reduced",
+
+  await page.evaluate(() => window.scrollTo(0, 460));
+  await page.waitForTimeout(700);
+  assert.notEqual(
+    await page.locator("[data-scroll-character]").first().evaluate((node) => getComputedStyle(node).transform),
+    "none",
+    "hero character receives scroll-linked depth",
   );
-  await reducedPage.locator("#work").scrollIntoViewIfNeeded();
-  assert.equal(
-    await reducedPage.evaluate((pattern) =>
-      performance
-        .getEntriesByType("resource")
-        .some((entry) => new RegExp(pattern).test(entry.name)),
-      motionAssets.source,
-    ),
-    false,
-    "reduced-motion visitors do not download GSAP",
+
+  const heroGeometry = await page.locator(".cinematic-hero").evaluate((hero) => ({
+    top: hero.getBoundingClientRect().top + window.scrollY,
+    height: hero.getBoundingClientRect().height,
+  }));
+  await page.evaluate(
+    ({ top, height }) => window.scrollTo(0, top + height - window.innerHeight + 24),
+    heroGeometry,
   );
-  await reducedPage.close();
+  await page.waitForTimeout(350);
+  const heroBoundary = await page.evaluate(() => {
+    const hero = document.querySelector(".cinematic-hero");
+    const rail = document.querySelector(".hero-capability-rail");
+    return {
+      heroBottom: hero.getBoundingClientRect().bottom,
+      railBottom: rail.getBoundingClientRect().bottom,
+      progressTransform: getComputedStyle(document.querySelector("[data-hero-scroll-progress]")).transform,
+    };
+  });
+  assert.ok(
+    Math.abs(heroBoundary.heroBottom - heroBoundary.railBottom) <= 2,
+    "hero capability rail remains attached to the hero boundary",
+  );
+  assert.notEqual(heroBoundary.progressTransform, "none", "hero scroll progress responds to the scroll scene");
+
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "About", exact: true }).click();
+  await page.waitForURL(/\/about$/);
+  await page.goBack({ waitUntil: "networkidle" });
+  await expectVisible(page.locator(".cinematic-hero"));
+  assert.deepEqual(errors, [], "hero interactions and route return do not leak errors");
+  await page.close();
 }
 
-async function auditRejectedMotionImports() {
-  const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
-  const pageErrors = [];
-  let resolveRejectedImport;
-  const rejectedImport = new Promise((resolve) => {
-    resolveRejectedImport = resolve;
+async function auditPracticeVideoAndFooter() {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
   });
 
-  page.on("pageerror", (error) => pageErrors.push(error.message));
-  await page.route(/\/assets\/(?:gsap|ScrollTrigger)-/, async (route) => {
-    resolveRejectedImport(route.request().url());
-    await route.abort();
-  });
+  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
 
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() =>
-    document.documentElement.hasAttribute("data-motion"),
+  const practiceCard = page.locator("[data-practice-card]").nth(1);
+  await practiceCard.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(500);
+  const practiceImage = practiceCard.locator(".practice-card-image");
+  const closedPracticeState = await practiceImage.evaluate((image) => ({
+    opacity: Number.parseFloat(getComputedStyle(image).opacity),
+    clipPath: getComputedStyle(image).clipPath,
+  }));
+  assert.ok(closedPracticeState.opacity <= 0.05, "Practice image starts concealed");
+  assert.match(closedPracticeState.clipPath, /inset\(100%/i, "Practice image uses a clipped starting state");
+
+  await practiceCard.locator(".practice-card-surface").hover();
+  await page.waitForTimeout(850);
+  const openPracticeState = await practiceImage.evaluate((image) => ({
+    opacity: Number.parseFloat(getComputedStyle(image).opacity),
+    clipPath: getComputedStyle(image).clipPath,
+  }));
+  assert.ok(openPracticeState.opacity >= 0.95, "Practice image reveal opens on hover");
+  assert.match(openPracticeState.clipPath, /inset\(0(?:px|%)?/i, "Practice image reveal completes its clip");
+
+  const videoShowcase = page.locator("[data-video-service-showcase]");
+  await videoShowcase.scrollIntoViewIfNeeded();
+  const serviceButtons = videoShowcase.getByRole("button");
+  assert.equal(await serviceButtons.count(), 5, "video showcase exposes all service choices");
+  await serviceButtons.nth(3).hover();
+  await page.waitForTimeout(700);
+  assert.equal(await serviceButtons.nth(3).getAttribute("aria-pressed"), "true");
+  assert.equal(
+    await videoShowcase.locator('.video-service-slide[data-active="true"]').count(),
+    1,
+    "video showcase keeps one visual active",
   );
-  await page.locator("#work").scrollIntoViewIfNeeded();
-  await rejectedImport;
 
-  const tabs = page.locator("[data-project-stage]").getByRole("tab");
-  await tabs.nth(1).click();
-  assert.equal(await tabs.nth(1).getAttribute("aria-selected"), "true");
-  await expectVisible(page.getByRole("tabpanel").getByRole("heading", { name: "PIGEON Reproduction" }));
-  await expectVisible(page.getByRole("heading", { name: "Engineer the intelligence." }));
-  assert.deepEqual(pageErrors, [], "rejected optional imports do not become unhandled errors");
+  const footer = page.locator(".site-footer");
+  await footer.scrollIntoViewIfNeeded();
+  const footerFit = await page.evaluate(() => {
+    const wordmark = document.querySelector(".footer-wordmark");
+    return {
+      wordmarkClientWidth: wordmark.clientWidth,
+      wordmarkScrollWidth: wordmark.scrollWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
+    };
+  });
+  assert.ok(
+    footerFit.wordmarkScrollWidth <= footerFit.wordmarkClientWidth + 1,
+    "footer wordmark stays inside its container",
+  );
+  assert.ok(footerFit.documentWidth <= footerFit.viewportWidth + 1, "footer introduces no horizontal overflow");
+  assert.deepEqual(errors, [], "Practice, video, and footer interactions produce no browser errors");
+  await page.close();
+}
 
+async function auditAboutInteraction() {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+
+  await page.goto(`${baseUrl}/about`, { waitUntil: "networkidle" });
+  await page.locator('[data-motion-page="about"][data-motion-ready="true"]').waitFor();
+  const aboutTitleState = await page.locator("[data-about-title]").evaluate((title) => ({
+    words: title.querySelectorAll("[data-about-word]").length,
+    underline: getComputedStyle(title.querySelector("[data-about-title-line]"), "::after").content,
+    bottom: title.getBoundingClientRect().bottom,
+    introductionTop: title.parentElement.querySelector(".about-introduction").getBoundingClientRect().top,
+  }));
+  assert.ok(aboutTitleState.words >= 7, "About heading uses a staggered word sequence");
+  assert.ok(aboutTitleState.underline === "none" || aboutTitleState.underline === "normal", "old About underline hover stays removed");
+  assert.ok(aboutTitleState.bottom <= aboutTitleState.introductionTop, "About heading does not overlap its introduction at 100% zoom");
+
+  const portrait = page.locator("[data-about-portrait]");
+  const box = await portrait.boundingBox();
+  assert.ok(box, "About portrait has stable geometry");
+  await page.mouse.move(box.x + box.width * 0.24, box.y + box.height * 0.38);
+  await page.waitForTimeout(650);
+
+  const state = await portrait.evaluate((root) => ({
+    tilt: getComputedStyle(root.querySelector("[data-portrait-stage]")).transform,
+    ai: getComputedStyle(root.querySelector("[data-ai-pointer]")).transform,
+    human: getComputedStyle(root.querySelector("[data-human-pointer]")).transform,
+    lightX: getComputedStyle(root).getPropertyValue("--portrait-light-x").trim(),
+  }));
+  assert.notEqual(state.tilt, "none", "portrait receives restrained tilt");
+  assert.notEqual(state.ai, "none", "AI half receives depth movement");
+  assert.notEqual(state.human, "none", "human half remains subtly responsive");
+  assert.notEqual(state.lightX, "50%", "portrait light follows pointer position");
+
+  await portrait.dispatchEvent("pointerleave", { pointerType: "mouse" });
+  await page.waitForTimeout(750);
+  assert.deepEqual(errors, [], "About interaction produces no browser errors");
+  await page.close();
+}
+
+async function auditScrollChoreography() {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+
+  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.locator('[data-motion-page="home"][data-motion-ready="true"]').waitFor();
+  const reveal = page.locator("[data-motion-reveal]").first();
+  await page.waitForTimeout(400);
+  assert.ok(
+    Number.parseFloat(await reveal.evaluate((node) => getComputedStyle(node).opacity)) <= 0.05,
+    "below-fold content begins in its prepared reveal state",
+  );
+
+  await reveal.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1000);
+  assert.ok(
+    Number.parseFloat(await reveal.evaluate((node) => getComputedStyle(node).opacity)) >= 0.95,
+    "section reveal completes while scrolling forward",
+  );
+
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+  });
+  await page.waitForFunction(() => {
+    const element = document.querySelector("[data-motion-reveal]");
+    return element && Number.parseFloat(getComputedStyle(element).opacity) <= 0.05;
+  });
+  assert.ok(
+    Number.parseFloat(await reveal.evaluate((node) => getComputedStyle(node).opacity)) <= 0.05,
+    "section reveal resets cleanly when scrolling back above it",
+  );
+  assert.deepEqual(errors, [], "scroll choreography produces no browser errors");
   await page.close();
 }
 
@@ -473,9 +631,13 @@ await audit("mobile-390", { width: 390, height: 844 }, { mobile: true });
 await audit("mobile-375", { width: 375, height: 812 }, { mobile: true });
 await audit("about-desktop-1440", { width: 1440, height: 1000 }, { path: "/about" });
 await audit("about-mobile-390", { width: 390, height: 844 }, { mobile: true, path: "/about" });
+await audit("contact-desktop-1440", { width: 1440, height: 1000 }, { path: "/contact" });
+await audit("contact-mobile-390", { width: 390, height: 844 }, { mobile: true, path: "/contact" });
 await auditNoJavaScript();
 await auditHeaderBoundary();
 await auditReducedMotion();
-await auditDeferredMotion();
-await auditRejectedMotionImports();
+await auditHeroInteraction();
+await auditPracticeVideoAndFooter();
+await auditAboutInteraction();
+await auditScrollChoreography();
 await browser.close();

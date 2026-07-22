@@ -31,7 +31,11 @@ yarn-error.log*
 .dev-err.log
 .prod-out.log
 .prod-err.log
+.codex-*.log
 /artifacts/
+/tmp/
+/.impeccable/
+/ahsan-interactive-hero-prototype/
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -41,6 +45,7 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+*.tsbuildinfo
 /dist/
 /.wrangler/
 /outputs/

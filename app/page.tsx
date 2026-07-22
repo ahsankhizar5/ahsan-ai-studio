@@ -5,6 +5,7 @@ import { MotionController } from "./components/MotionController";
 import { ProjectStage } from "./components/ProjectStage";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import { ToolMarquee } from "./components/ToolMarquee";
 import {
   engineeringProjects,
   experience,
@@ -96,6 +97,8 @@ export default function Home() {
             ))}
           </ul>
         </section>
+
+        <ToolMarquee />
 
         <ProjectStage projects={featuredProjects} />
 

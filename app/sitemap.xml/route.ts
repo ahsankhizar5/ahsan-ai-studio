@@ -1,6 +1,6 @@
 export function GET(request: Request) {
   const origin = new URL(request.url).origin;
-  const pages = ["/", "/about"];
+  const pages = ["/", "/about", "/contact"];
   const urls = pages
     .map(
       (path) =>

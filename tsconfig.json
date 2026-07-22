@@ -35,6 +35,8 @@
     "build",
     "db",
     "examples",
+    "ahsan-interactive-hero-prototype",
+    ".worktrees",
     "worker",
     "drizzle.config.ts",
     "vite.config.ts"

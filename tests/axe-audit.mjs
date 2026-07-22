@@ -22,6 +22,16 @@ const cases = [
     path: "/about",
     viewport: { width: 390, height: 844 },
   },
+  {
+    name: "contact-desktop",
+    path: "/contact",
+    viewport: { width: 1440, height: 1000 },
+  },
+  {
+    name: "contact-mobile",
+    path: "/contact",
+    viewport: { width: 390, height: 844 },
+  },
 ];
 
 for (const item of cases) {

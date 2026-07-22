@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AkMark } from "./AkMark";
 
-type ActivePage = "home" | "about";
+type ActivePage = "home" | "about" | "contact";
 
 const navigation = [
   { label: "Work", target: "work" },
@@ -13,7 +13,7 @@ const navigation = [
 ] as const;
 
 function anchorHref(activePage: ActivePage, target: string) {
-  if (target === "contact") return "#contact";
+  if (target === "contact") return "/contact";
   return `${activePage === "home" ? "" : "/"}#${target}`;
 }
 
@@ -21,7 +21,12 @@ function NavigationLinks({ activePage, onNavigate }: { activePage: ActivePage; o
   return (
     <>
       {navigation.map((item) => (
-        <a href={anchorHref(activePage, item.target)} key={item.target} onClick={onNavigate}>
+        <a
+          href={anchorHref(activePage, item.target)}
+          key={item.target}
+          aria-current={item.target === "contact" && activePage === "contact" ? "page" : undefined}
+          onClick={onNavigate}
+        >
           {item.label}
         </a>
       ))}
@@ -35,7 +40,7 @@ function NavigationLinks({ activePage, onNavigate }: { activePage: ActivePage; o
 export function SiteHeader({ activePage }: { activePage: ActivePage }) {
   const [enhanced, setEnhanced] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(activePage === "about");
+  const [scrolled, setScrolled] = useState(activePage !== "home");
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLElement>(null);
   const restoreTriggerFocus = useRef(false);

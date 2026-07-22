@@ -1,0 +1,7 @@
+.impeccable/
+ahsan-interactive-hero-prototype/
+artifacts/
+tmp/
+.worktrees/
+.codex-*.log
+*.tsbuildinfo

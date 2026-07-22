@@ -64,6 +64,7 @@ async function requestOrigin() {
 
 export default async function AboutPage() {
   const origin = await requestOrigin();
+  const aboutTitleLines = ["I build the system", "around the model."] as const;
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
@@ -73,15 +74,15 @@ export default async function AboutPage() {
     url: `${origin}/about`,
     primaryImageOfPage: {
       "@type": "ImageObject",
-      url: `${origin}/ahsan-khizar.webp`,
-      width: 960,
-      height: 1131,
+      url: `${origin}/media/about-ai-model-bloom-cutout.webp`,
+      width: 1024,
+      height: 1536,
     },
     mainEntity: {
       "@type": "Person",
       name: profile.name,
       email: `mailto:${profile.email}`,
-      image: `${origin}/ahsan-khizar.webp`,
+      image: `${origin}/media/about-ai-model-bloom-cutout.webp`,
       address: { "@type": "PostalAddress", addressCountry: profile.location },
       sameAs: [profile.links.linkedin, profile.links.github],
     },
@@ -100,7 +101,15 @@ export default async function AboutPage() {
 
           <div className="about-hero-copy" data-hero-reveal>
             <p className="eyebrow">About / Ahsan Khizar</p>
-            <h1 id="about-title">I build the system around the model.</h1>
+            <h1 id="about-title" data-about-title aria-label="I build the system around the model.">
+              {aboutTitleLines.map((line) => (
+                <span data-about-title-line aria-hidden="true" key={line}>
+                  {line.split(" ").map((word) => (
+                    <span data-about-word key={word}>{word}</span>
+                  ))}
+                </span>
+              ))}
+            </h1>
             <p className="about-introduction">
               I am a final-year Software Engineering student at {profile.education.institution},
               focused on turning AI capabilities into products, agents, and automation that fit real
