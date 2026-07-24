@@ -29,6 +29,7 @@ const featuredProjectNames = [
   "PIGEON Reproduction",
   "Audio Deepfake Detection System",
   "Customer Behavior Profiling",
+  "Fraud Detection ML Pipeline",
 ] as const;
 
 const featuredProjects = featuredProjectNames

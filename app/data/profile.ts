@@ -5,6 +5,8 @@ export type Project = {
   description: string;
   contribution: string;
   stack: readonly string[];
+  image: string;
+  year: string;
   href?: string;
 };
 export type Experience = {
@@ -37,6 +39,9 @@ export const engineeringProjects: readonly Project[] = [
     description: "An audio anti-spoofing system built around an AASIST-style detection pipeline.",
     contribution: "Backend/API and model-integration direction focused on testable inputs and deployable model behavior.",
     stack: ["Python", "FastAPI", "PyTorch", "AASIST-style pipeline"],
+    image: "/media/projects/audio-deepfake-detection.webp",
+    year: "2026",
+    href: "https://www.verivox.studio/",
   },
   {
     name: "DocuSync",
@@ -44,6 +49,8 @@ export const engineeringProjects: readonly Project[] = [
     description: "A working system connecting GitHub pull requests to LLM drafting, human review, Notion sync, APIs, and persistent state.",
     contribution: "Built the automation workflow, backend APIs, database integration, and product interface.",
     stack: ["FastAPI", "Next.js", "PostgreSQL", "Gemini", "Notion API"],
+    image: "/media/projects/docusync.webp",
+    year: "2026",
     href: "https://github.com/ahsankhizar5/docusync",
   },
   {
@@ -52,6 +59,8 @@ export const engineeringProjects: readonly Project[] = [
     description: "A PIGEON-style image-geolocation pipeline using visual embeddings and hierarchical geographic classification.",
     contribution: "Used frozen CLIP ViT-B/32 features, S2 Geometry, and confidence-based filtering.",
     stack: ["Python", "CLIP ViT-B/32", "S2 Geometry"],
+    image: "/media/projects/pigeon-geolocation.webp",
+    year: "2026",
     href: "https://github.com/ahsankhizar5/PIGEON_Reproduction",
   },
   {
@@ -60,7 +69,19 @@ export const engineeringProjects: readonly Project[] = [
     description: "A testable behavior-profiling workflow covering preprocessing, feature preparation, clustering, and experimentation.",
     contribution: "Built the analysis workflow and Streamlit delivery surface with automated tests.",
     stack: ["Python", "Pandas", "Scikit-learn", "Streamlit", "Pytest"],
+    image: "/media/projects/customer-behavior-profiling.webp",
+    year: "2026",
     href: "https://github.com/ahsankhizar5/customer-behavior-profiling",
+  },
+  {
+    name: "Fraud Detection ML Pipeline",
+    category: "Production machine learning",
+    description: "An end-to-end fraud detection pipeline covering feature engineering, class balancing, classification, and ROC-based evaluation.",
+    contribution: "Structured the complete Python workflow for reproducible training, evaluation, and operational fraud-risk decisions.",
+    stack: ["Python", "Pandas", "Scikit-learn", "Random Forest", "ROC evaluation"],
+    image: "/media/projects/fraud-detection-pipeline.webp",
+    year: "2026",
+    href: "https://github.com/ahsankhizar5/fraud-detection-ml-pipeline",
   },
 ] as const;
 

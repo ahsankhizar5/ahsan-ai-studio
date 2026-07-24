@@ -166,6 +166,81 @@ export function SiteMotion({ page }: SiteMotionProps) {
           const projectHeader = root.querySelector<HTMLElement>(".project-stage-heading");
           if (projectHeader) animateReveal(projectHeader);
 
+          const projectRows = gsap.utils.toArray<HTMLElement>("[data-project-row]", root);
+          if (projectRows.length > 0) {
+            gsap.fromTo(
+              projectRows,
+              {
+                opacity: 0.2,
+                y: 42,
+                clipPath: "inset(0 0 34% 0)",
+              },
+              {
+                opacity: 1,
+                y: 0,
+                clipPath: "inset(0 0 0% 0)",
+                duration: 0.82,
+                stagger: 0.085,
+                ease: "power4.out",
+                scrollTrigger: {
+                  trigger: "[data-project-list]",
+                  start: "top 82%",
+                  toggleActions: "play none none none",
+                },
+              },
+            );
+          }
+
+          const projectStagePreview = root.querySelector<HTMLElement>("[data-project-stage-preview]");
+          if (projectStagePreview) {
+            gsap.fromTo(
+              projectStagePreview,
+              { y: 70, scale: 0.94, opacity: 0.62 },
+              {
+                y: -18,
+                scale: 1,
+                opacity: 1,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: "[data-project-stage]",
+                  start: "top 88%",
+                  end: "bottom 64%",
+                  scrub: 0.72,
+                },
+              },
+            );
+          }
+
+          const mobileProjectCards = gsap.utils.toArray<HTMLElement>(
+            "[data-project-mobile-card]",
+            root,
+          );
+          mobileProjectCards.forEach((card, index) => {
+            gsap.fromTo(
+              card,
+              {
+                opacity: 0,
+                y: 58,
+                scale: 0.95,
+                clipPath: "inset(10% 0 0 0)",
+              },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                clipPath: "inset(0% 0 0 0)",
+                duration: 0.78,
+                delay: Math.min(index * 0.025, 0.1),
+                ease: "power4.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 88%",
+                  toggleActions: "play none none reverse",
+                },
+              },
+            );
+          });
+
           const videoScan = root.querySelector<HTMLElement>("[data-video-service-scan]");
           const videoPreview = root.querySelector<HTMLElement>("[data-video-service-preview]");
           if (videoPreview) {

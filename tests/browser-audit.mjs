@@ -178,13 +178,18 @@ async function audit(name, viewport, { mobile = false, path = "/" } = {}) {
     });
     assert.ok(heroClearance >= 12, `${name} hero title clears the fixed navigation`);
 
-    if (viewport.width >= 768) {
+    if (viewport.width >= 900) {
       const projectStage = page.locator("[data-project-stage]");
-      const tabs = projectStage.getByRole("tab");
-      assert.equal(await tabs.count(), 4, `${name} project stage must expose four tabs`);
-      await tabs.nth(0).focus();
-      await page.keyboard.press("ArrowRight");
-      assert.equal(await tabs.nth(1).getAttribute("aria-selected"), "true");
+      const projectRows = projectStage.locator("[data-project-row]");
+      assert.equal(await projectRows.count(), 5, `${name} project stage must expose five projects`);
+      const secondProject = projectRows.nth(1).getByRole("link");
+      await secondProject.focus();
+      assert.equal(await projectRows.nth(1).getAttribute("data-active"), "true");
+      assert.equal(
+        await projectStage.locator(".project-showcase-stage-media img[data-active='true']").count(),
+        1,
+        `${name} project stage keeps one active visual`,
+      );
     }
   }
 
@@ -339,13 +344,17 @@ async function auditNoJavaScript() {
       );
     }
 
-    const stackedProjects = page.locator(".project-stage-mobile article");
-    assert.equal(await stackedProjects.count(), 4);
+    const stackedProjects =
+      viewport.width < 900
+        ? page.locator(".project-showcase-mobile article")
+        : page.locator(".project-showcase-list [data-project-row]");
+    assert.equal(await stackedProjects.count(), 5);
     for (const projectName of [
       "DocuSync",
       "PIGEON Reproduction",
       "Audio Deepfake Detection System",
       "Customer Behavior Profiling",
+      "Fraud Detection ML Pipeline",
     ]) {
       await expectVisible(stackedProjects.filter({ hasText: projectName }));
     }
@@ -462,7 +471,7 @@ async function auditHeroInteraction() {
   }));
   assert.ok(titleState.opacity >= 0.95, "hero word sequence completes after load");
   assert.ok(titleState.underline === "none" || titleState.underline === "normal", "old hero underline hover stays removed");
-  await page.mouse.move(100, 40);
+  await page.locator("[data-hero-media]").dispatchEvent("pointerleave");
   await page.waitForTimeout(850);
   assert.ok(
     Number.parseFloat(await page.locator("[data-hero-spotlight]").evaluate((node) => getComputedStyle(node).opacity)) <= 0.05,

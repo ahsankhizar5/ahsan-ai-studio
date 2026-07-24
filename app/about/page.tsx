@@ -17,7 +17,7 @@ import { siteOrigin } from "../data/site";
 export const metadata: Metadata = {
   title: "About Ahsan Khizar \u2014 AI Engineer & AI Video Producer",
   description:
-    "Meet Ahsan Khizar, a Software Engineering student building applied AI products, agents, automation, and complementary AI video production.",
+    "Meet Ahsan Khizar, an AI engineer building applied AI products, agents, automation, and complementary AI video production.",
   alternates: { canonical: "/about" },
   openGraph: {
     type: "profile",
@@ -103,9 +103,9 @@ export default function AboutPage() {
               ))}
             </h1>
             <p className="about-introduction">
-              I am a final-year Software Engineering student at {profile.education.institution},
-              focused on turning AI capabilities into products, agents, and automation that fit real
-              workflows.
+              I am an AI engineer focused on turning model capabilities into products, agents, and
+              automation that fit real workflows. My Software Engineering foundation at{" "}
+              {profile.education.institution} shapes how I design, test, and deliver those systems.
             </p>
             <p>
               AI engineering is my primary practice. AI video production complements it when an idea
@@ -137,13 +137,13 @@ export default function AboutPage() {
 
         <section className="about-profile section-shell" aria-labelledby="profile-title">
           <div className="about-section-head" data-motion-reveal>
-            <p className="eyebrow">Current profile and education</p>
-            <h2 id="profile-title">Software engineering in progress. Applied work now.</h2>
+            <p className="eyebrow">Engineering profile and foundation</p>
+            <h2 id="profile-title">Applied AI engineering, grounded in software systems.</h2>
           </div>
           <dl className="about-fact-index" data-motion-flow>
             <div>
               <dt>Current profile</dt>
-              <dd>Final-year Software Engineering student building applied AI systems.</dd>
+              <dd>AI engineer building applied AI products, agents, and automation.</dd>
             </div>
             <div>
               <dt>Institution</dt>
